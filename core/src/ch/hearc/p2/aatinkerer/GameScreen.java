@@ -26,7 +26,7 @@ public class GameScreen implements Screen
 		camera = new OrthographicCamera();
 
 		map = new TileMap(250, 250);
-
+		
 		x = 0;
 		y = 0;
 		zoomLevel = 0;
@@ -80,8 +80,8 @@ public class GameScreen implements Screen
 			y += (int) (Gdx.input.getDeltaY() * zoom);
 		}
 
-		// with the mouse (border) FIXME fix border scrolling
-		final int border = 50;
+		// with the mouse (border) FIXME fix border scrolling (which is temporarily disabled)
+		final int border = -1;
 		if (Gdx.input.getY() >= Gdx.graphics.getHeight() - border)
 			y -= 1 * dd;
 		if (Gdx.input.getY() <= border)
@@ -98,7 +98,6 @@ public class GameScreen implements Screen
 		Gdx.gl.glClearColor(0, 0.2f, 0.3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		
 		camera.position.x = x;
 		camera.position.y = y;
 		camera.zoom = zoom;

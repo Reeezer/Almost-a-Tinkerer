@@ -2,14 +2,14 @@ package ch.hearc.p2.aatinkerer;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class AATinkererGame extends Game
 {
 	public SpriteBatch batch;
-	
 	public Input input;
+	
+	private GameScreen gameScreen;
 
 	@Override
 	public void create()
@@ -19,7 +19,9 @@ public class AATinkererGame extends Game
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
 		
-		setScreen(new GameScreen(this));
+		gameScreen = new GameScreen(this);
+		
+		setScreen(gameScreen);
 	}
 
 	@Override
@@ -31,6 +33,7 @@ public class AATinkererGame extends Game
 	@Override
 	public void dispose()
 	{
+		gameScreen.dispose();
 		batch.dispose();
 	}
 }

@@ -22,6 +22,7 @@ public class TileMap
 		width = w;
 		height = h;
 
+		// initialise the map to have no resources
 		map = new Ressources[width][height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -29,16 +30,22 @@ public class TileMap
 			}
 		}
 
-		for (int i = 0; i < 500; i++) {
+		// - generate the map by generating seeds and growing them
+		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than this due to collisions)
+		final int seeds = (width * height) / 500;
+		final int max_life = 10; // + 2
+		for (int i = 0; i < seeds; i++) {
 			int x = random.nextInt(width);
 			int y = random.nextInt(height);
-			int life = random.nextInt(5) + 2;
+			int life = random.nextInt(max_life) + 2;
+			// choose a random resource to spawn excluding the first value which is NONE
 			Ressources ressource = Ressources.values()[(random.nextInt(Ressources.values().length) - 1) + 1];
 
 			generate(ressource, life, x, y);
 		}
 	}
 
+	// recursively generate a resource patch from the specified coordinates
 	public void generate(Ressources ressource, int life, int x, int y)
 	{
 		// don't spawn if life below 0
@@ -55,17 +62,19 @@ public class TileMap
 
 		map[x][y] = ressource;
 
+		// attempt to spawn more resources around
+		final float spawn_probability = 0.75f;
 		// north
-		if (random.nextDouble() < 0.5)
+		if (random.nextFloat() < spawn_probability)
 			generate(ressource, life - 1, x, y - 1);
 		// south
-		if (random.nextDouble() < 0.5)
+		if (random.nextFloat() < spawn_probability)
 			generate(ressource, life - 1, x, y + 1);
 		// east
-		if (random.nextDouble() < 0.5)
+		if (random.nextFloat() < spawn_probability)
 			generate(ressource, life - 1, x + 1, y);
 		// west
-		if (random.nextDouble() < 0.5)
+		if (random.nextFloat() < spawn_probability)
 			generate(ressource, life - 1, x - 1, y);
 	}
 
