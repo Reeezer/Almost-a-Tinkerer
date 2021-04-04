@@ -42,6 +42,12 @@ public class GameScreen implements Screen
 	public void render(float delta)
 	{
 		/* input */
+		
+		// regen new map FIXME debug
+		if (Gdx.input.isKeyJustPressed(Keys.R)) {
+			map.dispose();
+			map = new TileMap(250, 250);
+		}
 
 		// zoom
 

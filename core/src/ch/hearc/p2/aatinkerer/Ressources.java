@@ -6,13 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 public enum Ressources
 {
 	NONE("grid.png"),
-	WOOD("wood_01a.png"),
-	IRON("gem_01e.png"),
-	COPPER("gem_01g.png"),
-	OIL("potion_02g.png"),
-	WATER("pearl_01b.png"),
-	STONE("stoneblock_01a.png"),
-	COTTON("scroll_01h.png");
+	WOOD("WoodTile.png"),
+	IRON("IronTile.png"),
+	COPPER("CopperTile.png"),
+	OIL("OilTile.png"),
+	WATER("WaterTile.png"),
+	STONE("RockTile.png"),
+	COTTON("CottonTile.png");
 
 	private Texture texture;
 
