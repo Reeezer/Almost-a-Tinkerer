@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
+import ch.hearc.p2.aatinkerer.buildings.Extractor;
+import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 
 public class TileMap
 {
@@ -36,7 +38,7 @@ public class TileMap
 				map[i][j] = Ressource.NONE;
 			}
 		}
-		
+
 		// - generate the map by generating seeds and growing them
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
 		// this due to collisions)
@@ -86,41 +88,71 @@ public class TileMap
 			generate(ressource, life - 1, x - 1, y);
 	}
 
-	public void placeConveyor(int x, int y, int direction)
+	private boolean tileIsEmpty(int x, int y)
 	{
+		// conveyors layer
 		if (x < 0 || x >= conveyors.length)
-			return;
-		
+			return false;
+
 		if (y < 0 || y >= conveyors[x].length)
-			return;
-		
-		if (conveyors[x][y] == null)
-			conveyors[x][y] = new Conveyor(direction);
+			return false;
+
+		if (conveyors[x][y] != null)
+			return false;
+
+		// factories layer
+		if (x < 0 || x >= factories.length)
+			return false;
+
+		if (y < 0 || y >= factories[x].length)
+			return false;
+
+		if (factories[x][y] != null)
+			return false;
+
+		return true;
 	}
-	
+
+	public void placeBuilding(int x, int y, int direction, FactoryType factorieType)
+	{
+		if (tileIsEmpty(x, y)) {
+			switch (factorieType) {
+				case EXTRACTOR:
+					factories[x][y] = new Extractor(direction);
+					break;
+				case CONVEYOR:
+					conveyors[x][y] = new Conveyor(direction);
+					break;
+				default:
+					System.out.println("Wrong factorie type");
+					break;
+			}
+		}
+	}
+
 	public void deleteBuilding(int x, int y)
 	{
 		// conveyors layer
 		if (x < 0 || x >= conveyors.length)
 			return;
-		
+
 		if (y < 0 || y >= conveyors[x].length)
 			return;
-		
+
 		if (conveyors[x][y] != null)
 			conveyors[x][y] = null;
-		
+
 		// factories layer
 		if (x < 0 || x >= factories.length)
 			return;
-		
+
 		if (y < 0 || y >= factories[x].length)
 			return;
-		
+
 		if (factories[x][y] != null)
 			factories[x][y] = null;
 	}
-	
+
 	public void render(SpriteBatch batch)
 	{
 		// map

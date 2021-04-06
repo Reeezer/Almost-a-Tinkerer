@@ -7,6 +7,8 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
+import ch.hearc.p2.aatinkerer.buildings.FactoryType;
+
 public class GameScreen implements Screen
 {
 
@@ -19,6 +21,8 @@ public class GameScreen implements Screen
 	private int zoomLevel;
 	private int direction;
 	private float zoom;
+
+	private FactoryType factoryType;
 
 	private TileMap map;
 
@@ -36,6 +40,8 @@ public class GameScreen implements Screen
 		height = 0;
 		zoomLevel = 0;
 		direction = 0;
+
+		factoryType = FactoryType.NONE;
 	}
 
 	@Override
@@ -63,7 +69,7 @@ public class GameScreen implements Screen
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_SUBTRACT))
 			zoomLevel += 1;
 
-		// with the mouse wheel	
+		// with the mouse wheel
 		zoomLevel += game.input.getScrollY();
 
 		zoomLevel = (zoomLevel < -1) ? -1 : zoomLevel;
@@ -104,24 +110,34 @@ public class GameScreen implements Screen
 		if (Gdx.input.getX() <= border)
 			x -= 1 * dd;
 
-		
+		// buildings
+
 		// rotation of buildings you are about to place
 		if (Gdx.input.isKeyJustPressed(Keys.R))
 			direction = (direction + 1) % 4;
-		
+
+		// choose building
+		if (Gdx.input.isKeyJustPressed(Keys.A))
+			this.factoryType = FactoryType.CONVEYOR;
+
+		if (Gdx.input.isKeyJustPressed(Keys.Z))
+			this.factoryType = FactoryType.EXTRACTOR;
+
 		// place building
-		if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			int tileX = screenToTileX(Gdx.input.getX());
 			int tileY = screenToTileY(Gdx.input.getY());
 			System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(),
-			        tileX, tileY);
-			map.placeConveyor(tileX, tileY, direction);
+					tileX, tileY);
+
+			if (factoryType != FactoryType.NONE)
+				map.placeBuilding(tileX, tileY, direction, factoryType);
 		}
 
 		// delete building
-		if (Gdx.input.isKeyJustPressed(Keys.DEL))
+		if (Gdx.input.isKeyPressed(Keys.DEL))
 			map.deleteBuilding(screenToTileX(Gdx.input.getX()), screenToTileY(Gdx.input.getY()));
-		
+
 		game.input.reset();
 
 		/* render */
