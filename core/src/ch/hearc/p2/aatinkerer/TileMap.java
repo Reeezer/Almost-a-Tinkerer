@@ -4,14 +4,17 @@ import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import ch.hearc.p2.aatinkerer.buildings.Building;
+import ch.hearc.p2.aatinkerer.buildings.Conveyor;
+
 public class TileMap
 {
 	public static final int TILESIZE = 32;
 
 	private int width, height;
 	private Ressource[][] map;
-	// private Buildings[][] conveyers;
-	// private Buildings[][] factories;
+	private Building[][] conveyors;
+	private Building[][] factories;
 
 	Random random;
 
@@ -22,16 +25,29 @@ public class TileMap
 		width = w;
 		height = h;
 
-		// initialise the map to have no resources
+		// - initialise the map to have no resources
+		// - create an empty table of conveyors
 		map = new Ressource[width][height];
+		conveyors = new Building[width][height];
+		factories = new Building[width][height];
+		
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				map[i][j] = Ressource.NONE;
 			}
 		}
+		
+		conveyors[0][2] = new Conveyor();
+		conveyors[1][2] = new Conveyor();
+		conveyors[2][2] = new Conveyor();
+		conveyors[3][2] = new Conveyor();
+		conveyors[4][2] = new Conveyor();
+		conveyors[5][2] = new Conveyor();
+		conveyors[6][2] = new Conveyor();
 
 		// - generate the map by generating seeds and growing them
-		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than this due to collisions)
+		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
+		// this due to collisions)
 		final int seeds = (width * height) / 500;
 		final int max_life = 10; // + 2
 		for (int i = 0; i < seeds; i++) {
@@ -80,11 +96,25 @@ public class TileMap
 
 	public void render(SpriteBatch batch)
 	{
+		// map
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				batch.draw(map[i][j].getTexture(), i * TileMap.TILESIZE, j * TileMap.TILESIZE);
+				map[i][j].render(batch, i * TileMap.TILESIZE, j * TileMap.TILESIZE);
 			}
 		}
+
+		// conveyors
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (conveyors[i][j] != null) {
+					conveyors[i][j].render(batch, i * TileMap.TILESIZE, j * TileMap.TILESIZE);
+				}
+			}
+		}
+		
+		// items
+		
+		// buildings
 	}
 
 	public void dispose()

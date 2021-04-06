@@ -2,6 +2,7 @@ package ch.hearc.p2.aatinkerer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public enum Ressource
 {
@@ -21,9 +22,9 @@ public enum Ressource
 		texture = new Texture(Gdx.files.internal(texturePath));
 	}
 
-	public Texture getTexture()
+	public void render(SpriteBatch batch, int x, int y)
 	{
-		return texture;
+		batch.draw(texture, x, y);
 	}
 
 	// FIXME how to implement dispose() for an enum?
