@@ -98,6 +98,29 @@ public class TileMap
 			conveyors[x][y] = new Conveyor(direction);
 	}
 	
+	public void deleteBuilding(int x, int y)
+	{
+		// conveyors layer
+		if (x < 0 || x >= conveyors.length)
+			return;
+		
+		if (y < 0 || y >= conveyors[x].length)
+			return;
+		
+		if (conveyors[x][y] != null)
+			conveyors[x][y] = null;
+		
+		// factories layer
+		if (x < 0 || x >= factories.length)
+			return;
+		
+		if (y < 0 || y >= factories[x].length)
+			return;
+		
+		if (factories[x][y] != null)
+			factories[x][y] = null;
+	}
+	
 	public void render(SpriteBatch batch)
 	{
 		// map

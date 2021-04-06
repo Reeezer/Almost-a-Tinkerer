@@ -54,10 +54,6 @@ public class GameScreen implements Screen
 			map.dispose();
 			map = new TileMap(250, 250);
 		}
-		
-		// rotation of buildings you are about to place
-		if (Gdx.input.isKeyJustPressed(Keys.R))
-			direction = (direction + 1) % 4;
 
 		// zoom
 
@@ -67,7 +63,7 @@ public class GameScreen implements Screen
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_SUBTRACT))
 			zoomLevel += 1;
 
-		// with the mouse wheel
+		// with the mouse wheel	
 		zoomLevel += game.input.getScrollY();
 
 		zoomLevel = (zoomLevel < -1) ? -1 : zoomLevel;
@@ -108,8 +104,12 @@ public class GameScreen implements Screen
 		if (Gdx.input.getX() <= border)
 			x -= 1 * dd;
 
-		// place items
-
+		
+		// rotation of buildings you are about to place
+		if (Gdx.input.isKeyJustPressed(Keys.R))
+			direction = (direction + 1) % 4;
+		
+		// place building
 		if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
 			int tileX = screenToTileX(Gdx.input.getX());
 			int tileY = screenToTileY(Gdx.input.getY());
@@ -118,6 +118,10 @@ public class GameScreen implements Screen
 			map.placeConveyor(tileX, tileY, direction);
 		}
 
+		// delete building
+		if (Gdx.input.isKeyJustPressed(Keys.DEL))
+			map.deleteBuilding(screenToTileX(Gdx.input.getX()), screenToTileY(Gdx.input.getY()));
+		
 		game.input.reset();
 
 		/* render */
