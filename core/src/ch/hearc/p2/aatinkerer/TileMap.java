@@ -9,7 +9,7 @@ public class TileMap
 	public static final int TILESIZE = 32;
 
 	private int width, height;
-	private Ressources[][] map;
+	private Ressource[][] map;
 	// private Buildings[][] conveyers;
 	// private Buildings[][] factories;
 
@@ -23,10 +23,10 @@ public class TileMap
 		height = h;
 
 		// initialise the map to have no resources
-		map = new Ressources[width][height];
+		map = new Ressource[width][height];
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
-				map[i][j] = Ressources.NONE;
+				map[i][j] = Ressource.NONE;
 			}
 		}
 
@@ -39,14 +39,14 @@ public class TileMap
 			int y = random.nextInt(height);
 			int life = random.nextInt(max_life) + 2;
 			// choose a random resource to spawn excluding the first value which is NONE
-			Ressources ressource = Ressources.values()[(random.nextInt(Ressources.values().length) - 1) + 1];
+			Ressource ressource = Ressource.values()[(random.nextInt(Ressource.values().length) - 1) + 1];
 
 			generate(ressource, life, x, y);
 		}
 	}
 
 	// recursively generate a resource patch from the specified coordinates
-	public void generate(Ressources ressource, int life, int x, int y)
+	public void generate(Ressource ressource, int life, int x, int y)
 	{
 		// don't spawn if life below 0
 		if (life < 0)
@@ -57,7 +57,7 @@ public class TileMap
 			return;
 
 		// only spawn if there's nothing
-		if (map[x][y] != Ressources.NONE)
+		if (map[x][y] != Ressource.NONE)
 			return;
 
 		map[x][y] = ressource;
