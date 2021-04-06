@@ -17,6 +17,7 @@ public class GameScreen implements Screen
 	private int x, y;
 	private int width, height;
 	private int zoomLevel;
+	private int direction;
 	private float zoom;
 
 	private TileMap map;
@@ -34,6 +35,7 @@ public class GameScreen implements Screen
 		width = 0;
 		height = 0;
 		zoomLevel = 0;
+		direction = 0;
 	}
 
 	@Override
@@ -48,10 +50,14 @@ public class GameScreen implements Screen
 		/* input */
 
 		// regen new map FIXME debug
-		if (Gdx.input.isKeyJustPressed(Keys.R)) {
+		if (Gdx.input.isKeyJustPressed(Keys.T)) {
 			map.dispose();
 			map = new TileMap(250, 250);
 		}
+		
+		// rotation of buildings you are about to place
+		if (Gdx.input.isKeyJustPressed(Keys.R))
+			direction = (direction + 1) % 4;
 
 		// zoom
 
@@ -109,7 +115,7 @@ public class GameScreen implements Screen
 			int tileY = screenToTileY(Gdx.input.getY());
 			System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(),
 			        tileX, tileY);
-			map.placeConveyor(tileX, tileY);
+			map.placeConveyor(tileX, tileY, direction);
 		}
 
 		game.input.reset();

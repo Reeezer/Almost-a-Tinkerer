@@ -36,15 +36,7 @@ public class TileMap
 				map[i][j] = Ressource.NONE;
 			}
 		}
-
-		conveyors[0][2] = new Conveyor();
-		conveyors[1][2] = new Conveyor();
-		conveyors[2][2] = new Conveyor();
-		conveyors[3][2] = new Conveyor();
-		conveyors[4][2] = new Conveyor();
-		conveyors[5][2] = new Conveyor();
-		conveyors[6][2] = new Conveyor();
-
+		
 		// - generate the map by generating seeds and growing them
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
 		// this due to collisions)
@@ -94,7 +86,7 @@ public class TileMap
 			generate(ressource, life - 1, x - 1, y);
 	}
 
-	public void placeConveyor(int x, int y)
+	public void placeConveyor(int x, int y, int direction)
 	{
 		if (x < 0 || x >= conveyors.length)
 			return;
@@ -103,7 +95,7 @@ public class TileMap
 			return;
 		
 		if (conveyors[x][y] == null)
-			conveyors[x][y] = new Conveyor();
+			conveyors[x][y] = new Conveyor(direction);
 	}
 	
 	public void render(SpriteBatch batch)

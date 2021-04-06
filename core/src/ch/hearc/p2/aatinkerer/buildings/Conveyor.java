@@ -5,10 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 public class Conveyor extends Building
 {
-	public Conveyor()
+	public Conveyor(int direction)
 	{
 		this.texture = new Texture(Gdx.files.internal("Conveyor.png"));
-		this.direction = 0;
+		this.direction = direction;
 	}
-
 }
