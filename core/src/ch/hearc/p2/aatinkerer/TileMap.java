@@ -30,13 +30,13 @@ public class TileMap
 		map = new Ressource[width][height];
 		conveyors = new Building[width][height];
 		factories = new Building[width][height];
-		
+
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				map[i][j] = Ressource.NONE;
 			}
 		}
-		
+
 		conveyors[0][2] = new Conveyor();
 		conveyors[1][2] = new Conveyor();
 		conveyors[2][2] = new Conveyor();
@@ -94,6 +94,18 @@ public class TileMap
 			generate(ressource, life - 1, x - 1, y);
 	}
 
+	public void placeConveyor(int x, int y)
+	{
+		if (x < 0 || x >= conveyors.length)
+			return;
+		
+		if (y < 0 || y >= conveyors[x].length)
+			return;
+		
+		if (conveyors[x][y] == null)
+			conveyors[x][y] = new Conveyor();
+	}
+	
 	public void render(SpriteBatch batch)
 	{
 		// map
@@ -111,10 +123,17 @@ public class TileMap
 				}
 			}
 		}
-		
+
 		// items
-		
-		// buildings
+
+		// factories
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (factories[i][j] != null) {
+					factories[i][j].render(batch, i * TileMap.TILESIZE, j * TileMap.TILESIZE);
+				}
+			}
+		}
 	}
 
 	public void dispose()

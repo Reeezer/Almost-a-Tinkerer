@@ -9,40 +9,44 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class GameScreen implements Screen
 {
-	
+
 	final private AATinkererGame game;
-	
+
 	private OrthographicCamera camera;
-	
+
 	private int x, y;
+	private int width, height;
 	private int zoomLevel;
-	
+	private float zoom;
+
 	private TileMap map;
-	
+
 	public GameScreen(AATinkererGame game)
 	{
 		this.game = game;
-		
+
 		camera = new OrthographicCamera();
 
 		map = new TileMap(250, 250);
-		
+
 		x = 0;
 		y = 0;
+		width = 0;
+		height = 0;
 		zoomLevel = 0;
 	}
 
 	@Override
 	public void show()
 	{
-				
+
 	}
 
 	@Override
 	public void render(float delta)
 	{
 		/* input */
-		
+
 		// regen new map FIXME debug
 		if (Gdx.input.isKeyJustPressed(Keys.R)) {
 			map.dispose();
@@ -63,7 +67,7 @@ public class GameScreen implements Screen
 		zoomLevel = (zoomLevel < -1) ? -1 : zoomLevel;
 		zoomLevel = (zoomLevel > 4) ? 4 : zoomLevel;
 
-		float zoom = (float) Math.pow(2.f, (float) zoomLevel);
+		zoom = (float) Math.pow(2.f, (float) zoomLevel);
 
 		// move the map
 
@@ -86,7 +90,8 @@ public class GameScreen implements Screen
 			y += (int) (Gdx.input.getDeltaY() * zoom);
 		}
 
-		// with the mouse (border) FIXME fix border scrolling (which is temporarily disabled)
+		// with the mouse (border) FIXME fix border scrolling (which is temporarily
+		// disabled)
 		final int border = -1;
 		if (Gdx.input.getY() >= Gdx.graphics.getHeight() - border)
 			y -= 1 * dd;
@@ -96,6 +101,16 @@ public class GameScreen implements Screen
 			x += 1 * dd;
 		if (Gdx.input.getX() <= border)
 			x -= 1 * dd;
+
+		// place items
+
+		if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+			int tileX = screenToTileX(Gdx.input.getX());
+			int tileY = screenToTileY(Gdx.input.getY());
+			System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(),
+			        tileX, tileY);
+			map.placeConveyor(tileX, tileY);
+		}
 
 		game.input.reset();
 
@@ -117,22 +132,34 @@ public class GameScreen implements Screen
 		game.batch.end();
 	}
 
+	public int screenToTileX(int screenX)
+	{
+		return (int) (((screenX - (width / 2.f)) * zoom + camera.position.x) / TileMap.TILESIZE);
+	}
+
+	public int screenToTileY(int screenY)
+	{
+		return (int) ((((height - screenY) - (height / 2.f)) * zoom + camera.position.y) / TileMap.TILESIZE);
+	}
+
 	@Override
 	public void resize(int width, int height)
 	{
+		this.width = width;
+		this.height = height;
 		camera.setToOrtho(false, width, height);
 	}
 
 	@Override
 	public void pause()
 	{
-		
+
 	}
 
 	@Override
 	public void resume()
 	{
-		
+
 	}
 
 	@Override
