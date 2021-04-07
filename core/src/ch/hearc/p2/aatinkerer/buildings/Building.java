@@ -20,10 +20,13 @@ public abstract class Building
 
 	protected int contentSize;
 	protected int maxSize;
-	protected ItemType[] tabItem;
+	protected ItemType[] items;
 
 	protected Building output;
-	protected int[][] tabInputsPosition;
+	protected int[][] inputPositions;
+	
+	protected int transferTimeout;
+	protected int ticks;
 
 	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath)
 	{
@@ -32,25 +35,16 @@ public abstract class Building
 		this.x = x;
 		this.y = y;
 		this.direction = direction;
+		this.transferTimeout = 60;
+		this.ticks = 0;
 
 		this.texture = new Texture(Gdx.files.internal(spritePath));
 
 		this.contentSize = 0;
 		this.maxSize = size;
-		this.tabItem = new ItemType[size];
+		this.items = new ItemType[size];
 		for (int i = 0; i < size; i++)
-			tabItem[i] = ItemType.NONE;
-
-		// Transferring every 3s
-		Timer.Task transferTimer = new Timer.Task()
-		{
-			@Override
-			public void run()
-			{
-				transferItem();
-			}
-		};
-		Timer.schedule(transferTimer, 3f, 3f);
+			items[i] = ItemType.NONE;
 	}
 
 	public void render(SpriteBatch batch, int tileSize)
@@ -58,40 +52,48 @@ public abstract class Building
 		// required to be able to rotate the texture
 		TextureRegion textureRegion = new TextureRegion(texture);
 		batch.draw(textureRegion, x * tileSize, y * tileSize, (float) texture.getWidth() / 2.f,
-				(float) texture.getHeight() / 2.f, (float) texture.getWidth(), (float) texture.getHeight(), 1.f, 1.f,
-				(float) direction * 90.f);
+		        (float) texture.getHeight() / 2.f, (float) texture.getWidth(), (float) texture.getHeight(), 1.f, 1.f,
+		        (float) direction * 90.f);
 	}
 
 	public int[][] getInputs()
 	{
-		return tabInputsPosition;
+		return inputPositions;
 	}
 
-	public void update()
+	public void updateOutputs()
 	{
 		output = tilemap.getNeighbourBuilding(x, y, direction);
 		System.out.println("Output (" + x + ", " + y + ") : " + output);
 	}
 
-	public boolean canReceiveItem()
+	public boolean isFull()
 	{
-		return contentSize < maxSize;
+		return contentSize >= maxSize;
 	}
 
 	public void addItem(ItemType item)
 	{
-		tabItem[contentSize++] = item;
+		items[contentSize++] = item;
 	}
 
 	public void transferItem()
 	{
-		if (output != null && output.canReceiveItem() && contentSize > 0) {
-			System.out.println("Item transfered " + tabItem[contentSize - 1]);
+		if (output != null && !output.isFull() && contentSize > 0) {
+			System.out.println("Item transfered " + items[contentSize - 1]);
 
-			output.addItem(tabItem[contentSize - 1]);
-			tabItem[contentSize - 1] = ItemType.NONE;
+			output.addItem(items[contentSize - 1]);
+			items[contentSize - 1] = ItemType.NONE;
 			contentSize--;
 		}
 	}
 
+	public void update()
+	{
+		if (ticks++ >= transferTimeout) {
+			transferItem();
+			ticks = 0;
+		}
+		
+	}
 }

@@ -21,6 +21,7 @@ public class GameScreen implements Screen
 	private int zoomLevel;
 	private int direction;
 	private float zoom;
+	private int fpsTicks;
 
 	private FactoryType factoryType;
 
@@ -40,6 +41,7 @@ public class GameScreen implements Screen
 		height = 0;
 		zoomLevel = 0;
 		direction = 0;
+		fpsTicks = 0;
 
 		factoryType = FactoryType.NONE;
 	}
@@ -140,6 +142,14 @@ public class GameScreen implements Screen
 
 		game.input.reset();
 
+		/* update */
+		// FIXME don't cap on FPS, attempt an actual 60TPS
+		map.update();
+		
+		if (fpsTicks++ > 60) {
+			fpsTicks = 0;
+			System.out.println(Gdx.graphics.getFramesPerSecond());
+		}
 		/* render */
 
 		Gdx.gl.glClearColor(0, 0.2f, 0.3f, 1);

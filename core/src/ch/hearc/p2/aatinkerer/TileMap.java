@@ -1,9 +1,10 @@
 package ch.hearc.p2.aatinkerer;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Timer;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
@@ -19,6 +20,8 @@ public class TileMap
 	private Building[][] conveyors;
 	private Building[][] factories;
 
+	private Set<Building> buildings;
+
 	Random random;
 
 	public TileMap(int w, int h)
@@ -33,6 +36,7 @@ public class TileMap
 		map = new Ressource[width][height];
 		conveyors = new Building[width][height];
 		factories = new Building[width][height];
+		buildings = new HashSet<Building>();
 
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -91,25 +95,10 @@ public class TileMap
 
 	private boolean tileExists(int x, int y)
 	{
-		if (x < 0 || y < 0)
-			return false;
-
-		// ressources layer
-		if (x >= map.length || y >= map[x].length)
-			return false;
-
-		// conveyors layer
-		if (x >= conveyors.length || y >= conveyors[x].length)
-			return false;
-
-		// factories layer
-		if (x >= factories.length || y >= factories[x].length)
-			return false;
-
-		return true;
+		return x >= 0 && y >= 0 && x < width && y < height;
 	}
 
-	private boolean tileIsEmpty(int x, int y)
+	private boolean isEmpty(int x, int y)
 	{
 		if (!tileExists(x, y))
 			return false;
@@ -128,17 +117,17 @@ public class TileMap
 	private void updateOutput(int x, int y, Building[][] tabBuilding)
 	{
 		if (tabBuilding[x][y] != null)
-			tabBuilding[x][y].update();
+			tabBuilding[x][y].updateOutputs();
 
-		if (tabBuilding[x + 1][y] != null)
-			tabBuilding[x + 1][y].update();
-		if (tabBuilding[x - 1][y] != null)
-			tabBuilding[x - 1][y].update();
+		if (tileExists(x + 1, y) && tabBuilding[x + 1][y] != null)
+			tabBuilding[x + 1][y].updateOutputs();
+		if (tileExists(x - 1, y) && tabBuilding[x - 1][y] != null)
+			tabBuilding[x - 1][y].updateOutputs();
 
-		if (tabBuilding[x][y + 1] != null)
-			tabBuilding[x][y + 1].update();
-		if (tabBuilding[x][y - 1] != null)
-			tabBuilding[x][y - 1].update();
+		if (tileExists(x, y + 1) && tabBuilding[x][y + 1] != null)
+			tabBuilding[x][y + 1].updateOutputs();
+		if (tileExists(x, y - 1) && tabBuilding[x][y - 1] != null)
+			tabBuilding[x][y - 1].updateOutputs();
 	}
 
 	public void updateOutputs(int x, int y)
@@ -152,21 +141,22 @@ public class TileMap
 		int dx = 0;
 		int dy = 0;
 
-		switch (direction) {
-			case 0:
-				dx = 1;
-				break;
-			case 1:
-				dy = 1;
-				break;
-			case 2:
-				dx = -1;
-				break;
-			case 3:
-				dy = -1;
-			default:
-				System.out.println("Wrong direction : " + direction);
-				break;
+		switch (direction)
+		{
+		case 0:
+			dx = 1;
+			break;
+		case 1:
+			dy = 1;
+			break;
+		case 2:
+			dx = -1;
+			break;
+		case 3:
+			dy = -1;
+		default:
+			System.out.println("Wrong direction : " + direction);
+			break;
 		}
 
 		if (!tileExists(x + dx, y + dy))
@@ -180,7 +170,7 @@ public class TileMap
 			}
 		}
 
-		if (factories[x + dx][y + dy] != null) {
+		if (factories[x + dx][y + dy] != null && factories[x + dx][y + dy].getInputs() != null) {
 			for (int[] input : factories[x + dx][y + dy].getInputs()) {
 				if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 2) % 4) {
 					return factories[x + dx][y + dy];
@@ -191,21 +181,27 @@ public class TileMap
 		return null;
 	}
 
-	public void placeBuilding(int x, int y, int direction, FactoryType factorieType)
+	public void placeBuilding(int x, int y, int direction, FactoryType factoryType)
 	{
-		if (tileIsEmpty(x, y)) {
-			switch (factorieType) {
-				case EXTRACTOR:
-					factories[x][y] = new Extractor(this, x, y, direction, map[x][y]);
-					break;
-				case CONVEYOR:
-					conveyors[x][y] = new Conveyor(this, x, y, direction);
-					break;
-				default:
-					System.out.println("Wrong factorie type : " + factorieType);
-					break;
+		if (isEmpty(x, y)) {
+			switch (factoryType)
+			{
+			case EXTRACTOR:
+				Extractor extractor = new Extractor(this, x, y, direction, map[x][y]);
+				factories[x][y] = extractor;
+				buildings.add(extractor);
+				break;
+			case CONVEYOR:
+				Conveyor conveyor = new Conveyor(this, x, y, direction);
+				conveyors[x][y] = conveyor;
+				buildings.add(conveyor);
+				break;
+			default:
+				System.out.println("Wrong factory type : " + factoryType);
+				break;
 			}
 			updateOutputs(x, y);
+
 		}
 	}
 
@@ -215,12 +211,17 @@ public class TileMap
 			return;
 
 		// conveyors layer
-		if (conveyors[x][y] != null)
+		if (conveyors[x][y] != null) {
+			buildings.remove(conveyors[x][y]);
 			conveyors[x][y] = null;
+		}
 
 		// factories layer
-		if (factories[x][y] != null)
+		if (factories[x][y] != null) {
+			buildings.remove(factories[x][y]);
 			factories[x][y] = null;
+		}
+		updateOutputs(x, y);
 	}
 
 	public void render(SpriteBatch batch)
@@ -250,6 +251,13 @@ public class TileMap
 					factories[i][j].render(batch, TileMap.TILESIZE);
 				}
 			}
+		}
+	}
+
+	public void update()
+	{
+		for (Building building : buildings) {
+			building.update();
 		}
 	}
 
