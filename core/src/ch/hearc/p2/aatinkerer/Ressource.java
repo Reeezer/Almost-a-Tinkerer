@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public enum Ressource
 {
-	NONE("grid.png"),
-	WOOD("WoodTile.png"),
-	STONE("RockTile.png"),
-	IRON("IronTile.png"),
-	COPPER("CopperTile.png"),
-	OIL("OilTile.png"),
-	WATER("WaterTile.png"),
-	COTTON("CottonTile.png");
+	NONE("Tile/grid.png"),
+	WOOD("Tile/WoodTile.png"),
+	STONE("Tile/RockTile.png"),
+	IRON("Tile/IronTile.png"),
+	COPPER("Tile/CopperTile.png"),
+	OIL("Tile/OilTile.png"),
+	WATER("Tile/WaterTile.png"),
+	COTTON("Tile/CottonTile.png");
 
 	private Texture texture;
 

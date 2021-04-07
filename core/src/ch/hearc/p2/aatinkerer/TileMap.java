@@ -3,6 +3,7 @@ package ch.hearc.p2.aatinkerer;
 import java.util.Random;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Timer;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
@@ -63,7 +64,7 @@ public class TileMap
 			return;
 
 		// check bounds
-		if (y < 0 || x < 0 || y >= height || x >= width)
+		if (!tileExists(x, y))
 			return;
 
 		// only spawn if there's nothing
@@ -88,29 +89,106 @@ public class TileMap
 			generate(ressource, life - 1, x - 1, y);
 	}
 
+	private boolean tileExists(int x, int y)
+	{
+		if (x < 0 || y < 0)
+			return false;
+
+		// ressources layer
+		if (x >= map.length || y >= map[x].length)
+			return false;
+
+		// conveyors layer
+		if (x >= conveyors.length || y >= conveyors[x].length)
+			return false;
+
+		// factories layer
+		if (x >= factories.length || y >= factories[x].length)
+			return false;
+
+		return true;
+	}
+
 	private boolean tileIsEmpty(int x, int y)
 	{
+		if (!tileExists(x, y))
+			return false;
+
 		// conveyors layer
-		if (x < 0 || x >= conveyors.length)
-			return false;
-
-		if (y < 0 || y >= conveyors[x].length)
-			return false;
-
 		if (conveyors[x][y] != null)
 			return false;
 
 		// factories layer
-		if (x < 0 || x >= factories.length)
-			return false;
-
-		if (y < 0 || y >= factories[x].length)
-			return false;
-
 		if (factories[x][y] != null)
 			return false;
 
 		return true;
+	}
+
+	private void updateOutput(int x, int y, Building[][] tabBuilding)
+	{
+		if (tabBuilding[x][y] != null)
+			tabBuilding[x][y].update();
+
+		if (tabBuilding[x + 1][y] != null)
+			tabBuilding[x + 1][y].update();
+		if (tabBuilding[x - 1][y] != null)
+			tabBuilding[x - 1][y].update();
+
+		if (tabBuilding[x][y + 1] != null)
+			tabBuilding[x][y + 1].update();
+		if (tabBuilding[x][y - 1] != null)
+			tabBuilding[x][y - 1].update();
+	}
+
+	public void updateOutputs(int x, int y)
+	{
+		updateOutput(x, y, conveyors);
+		updateOutput(x, y, factories);
+	}
+
+	public Building getNeighbourBuilding(int x, int y, int direction)
+	{
+		int dx = 0;
+		int dy = 0;
+
+		switch (direction) {
+			case 0:
+				dx = 1;
+				break;
+			case 1:
+				dy = 1;
+				break;
+			case 2:
+				dx = -1;
+				break;
+			case 3:
+				dy = -1;
+			default:
+				System.out.println("Wrong direction : " + direction);
+				break;
+		}
+
+		if (!tileExists(x + dx, y + dy))
+			return null;
+
+		if (conveyors[x + dx][y + dy] != null) {
+			for (int[] input : conveyors[x + dx][y + dy].getInputs()) {
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 2) % 4) {
+					return conveyors[x + dx][y + dy];
+				}
+			}
+		}
+
+		if (factories[x + dx][y + dy] != null) {
+			for (int[] input : factories[x + dx][y + dy].getInputs()) {
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 2) % 4) {
+					return factories[x + dx][y + dy];
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public void placeBuilding(int x, int y, int direction, FactoryType factorieType)
@@ -118,37 +196,29 @@ public class TileMap
 		if (tileIsEmpty(x, y)) {
 			switch (factorieType) {
 				case EXTRACTOR:
-					factories[x][y] = new Extractor(direction);
+					factories[x][y] = new Extractor(this, x, y, direction, map[x][y]);
 					break;
 				case CONVEYOR:
-					conveyors[x][y] = new Conveyor(direction);
+					conveyors[x][y] = new Conveyor(this, x, y, direction);
 					break;
 				default:
-					System.out.println("Wrong factorie type");
+					System.out.println("Wrong factorie type : " + factorieType);
 					break;
 			}
+			updateOutputs(x, y);
 		}
 	}
 
 	public void deleteBuilding(int x, int y)
 	{
+		if (!tileExists(x, y))
+			return;
+
 		// conveyors layer
-		if (x < 0 || x >= conveyors.length)
-			return;
-
-		if (y < 0 || y >= conveyors[x].length)
-			return;
-
 		if (conveyors[x][y] != null)
 			conveyors[x][y] = null;
 
 		// factories layer
-		if (x < 0 || x >= factories.length)
-			return;
-
-		if (y < 0 || y >= factories[x].length)
-			return;
-
 		if (factories[x][y] != null)
 			factories[x][y] = null;
 	}
@@ -166,7 +236,7 @@ public class TileMap
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (conveyors[i][j] != null) {
-					conveyors[i][j].render(batch, i * TileMap.TILESIZE, j * TileMap.TILESIZE);
+					conveyors[i][j].render(batch, TileMap.TILESIZE);
 				}
 			}
 		}
@@ -177,7 +247,7 @@ public class TileMap
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (factories[i][j] != null) {
-					factories[i][j].render(batch, i * TileMap.TILESIZE, j * TileMap.TILESIZE);
+					factories[i][j].render(batch, TileMap.TILESIZE);
 				}
 			}
 		}
