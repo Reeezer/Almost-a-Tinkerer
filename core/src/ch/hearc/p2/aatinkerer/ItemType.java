@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public enum ItemType
 {
-	NONE("Item/Wood.png"),
+	NONE("Item/None.png"),
 	WOODLOG("Item/Wood.png"),
 	COAL("Item/Coal.png"),
 	IRONORE("Item/IronOre.png"),

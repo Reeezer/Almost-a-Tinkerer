@@ -26,7 +26,9 @@ public class Extractor extends Building
 	{
 		if (contentSize < maxSize) {
 			System.out.println("Extracting " + ressource);
-			items.add(ressource.getExtractedItem());
+			Item item = new Item();
+			item.type = ressource.getExtractedItem();
+			items.add(item);
 			contentSize++;
 		}
 	}

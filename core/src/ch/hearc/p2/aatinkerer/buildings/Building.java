@@ -1,20 +1,33 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.Timer;
 
 import ch.hearc.p2.aatinkerer.ItemType;
 import ch.hearc.p2.aatinkerer.TileMap;
 
 public abstract class Building
 {
+	protected class Item
+	{
+		public ItemType type;
+		public long ticksSpent;
+		// necessary because otherwise an item might get teleported to the other side of a conveyor system if updates happen in the right order (also know as black magic)
+		public boolean justTransfered;
+		
+		public Item()
+		{
+			type = ItemType.NONE;
+			ticksSpent = 0;
+			justTransfered = false;
+		}
+	}
+
 	protected TileMap tilemap;
 	protected Texture texture;
 
@@ -24,13 +37,13 @@ public abstract class Building
 
 	protected int contentSize;
 	protected int maxSize;
-	protected Queue<ItemType> items;
+	protected Queue<Item> items;
 
 	protected Building output;
 	protected int[][] inputPositions;
-	
-	protected int transferTimeout;
-	protected int ticks;
+
+	protected static int transferTimeout = 50;
+	protected static int ticks = 0;
 
 	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath)
 	{
@@ -39,14 +52,12 @@ public abstract class Building
 		this.x = x;
 		this.y = y;
 		this.direction = direction;
-		this.transferTimeout = 50;
-		this.ticks = 0;
 
 		this.texture = new Texture(Gdx.files.internal(spritePath));
 
 		this.contentSize = 0;
 		this.maxSize = size;
-		this.items = new LinkedList<ItemType>();
+		this.items = new LinkedList<Item>();
 	}
 
 	public void render(SpriteBatch batch, int tileSize)
@@ -74,31 +85,45 @@ public abstract class Building
 		return contentSize >= maxSize;
 	}
 
-	public void addItem(ItemType item)
+	public void addItem(Item item)
 	{
 		if (contentSize++ >= maxSize)
-			System.err.format("Item %s inserted despite building being full\n", item.toString());
-		
+			System.err.format("Item %s inserted despite building being full\n", item.type.toString());
+
 		items.add(item);
+		item.ticksSpent = 0;
+		item.justTransfered = true;
 	}
 
 	public void transferItem()
 	{
-		if (output != null && !output.isFull() && contentSize > 0) {
-			ItemType item = items.poll();
+		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
+			Item item = items.poll();
 			contentSize--;
-			
-			System.out.println("Item transfered " + item);
+
+			System.out.println("Item transfered " + item.type);
 			output.addItem(item);
 		}
 	}
 
 	public void update()
 	{
-		if (ticks++ >= transferTimeout) {
+		if (Building.ticks == Building.transferTimeout) {
 			transferItem();
-			ticks = 0;
 		}
-		
+
+		for (Item item : items) {
+			if (item.ticksSpent < transferTimeout) {
+				item.ticksSpent++;
+				item.justTransfered = false;
+			}
+		}
+	}
+
+	public static void staticUpdate()
+	{
+		if (Building.ticks++ >= Building.transferTimeout) {
+			Building.ticks = 0;
+		}
 	}
 }

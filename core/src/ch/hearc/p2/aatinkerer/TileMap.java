@@ -241,8 +241,15 @@ public class TileMap
 				}
 			}
 		}
-
+		
 		// items
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (conveyors[i][j] != null) {
+					((Conveyor)conveyors[i][j]).renderItems(batch, TileMap.TILESIZE);
+				}
+			}
+		}
 
 		// factories
 		for (int i = 0; i < width; i++) {
@@ -256,6 +263,8 @@ public class TileMap
 
 	public void update()
 	{
+		Building.staticUpdate();
+		
 		for (Building building : buildings) {
 			building.update();
 		}

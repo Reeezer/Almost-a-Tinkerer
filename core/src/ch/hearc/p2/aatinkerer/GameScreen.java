@@ -139,7 +139,7 @@ public class GameScreen implements Screen
 			this.factoryType = FactoryType.EXTRACTOR;
 
 		// place building
-		if (Gdx.input.isButtonJustPressed(Buttons.LEFT)) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			int tileX = screenToTileX(Gdx.input.getX());
 			int tileY = screenToTileY(Gdx.input.getY());
 			System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(),
