@@ -132,10 +132,10 @@ public class GameScreen implements Screen
 			direction = (direction + 1) % 4;
 
 		// choose building
-		if (Gdx.input.isKeyJustPressed(Keys.A))
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			this.factoryType = FactoryType.CONVEYOR;
 
-		if (Gdx.input.isKeyJustPressed(Keys.Z))
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
 			this.factoryType = FactoryType.EXTRACTOR;
 
 		// place building
