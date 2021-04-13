@@ -1,5 +1,9 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -20,7 +24,7 @@ public abstract class Building
 
 	protected int contentSize;
 	protected int maxSize;
-	protected ItemType[] items;
+	protected Queue<ItemType> items;
 
 	protected Building output;
 	protected int[][] inputPositions;
@@ -35,16 +39,14 @@ public abstract class Building
 		this.x = x;
 		this.y = y;
 		this.direction = direction;
-		this.transferTimeout = 60;
+		this.transferTimeout = 50;
 		this.ticks = 0;
 
 		this.texture = new Texture(Gdx.files.internal(spritePath));
 
 		this.contentSize = 0;
 		this.maxSize = size;
-		this.items = new ItemType[size];
-		for (int i = 0; i < size; i++)
-			items[i] = ItemType.NONE;
+		this.items = new LinkedList<ItemType>();
 	}
 
 	public void render(SpriteBatch batch, int tileSize)
@@ -74,17 +76,20 @@ public abstract class Building
 
 	public void addItem(ItemType item)
 	{
-		items[contentSize++] = item;
+		if (contentSize++ >= maxSize)
+			System.err.format("Item %s inserted despite building being full\n", item.toString());
+		
+		items.add(item);
 	}
 
 	public void transferItem()
 	{
 		if (output != null && !output.isFull() && contentSize > 0) {
-			System.out.println("Item transfered " + items[contentSize - 1]);
-
-			output.addItem(items[contentSize - 1]);
-			items[contentSize - 1] = ItemType.NONE;
+			ItemType item = items.poll();
 			contentSize--;
+			
+			System.out.println("Item transfered " + item);
+			output.addItem(item);
 		}
 	}
 

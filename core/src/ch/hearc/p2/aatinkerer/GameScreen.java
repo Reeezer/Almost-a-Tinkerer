@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 
@@ -21,7 +22,11 @@ public class GameScreen implements Screen
 	private int zoomLevel;
 	private int direction;
 	private float zoom;
-	private int fpsTicks;
+	private int fpsDisplayTicks;
+	
+	private long lastTime;
+	private long unprocessedTime;
+	private final long processingTimeCap = 10L; // 100TPS
 
 	private FactoryType factoryType;
 
@@ -41,7 +46,10 @@ public class GameScreen implements Screen
 		height = 0;
 		zoomLevel = 0;
 		direction = 0;
-		fpsTicks = 0;
+		fpsDisplayTicks = 0;
+		
+		lastTime = TimeUtils.millis();
+		unprocessedTime = 0;
 
 		factoryType = FactoryType.NONE;
 	}
@@ -55,6 +63,11 @@ public class GameScreen implements Screen
 	@Override
 	public void render(float delta)
 	{
+		long firstTime = TimeUtils.millis();
+		long passedTime = firstTime - lastTime;
+		lastTime = firstTime;
+		unprocessedTime += passedTime;
+		
 		/* input */
 
 		// regen new map FIXME debug
@@ -143,11 +156,17 @@ public class GameScreen implements Screen
 		game.input.reset();
 
 		/* update */
-		// FIXME don't cap on FPS, attempt an actual 60TPS
-		map.update();
 		
-		if (fpsTicks++ > 60) {
-			fpsTicks = 0;
+		// cap on fixed TPS
+		while (unprocessedTime >= processingTimeCap) {
+			unprocessedTime -= processingTimeCap;
+			map.update();
+			
+			// FIXME do all logic updates here
+		}
+		
+		if (fpsDisplayTicks++ > 60) {
+			fpsDisplayTicks = 0;
 			System.out.println(Gdx.graphics.getFramesPerSecond());
 		}
 		/* render */
