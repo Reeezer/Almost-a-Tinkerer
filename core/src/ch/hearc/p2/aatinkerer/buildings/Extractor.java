@@ -15,6 +15,7 @@ public class Extractor extends Building
 		super(tilemap, x, y, direction, 1, "Tile/Extractor.png");
 		this.ressource = ressource;
 		this.inputPositions = null;
+		this.outputPosition = new int[] { x, y, direction };
 	}
 
 	@Override
