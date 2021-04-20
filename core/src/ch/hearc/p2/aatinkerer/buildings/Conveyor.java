@@ -6,11 +6,11 @@ import ch.hearc.p2.aatinkerer.TileMap;
 
 public class Conveyor extends Building
 {
-	public Conveyor(TileMap tilemap, int x, int y, int direction)
+	public Conveyor(TileMap tilemap, int x, int y, int direction, int[][] inputOutputPosition)
 	{
-		super(tilemap, x, y, direction, 2, "Tile/Conveyor.png");
-		this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 } };
-		this.outputPosition = new int[] { x, y, direction };
+		super(tilemap, x, y, direction, 2, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]));
+		this.inputPositions = new int[][] { inputOutputPosition[0] };
+		this.outputPosition = inputOutputPosition[1];
 	}
 
 	public void renderItems(SpriteBatch batch, int tileSize)
@@ -33,5 +33,16 @@ public class Conveyor extends Building
 			item.type.render(batch, xPixPosition + 4, yPixPosition + 4); // FIXME Draw sprite 32x32 instead of 24x24 to
 																			// correct the +4
 		}
+	}
+
+	private static String getSpritePath(int outputDirection, int inputDirection)
+	{
+		if (outputDirection == (inputDirection + 2) % 4)
+			return "Tile/Conveyor.png";
+		else if (outputDirection == (inputDirection + 1) % 4)
+			return "Tile/ConveyorRight.png";
+		else if (inputDirection == (outputDirection + 1) % 4)
+			return "Tile/ConveyorLeft.png";
+		return "Item/None.png";
 	}
 }
