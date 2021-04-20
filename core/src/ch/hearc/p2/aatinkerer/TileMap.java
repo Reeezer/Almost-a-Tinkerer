@@ -361,7 +361,7 @@ public class TileMap
 					buildings.add(extractor);
 					break;
 				case CONVEYOR:
-					Conveyor conveyor = new Conveyor(this, x, y, direction, connectConveyor(x, y, direction));
+					Conveyor conveyor = new Conveyor(this, x, y, connectConveyor(x, y, direction));
 					conveyors[x][y] = conveyor;
 					buildings.add(conveyor);
 					break;

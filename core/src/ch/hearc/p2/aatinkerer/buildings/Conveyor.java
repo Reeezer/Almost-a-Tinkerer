@@ -6,9 +6,9 @@ import ch.hearc.p2.aatinkerer.TileMap;
 
 public class Conveyor extends Building
 {
-	public Conveyor(TileMap tilemap, int x, int y, int direction, int[][] inputOutputPosition)
+	public Conveyor(TileMap tilemap, int x, int y, int[][] inputOutputPosition)
 	{
-		super(tilemap, x, y, direction, 2, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]));
+		super(tilemap, x, y, inputOutputPosition[1][2], 2, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]));
 		this.inputPositions = new int[][] { inputOutputPosition[0] };
 		this.outputPosition = inputOutputPosition[1];
 	}
@@ -41,7 +41,7 @@ public class Conveyor extends Building
 			return "Tile/Conveyor.png";
 		else if (outputDirection == (inputDirection + 1) % 4)
 			return "Tile/ConveyorRight.png";
-		else if (inputDirection == (outputDirection + 1) % 4)
+		else if (outputDirection == (inputDirection + 3) % 4)
 			return "Tile/ConveyorLeft.png";
 		return "Item/None.png";
 	}
