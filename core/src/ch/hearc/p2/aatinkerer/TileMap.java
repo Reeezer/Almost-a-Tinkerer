@@ -137,8 +137,11 @@ public class TileMap
 		updateOutput(x, y, factories);
 	}
 
-	public Building getNeighbourBuilding(int x, int y, int[] outputPosition)
+	public Building getNeighbourBuilding(int[] outputPosition)
 	{
+		int x = outputPosition[0];
+		int y = outputPosition[1];
+		
 		int dx = 0;
 		int dy = 0;
 

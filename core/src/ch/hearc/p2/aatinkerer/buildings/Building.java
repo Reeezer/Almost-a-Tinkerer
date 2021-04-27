@@ -82,7 +82,7 @@ public abstract class Building
 	
 	public void updateOutputs()
 	{
-		output = tilemap.getNeighbourBuilding(x, y, outputPosition);
+		output = tilemap.getNeighbourBuilding(outputPosition);
 		System.out.println("Output (" + x + ", " + y + ") : " + output);
 	}
 
