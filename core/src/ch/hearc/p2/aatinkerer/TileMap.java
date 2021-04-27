@@ -251,7 +251,7 @@ public class TileMap
 			}
 		}
 
-		// factories
+		// factories FIXME ce code va effectuer le rendu des batiments à plus d'une tile plus qu'une fois, utiliser un rendu comme le code de update(), sans les convoyeurs
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (factories[i][j] != null) {
