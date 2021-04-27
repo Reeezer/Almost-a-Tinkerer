@@ -182,30 +182,30 @@ public class TileMap
 		return null;
 	}
 
-	private void checkSurroundings(Building[][] buildings, int x, int y, int direction, int addToDirection, boolean isInput, int[][] inputOutputPosition)
+	private void checkSurroundings(Building[][] buildings, int x, int dx, int y, int dy, int direction, int addToDirection, boolean isInput, int[][] inputOutputPosition)
 	{
-		if (buildings[x][y] != null && buildings[x][y].getInputs() != null) {
-			if (isInput) {
-				for (int[] input : buildings[x][y].getInputs()) {
-					if (input[0] == x && input[1] == y && input[2] == (direction + 1 + addToDirection) % 4) {
+		if (!isInput) {
+			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getInputs() != null) {
+				for (int[] input : buildings[x + dx][y + dy].getInputs()) {
+					if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 1 + addToDirection) % 4) {
 						inputOutputPosition[1] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
 					}
 				}
-			} 
-			else {
-				int[] output = buildings[x][y].getOutput();
-				if (output[0] == x && output[1] == y && output[2] == (direction + 1 + addToDirection) % 4) {
+			}
+		} else {
+			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getOutput() != null) {
+				int[] output = buildings[x + dx][y + dy].getOutput();
+				if (output[0] == x + dx && output[1] == y + dy && output[2] == (direction + 1 + addToDirection) % 4)
 					inputOutputPosition[0] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
-				}
 			}
 		}
 	}
 
-	private void connectConveyor(int x, int y, int direction, int[][] inputOutputPosition, boolean isLeft, boolean isInput)
+	private void connect(int x, int y, int direction, int[][] inputOutputPosition, boolean isInput, boolean isLeft)
 	{
+		int addToDirection = (isLeft) ? 2 : 0;
 		int dx = 0;
 		int dy = 0;
-		int addToDirection = (isLeft) ? 2 : 0;
 
 		switch (direction) {
 			case 0:
@@ -227,20 +227,20 @@ public class TileMap
 
 		if (!tileExists(x + dx, y + dy))
 			return;
-
-		checkSurroundings(conveyors, x + dx, y + dy, direction, addToDirection, isInput, inputOutputPosition);
-		checkSurroundings(factories, x + dx, y + dy, direction, addToDirection, isInput, inputOutputPosition);
+		
+		checkSurroundings(conveyors, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
+		checkSurroundings(factories, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 	}
-	
+
 	private int[][] connexion(int x, int y, int direction)
 	{
 		int[][] inputOutputPosition = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, direction } };
 
-		connectConveyor(x, y, direction, inputOutputPosition, true, true);
-		connectConveyor(x, y, (direction + 2) % 4, inputOutputPosition, true, false);
-		connectConveyor(x, y, direction, inputOutputPosition, false, true);
-		connectConveyor(x, y, (direction + 2) % 4, inputOutputPosition, false, false);
-		
+		connect(x, y, direction, inputOutputPosition, false, false); // output right-side
+		connect(x, y, direction, inputOutputPosition, false, true); // output left-side
+		connect(x, y, (direction + 2) % 4, inputOutputPosition, true, false); // input right-side
+		connect(x, y, (direction + 2) % 4, inputOutputPosition, true, true); // input left-side
+
 		return inputOutputPosition;
 	}
 
