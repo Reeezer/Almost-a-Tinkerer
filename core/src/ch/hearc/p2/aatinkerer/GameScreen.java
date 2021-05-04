@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
-import ui.Toolbar;
+import ch.hearc.p2.aatinkerer.ui.Toolbar;
 
 public class GameScreen implements Screen
 {

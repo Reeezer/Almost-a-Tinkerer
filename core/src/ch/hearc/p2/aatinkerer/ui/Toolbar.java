@@ -1,4 +1,4 @@
-package ui;
+package ch.hearc.p2.aatinkerer.ui;
 
 import java.util.ArrayList;
 

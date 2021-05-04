@@ -3,8 +3,8 @@ package ch.hearc.p2.aatinkerer.buildings;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
-import ui.HoverableItem;
-import ui.ToolbarItem;
+import ch.hearc.p2.aatinkerer.ui.HoverableItem;
+import ch.hearc.p2.aatinkerer.ui.ToolbarItem;
 
 // TODO add support for rotations of hover elements for the Merger and the Splitter
 public enum FactoryType implements ToolbarItem, HoverableItem
