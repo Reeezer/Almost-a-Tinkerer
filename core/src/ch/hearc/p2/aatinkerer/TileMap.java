@@ -1,5 +1,6 @@
 package ch.hearc.p2.aatinkerer;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
@@ -136,27 +137,30 @@ public class TileMap
 		updateOutput(x, y, factories);
 	}
 
-	public Building getNeighbourBuilding(int x, int y, int direction)
+	public Building getNeighbourBuilding(int[] outputPosition)
 	{
+		int x = outputPosition[0];
+		int y = outputPosition[1];
+		
 		int dx = 0;
 		int dy = 0;
 
-		switch (direction)
-		{
-		case 0:
-			dx = 1;
-			break;
-		case 1:
-			dy = 1;
-			break;
-		case 2:
-			dx = -1;
-			break;
-		case 3:
-			dy = -1;
-		default:
-			System.out.println("Wrong direction : " + direction);
-			break;
+		switch (outputPosition[2]) {
+			case 0:
+				dx = 1;
+				break;
+			case 1:
+				dy = 1;
+				break;
+			case 2:
+				dx = -1;
+				break;
+			case 3:
+				dy = -1;
+				break;
+			default:
+				System.out.println("Wrong direction : " + outputPosition[2]);
+				break;
 		}
 
 		if (!tileExists(x + dx, y + dy))
@@ -164,7 +168,7 @@ public class TileMap
 
 		if (conveyors[x + dx][y + dy] != null) {
 			for (int[] input : conveyors[x + dx][y + dy].getInputs()) {
-				if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 2) % 4) {
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4) {
 					return conveyors[x + dx][y + dy];
 				}
 			}
@@ -172,7 +176,7 @@ public class TileMap
 
 		if (factories[x + dx][y + dy] != null && factories[x + dx][y + dy].getInputs() != null) {
 			for (int[] input : factories[x + dx][y + dy].getInputs()) {
-				if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 2) % 4) {
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4) {
 					return factories[x + dx][y + dy];
 				}
 			}
@@ -181,27 +185,87 @@ public class TileMap
 		return null;
 	}
 
+	private void checkSurroundings(Building[][] buildings, int x, int dx, int y, int dy, int direction, int addToDirection, boolean isInput, int[][] inputOutputPosition)
+	{
+		if (!isInput) {
+			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getInputs() != null) {
+				for (int[] input : buildings[x + dx][y + dy].getInputs()) {
+					if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 1 + addToDirection) % 4) {
+						inputOutputPosition[1] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
+					}
+				}
+			}
+		} else {
+			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getOutput() != null) {
+				int[] output = buildings[x + dx][y + dy].getOutput();
+				if (output[0] == x + dx && output[1] == y + dy && output[2] == (direction + 1 + addToDirection) % 4)
+					inputOutputPosition[0] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
+			}
+		}
+	}
+
+	private void connect(int x, int y, int direction, int[][] inputOutputPosition, boolean isInput, boolean isLeft)
+	{
+		int addToDirection = (isLeft) ? 2 : 0;
+		int dx = 0;
+		int dy = 0;
+
+		switch (direction) {
+			case 0:
+				dy = (isLeft) ? 1 : -1;
+				break;
+			case 1:
+				dx = (isLeft) ? -1 : 1;
+				break;
+			case 2:
+				dy = (isLeft) ? -1 : 1;
+				break;
+			case 3:
+				dx = (isLeft) ? 1 : -1;
+				break;
+			default:
+				System.out.println("Wrong direction : " + direction);
+				break;
+		}
+
+		if (!tileExists(x + dx, y + dy))
+			return;
+		
+		checkSurroundings(conveyors, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
+		checkSurroundings(factories, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
+	}
+
+	private int[][] connexion(int x, int y, int direction)
+	{
+		int[][] inputOutputPosition = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, direction } };
+
+		connect(x, y, direction, inputOutputPosition, false, false); // output right-side
+		connect(x, y, direction, inputOutputPosition, false, true); // output left-side
+		connect(x, y, (direction + 2) % 4, inputOutputPosition, true, false); // input right-side
+		connect(x, y, (direction + 2) % 4, inputOutputPosition, true, true); // input left-side
+
+		return inputOutputPosition;
+	}
+
 	public void placeBuilding(int x, int y, int direction, FactoryType factoryType)
 	{
 		if (isEmpty(x, y)) {
-			switch (factoryType)
-			{
-			case EXTRACTOR:
-				Extractor extractor = new Extractor(this, x, y, direction, map[x][y]);
-				factories[x][y] = extractor;
-				buildings.add(extractor);
-				break;
-			case CONVEYOR:
-				Conveyor conveyor = new Conveyor(this, x, y, direction);
-				conveyors[x][y] = conveyor;
-				buildings.add(conveyor);
-				break;
-			default:
-				System.out.println("Wrong factory type : " + factoryType);
-				break;
+			switch (factoryType) {
+				case EXTRACTOR:
+					Extractor extractor = new Extractor(this, x, y, direction, map[x][y]);
+					factories[x][y] = extractor;
+					buildings.add(extractor);
+					break;
+				case CONVEYOR:
+					Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
+					conveyors[x][y] = conveyor;
+					buildings.add(conveyor);
+					break;
+				default:
+					System.out.println("Wrong factory type : " + factoryType);
+					break;
 			}
 			updateOutputs(x, y);
-
 		}
 	}
 
@@ -241,12 +305,12 @@ public class TileMap
 				}
 			}
 		}
-		
+
 		// items
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (conveyors[i][j] != null) {
-					((Conveyor)conveyors[i][j]).renderItems(batch, TileMap.TILESIZE);
+					((Conveyor) conveyors[i][j]).renderItems(batch, TileMap.TILESIZE);
 				}
 			}
 		}
@@ -264,7 +328,7 @@ public class TileMap
 	public void update()
 	{
 		Building.staticUpdate();
-		
+
 		for (Building building : buildings) {
 			building.update();
 		}
