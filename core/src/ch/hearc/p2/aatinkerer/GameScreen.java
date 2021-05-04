@@ -22,6 +22,7 @@ public class GameScreen implements Screen
 
 	private OrthographicCamera mapCamera;
 	private OrthographicCamera uiCamera;
+	private OrthographicCamera hoverCamera;
 
 	private int x, y;
 	private int width, height;
@@ -44,6 +45,9 @@ public class GameScreen implements Screen
 
 		mapCamera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
+		hoverCamera = new OrthographicCamera();
+		
+		uiCamera.zoom = 0.5f;
 		
 		map = new TileMap(250, 250);
 
@@ -208,17 +212,24 @@ public class GameScreen implements Screen
 		mapCamera.position.x = x;
 		mapCamera.position.y = y;
 		mapCamera.zoom = zoom;
+		
+		if (mapCamera.zoom < 1.f)
+			hoverCamera.zoom = mapCamera.zoom;
+		else
+			hoverCamera.zoom = 1.f;
+		
 		mapCamera.update();
+		uiCamera.update();
+		hoverCamera.update();
 		
 		game.batch.begin();
 
 		game.batch.setProjectionMatrix(mapCamera.combined);
 		map.render(game.batch);
 		
-		game.batch.setProjectionMatrix(uiCamera.combined);
-		
+		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
-		// FIXME rotate hover according to current rotation
+		// FIXME hover item position is wrong when changing zoom levels and can be fixed by resizing the window
 		if (factoryType != null)
 		{
 			Texture hoverTexture = factoryType.getHoverTexture();
@@ -234,11 +245,12 @@ public class GameScreen implements Screen
 				yoffset = 32;
 			TextureRegion textureRegion = new TextureRegion(hoverTexture);
 			
-			game.batch.draw(textureRegion, x + xoffset, y + yoffset, 0, 0, (float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f, (float) direction * 90.f);
+			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0, (float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f, (float) direction * 90.f);
 		}
-		
-		factoryToolbar.render(game.batch, (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2, 0);
 
+		game.batch.setProjectionMatrix(uiCamera.combined);
+		factoryToolbar.render(game.batch, (int)(((width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2) * uiCamera.zoom), 0);
+		
 		game.batch.end();
 	}
 
@@ -257,8 +269,10 @@ public class GameScreen implements Screen
 	{
 		this.width = width;
 		this.height = height;
+		
 		mapCamera.setToOrtho(false, width, height);
 		uiCamera.setToOrtho(false, width, height);
+		hoverCamera.setToOrtho(false, width, height);
 	}
 
 	@Override
