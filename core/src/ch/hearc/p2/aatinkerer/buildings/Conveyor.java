@@ -8,7 +8,8 @@ public class Conveyor extends Building
 {
 	public Conveyor(TileMap tilemap, int x, int y, int[][] inputOutputPosition)
 	{
-		super(tilemap, x, y, inputOutputPosition[1][2], 2, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]));
+		super(tilemap, x, y, direction, 2, "Tile/Conveyor/", 1, 1);
+		//super(tilemap, x, y, inputOutputPosition[1][2], 2, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]));
 		this.inputPositions = new int[][] { inputOutputPosition[0] };
 		this.outputPosition = inputOutputPosition[1];
 	}

@@ -3,10 +3,7 @@ package ch.hearc.p2.aatinkerer.buildings;
 import java.util.LinkedList;
 import java.util.Queue;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import ch.hearc.p2.aatinkerer.ItemType;
 import ch.hearc.p2.aatinkerer.TileMap;
@@ -29,7 +26,7 @@ public abstract class Building
 	}
 
 	protected TileMap tilemap;
-	protected Texture texture;
+	protected BuildingTile[] tiles;
 
 	protected int direction;
 	protected int x;
@@ -46,7 +43,7 @@ public abstract class Building
 	protected static int transferTimeout = 50;
 	protected static int ticks = 0;
 
-	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath)
+	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames)
 	{
 		this.tilemap = tilemap;
 
@@ -54,7 +51,10 @@ public abstract class Building
 		this.y = y;
 		this.direction = direction;
 
-		this.texture = new Texture(Gdx.files.internal(spritePath));
+		this.tiles = new BuildingTile[tiles];
+		for (int i = 0; i < tiles; i++) {
+			this.tiles[i] = new BuildingTile(spritePath + String.format("%02d", i) + "/", frames);
+		}
 
 		this.contentSize = 0;
 		this.maxSize = size;
@@ -63,11 +63,22 @@ public abstract class Building
 
 	public void render(SpriteBatch batch, int tileSize)
 	{
-		// required to be able to rotate the texture
-		TextureRegion textureRegion = new TextureRegion(texture);
-		batch.draw(textureRegion, x * tileSize, y * tileSize, (float) tileSize / 2.f,
-		        (float) tileSize / 2.f, (float) texture.getWidth(), (float) texture.getHeight(), 1.f, 1.f,
-		        (float) direction * 90.f);
+		for (int i = 0; i < tiles.length; i++) {
+			BuildingTile tile = tiles[i];
+			int tx = x;
+			int ty = y;
+			
+			// Grow building in the right direction
+			
+			// Building is west / east
+			if ((direction % 2) == 0)
+				tx = tx + (i * -(direction - 2)); // map 1 and 3 to -1 and 1
+			// Building is north / south
+			else
+				ty = ty + (i * -(direction - 3)); // map 2 and 4 to -1 and 1		
+			
+			tile.render(batch, tileSize, direction, tx, ty);
+		}
 	}
 
 	public int[][] getInputs()
