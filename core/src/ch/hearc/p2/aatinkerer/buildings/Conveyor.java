@@ -8,8 +8,7 @@ public class Conveyor extends Building
 {
 	public Conveyor(TileMap tilemap, int x, int y, int[][] inputOutputPosition)
 	{
-		super(tilemap, x, y, direction, 2, "Tile/Conveyor/", 1, 1);
-		//super(tilemap, x, y, inputOutputPosition[1][2], 2, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]));
+		super(tilemap, x, y, inputOutputPosition[1][2], 2, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]), 1, 1);
 		this.inputPositions = new int[][] { inputOutputPosition[0] };
 		this.outputPosition = inputOutputPosition[1];
 	}
@@ -37,11 +36,11 @@ public class Conveyor extends Building
 	private static String getSpritePath(int outputDirection, int inputDirection)
 	{
 		if (outputDirection == (inputDirection + 2) % 4)
-			return "Tile/Conveyor.png";
+			return "Tile/Conveyor/";
 		else if (outputDirection == (inputDirection + 1) % 4)
-			return "Tile/ConveyorRight.png";
+			return "Tile/ConveyorRight/";
 		else if (outputDirection == (inputDirection + 3) % 4)
-			return "Tile/ConveyorLeft.png";
-		return "Item/None.png";
+			return "Tile/ConveyorLeft/";
+		return null; // FIXME shouldn't happen, if it happens, then crash, instead check that on return by caller
 	}
 }
