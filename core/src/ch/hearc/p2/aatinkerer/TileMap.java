@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.buildings.Assembler;
 import ch.hearc.p2.aatinkerer.buildings.Building;
+import ch.hearc.p2.aatinkerer.buildings.BuildingTile;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
 import ch.hearc.p2.aatinkerer.buildings.Cutter;
 import ch.hearc.p2.aatinkerer.buildings.Extractor;
@@ -379,6 +380,7 @@ public class TileMap
 	public void update()
 	{
 		Building.staticUpdate();
+		BuildingTile.staticUpdate();
 
 		for (Building building : buildings) {
 			building.update();

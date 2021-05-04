@@ -65,17 +65,9 @@ public abstract class Building
 	{
 		for (int i = 0; i < tiles.length; i++) {
 			BuildingTile tile = tiles[i];
-			int tx = x;
-			int ty = y;
 			
-			// Grow building in the right direction
-			
-			// Building is west / east
-			if ((direction % 2) == 0)
-				tx = tx + (i * -(direction - 2)); // map 1 and 3 to -1 and 1
-			// Building is north / south
-			else
-				ty = ty + (i * -(direction - 3)); // map 2 and 4 to -1 and 1		
+			int tx = (direction % 2 == 0) ? ((direction == 0) ? x + i : x - i) : x;
+			int ty = (direction % 2 != 0) ? ((direction == 1) ? y + i : y - i) : y;
 			
 			tile.render(batch, tileSize, direction, tx, ty);
 		}
