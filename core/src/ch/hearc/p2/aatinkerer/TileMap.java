@@ -1,16 +1,23 @@
 package ch.hearc.p2.aatinkerer;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import ch.hearc.p2.aatinkerer.buildings.Assembler;
 import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
+import ch.hearc.p2.aatinkerer.buildings.Cutter;
 import ch.hearc.p2.aatinkerer.buildings.Extractor;
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
+import ch.hearc.p2.aatinkerer.buildings.Furnace;
+import ch.hearc.p2.aatinkerer.buildings.Merger;
+import ch.hearc.p2.aatinkerer.buildings.Mixer;
+import ch.hearc.p2.aatinkerer.buildings.Press;
+import ch.hearc.p2.aatinkerer.buildings.Splitter;
+import ch.hearc.p2.aatinkerer.buildings.Trash;
 
 public class TileMap
 {
@@ -141,7 +148,7 @@ public class TileMap
 	{
 		int x = outputPosition[0];
 		int y = outputPosition[1];
-		
+
 		int dx = 0;
 		int dy = 0;
 
@@ -195,7 +202,8 @@ public class TileMap
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getOutput() != null) {
 				int[] output = buildings[x + dx][y + dy].getOutput();
 				if (output[0] == x + dx && output[1] == y + dy && output[2] == (direction + 1 + addToDirection) % 4)
@@ -230,7 +238,7 @@ public class TileMap
 
 		if (!tileExists(x + dx, y + dy))
 			return;
-		
+
 		checkSurroundings(conveyors, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 		checkSurroundings(factories, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 	}
@@ -260,6 +268,48 @@ public class TileMap
 					Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
 					conveyors[x][y] = conveyor;
 					buildings.add(conveyor);
+					break;
+				case FURNACE:
+					Furnace furnace = new Furnace(this, x, y, direction);
+					factories[x][y] = furnace;
+					buildings.add(furnace);
+					break;
+				case CUTTER:
+					Cutter cutter = new Cutter(this, x, y, direction);
+					factories[x][y] = cutter;
+					buildings.add(cutter);
+					break;
+				case PRESS:
+					Press press = new Press(this, x, y, direction);
+					factories[x][y] = press;
+					buildings.add(press);
+					break;
+				case MIXER:
+					Mixer mixer = new Mixer(this, x, y, direction);
+					factories[x][y] = mixer;
+					buildings.add(mixer);
+					break;
+				case ASSEMBLER:
+					Assembler assembler = new Assembler(this, x, y, direction);
+					factories[x][y] = assembler;
+					buildings.add(assembler);
+					break;
+				case TRASH:
+					Trash trash = new Trash(this, x, y, direction);
+					factories[x][y] = trash;
+					buildings.add(trash);
+					break;
+				case SPLITTER:
+					Splitter splitter = new Splitter(this, x, y, direction);
+					factories[x][y] = splitter;
+					buildings.add(splitter);
+					break;
+				case MERGER:
+					Merger merger = new Merger(this, x, y, direction);
+					factories[x][y] = merger;
+					buildings.add(merger);
+					break;
+				case TUNNEL:
 					break;
 				default:
 					System.out.println("Wrong factory type : " + factoryType);
@@ -315,7 +365,8 @@ public class TileMap
 			}
 		}
 
-		// factories FIXME ce code va effectuer le rendu des batiments à plus d'une tile plus qu'une fois, utiliser un rendu comme le code de update(), sans les convoyeurs
+		// factories FIXME ce code va effectuer le rendu des batiments à plus d'une tile plus qu'une fois, utiliser un rendu comme le code de update(), sans
+		// les convoyeurs
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (factories[i][j] != null) {

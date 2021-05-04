@@ -38,7 +38,7 @@ public abstract class Building
 
 	protected Building output;
 	protected int[][] inputPositions;
-	protected int[] outputPosition;
+	protected int[] outputPositions;
 
 	protected static int transferTimeout = 50;
 	protected static int ticks = 0;
@@ -88,13 +88,15 @@ public abstract class Building
 	
 	public int[] getOutput()
 	{
-		return outputPosition;
+		return outputPositions;
 	}
 	
 	public void updateOutputs()
 	{
-		output = tilemap.getNeighbourBuilding(outputPosition);
-		System.out.println("Output (" + x + ", " + y + ") : " + output);
+		if (outputPositions != null) {
+			output = tilemap.getNeighbourBuilding(outputPositions);
+			System.out.println("Output (" + x + ", " + y + ") : " + output);
+		}
 	}
 
 	public boolean isFull()

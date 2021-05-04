@@ -10,7 +10,7 @@ public class Conveyor extends Building
 	{
 		super(tilemap, x, y, inputOutputPosition[1][2], 2, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]), 1, 1);
 		this.inputPositions = new int[][] { inputOutputPosition[0] };
-		this.outputPosition = inputOutputPosition[1];
+		this.outputPositions = inputOutputPosition[1];
 	}
 
 	public void renderItems(SpriteBatch batch, int tileSize)

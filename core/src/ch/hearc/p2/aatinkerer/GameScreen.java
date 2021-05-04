@@ -23,7 +23,7 @@ public class GameScreen implements Screen
 	private int direction;
 	private float zoom;
 	private int fpsDisplayTicks;
-	
+
 	private long lastTime;
 	private long unprocessedTime;
 	private final long processingTimeCap = 10L; // 100TPS
@@ -47,7 +47,7 @@ public class GameScreen implements Screen
 		zoomLevel = 0;
 		direction = 0;
 		fpsDisplayTicks = 0;
-		
+
 		lastTime = TimeUtils.millis();
 		unprocessedTime = 0;
 
@@ -67,7 +67,7 @@ public class GameScreen implements Screen
 		long passedTime = firstTime - lastTime;
 		lastTime = firstTime;
 		unprocessedTime += passedTime;
-		
+
 		/* input */
 
 		// regen new map FIXME debug
@@ -134,16 +134,32 @@ public class GameScreen implements Screen
 		// choose building
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			this.factoryType = FactoryType.CONVEYOR;
-
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_2))
 			this.factoryType = FactoryType.EXTRACTOR;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_3))
+			this.factoryType = FactoryType.FURNACE;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_4))
+			this.factoryType = FactoryType.PRESS;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_5))
+			this.factoryType = FactoryType.CUTTER;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_6))
+			this.factoryType = FactoryType.MIXER;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_7))
+			this.factoryType = FactoryType.ASSEMBLER;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_8))
+			this.factoryType = FactoryType.TRASH;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_9))
+			this.factoryType = FactoryType.SPLITTER;
+		if (Gdx.input.isKeyJustPressed(Keys.NUM_0))
+			this.factoryType = FactoryType.MERGER;
+		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_0))
+			this.factoryType = FactoryType.TUNNEL;
 
 		// place building
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			int tileX = screenToTileX(Gdx.input.getX());
 			int tileY = screenToTileY(Gdx.input.getY());
-			System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(),
-					tileX, tileY);
+			System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
 			if (factoryType != FactoryType.NONE)
 				map.placeBuilding(tileX, tileY, direction, factoryType);
@@ -156,15 +172,15 @@ public class GameScreen implements Screen
 		game.input.reset();
 
 		/* update */
-		
+
 		// cap on fixed TPS
 		while (unprocessedTime >= processingTimeCap) {
 			unprocessedTime -= processingTimeCap;
 			map.update();
-			
+
 			// FIXME do all logic updates here
 		}
-		
+
 		if (fpsDisplayTicks++ > 60) {
 			fpsDisplayTicks = 0;
 			System.out.println(Gdx.graphics.getFramesPerSecond());
