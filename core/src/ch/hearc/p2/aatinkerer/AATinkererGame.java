@@ -3,6 +3,7 @@ package ch.hearc.p2.aatinkerer;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class AATinkererGame extends Game
 {
