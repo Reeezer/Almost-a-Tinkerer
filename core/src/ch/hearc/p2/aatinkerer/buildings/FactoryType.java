@@ -23,11 +23,13 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	
 	private Texture itemTexture;
 	private Texture hoverTexture;
+	private int level;
 
 	private FactoryType(String itemTexturePath, String hoverTexturePath)
 	{
 		itemTexture = new Texture(Gdx.files.internal(itemTexturePath));
 		hoverTexture = new Texture(Gdx.files.internal(hoverTexturePath));
+		level = 1;
 	}
 
 	@Override
@@ -40,5 +42,15 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	public Texture getHoverTexture()
 	{
 		return hoverTexture;
+	}
+	
+	public int getLevel()
+	{
+		return level;
+	}
+	
+	public void levelUp()
+	{
+		level++;
 	}
 }

@@ -38,7 +38,8 @@ public class GameScreen implements Screen
 	private int direction;
 	private float zoom;
 	private int fpsDisplayTicks;
-	
+	private boolean mirrored;
+
 	private long lastTime;
 	private long unprocessedTime;
 	private final long processingTimeCap = 10L; // 100TPS
@@ -67,8 +68,9 @@ public class GameScreen implements Screen
 		height = 0;
 		zoomLevel = 0;
 		direction = 0;
+		mirrored = false;
 		fpsDisplayTicks = 0;
-		
+
 		lastTime = TimeUtils.millis();
 		unprocessedTime = 0;
 
@@ -90,11 +92,11 @@ public class GameScreen implements Screen
 		long passedTime = firstTime - lastTime;
 		lastTime = firstTime;
 		unprocessedTime += passedTime;
-		
+
 		/* input */
 
 		// regen new map FIXME debug
-		if (Gdx.input.isKeyJustPressed(Keys.T)) {
+		if (Gdx.input.isKeyJustPressed(Keys.A)) {
 			map.dispose();
 			map = new TileMap(250, 250);
 		}
@@ -151,13 +153,15 @@ public class GameScreen implements Screen
 		// buildings
 
 		// rotation of buildings you are about to place
-		if (Gdx.input.isKeyJustPressed(Keys.R))
-		{
+		if (Gdx.input.isKeyJustPressed(Keys.R)) {   
 			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 				direction = (direction + 3) % 4;
 			else
 				direction = (direction + 1) % 4;
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.T))
+			mirrored = !mirrored;
+
 		// choose building
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			factoryToolbar.setActiveItem(0);
@@ -216,7 +220,7 @@ public class GameScreen implements Screen
 						tileX, tileY);
 				
 				if (factoryType != null)
-					map.placeBuilding(tileX, tileY, direction, factoryType);
+					map.placeBuilding(tileX, tileY, direction, factoryType, mirroredz);
 			}
 		}
 
@@ -227,15 +231,15 @@ public class GameScreen implements Screen
 		game.input.reset();
 
 		/* update */
-		
+
 		// cap on fixed TPS
 		while (unprocessedTime >= processingTimeCap) {
 			unprocessedTime -= processingTimeCap;
 			map.update();
-			
+
 			// FIXME do all logic updates here
 		}
-		
+
 		if (fpsDisplayTicks++ > 60) {
 			fpsDisplayTicks = 0;
 			System.out.println(Gdx.graphics.getFramesPerSecond());
