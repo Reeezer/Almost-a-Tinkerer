@@ -299,6 +299,8 @@ public class TileMap
 					factories[x][y] = mixer;
 					factories[x2][y2] = mixer;
 					buildings.add(mixer);
+					
+					updateOutputs(x2, y2);
 					break;
 				case ASSEMBLER:
 					if (!isEmpty(x2, y2) || !isEmpty(x3, y3))
@@ -310,6 +312,9 @@ public class TileMap
 					factories[x2][y2] = assembler;
 					factories[x3][y3] = assembler;
 					buildings.add(assembler);
+					
+					updateOutputs(x2, y2);
+					updateOutputs(x3, y3);
 					break;
 				case TRASH:
 					Trash trash = new Trash(this, x, y, direction);

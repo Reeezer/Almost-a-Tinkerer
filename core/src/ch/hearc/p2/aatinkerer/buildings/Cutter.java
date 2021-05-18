@@ -12,9 +12,23 @@ public class Cutter extends Building
 		this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 } };
 		this.outputPosition = new int[] { x, y, direction };
 
-		Recipe recipe = new Recipe(ItemType.IRONROD, 2);
-		recipe.addIngredient(ItemType.IRONORE);
+		createRecipes();
+	}
 
-		recipes = new Recipe[] { recipe };
+	private void createRecipes()
+	{
+		Recipe recipe1 = new Recipe(ItemType.IRONROD, 2);
+		recipe1.addIngredient(ItemType.IRONPLATE);
+
+		Recipe recipe2 = new Recipe(ItemType.COPPERWIRE, 2);
+		recipe2.addIngredient(ItemType.COPPERPLATE);
+
+		Recipe recipe3 = new Recipe(ItemType.PLANK, 2);
+		recipe3.addIngredient(ItemType.WOODLOG);
+
+		Recipe recipe4 = new Recipe(ItemType.STICK, 2);
+		recipe4.addIngredient(ItemType.PLANK);
+
+		this.recipes = new Recipe[] { recipe1, recipe2, recipe3, recipe4 };
 	}
 }

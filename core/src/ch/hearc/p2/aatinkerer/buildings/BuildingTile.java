@@ -56,9 +56,7 @@ public class BuildingTile
 	}
 
 	public static void staticUpdate()
-	{
-		System.out.println(conveyorFrame);
-		
+	{		
 		if (BuildingTile.animationTicks++ >= BuildingTile.animationTimeout) {
 			BuildingTile.animationTicks = 0;
 		}

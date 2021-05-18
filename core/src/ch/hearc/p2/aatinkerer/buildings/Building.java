@@ -68,6 +68,7 @@ public abstract class Building
 		this.maxSize = size;
 		this.items = new LinkedList<Item>();
 		this.currentIngredients = new HashMap<ItemType, Integer>();
+		this.recipes = null;
 	}
 
 	public void render(SpriteBatch batch, int tileSize)
@@ -124,7 +125,9 @@ public abstract class Building
 	public void transferItem()
 	{
 		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
+			System.out.println("transfer : " + type);
 			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
+				System.out.println("dfsqfdsq");
 				checkRecipes();
 			}
 			else {
@@ -140,23 +143,31 @@ public abstract class Building
 	public void checkRecipes()
 	{
 		for (Recipe recipe : recipes) {
+			boolean makeIt = true;
 			Map<ItemType, Integer> ingredients = recipe.getIngredients();
+			System.out.println(ingredients);
 			for (ItemType item : ingredients.keySet()) {
-				if (currentIngredients.get(item) < ingredients.get(item))
-					break; // if there is not enough item for this recipe
+				if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item)) {
+					makeIt = false; // if there is not enough item for this recipe
+					break;
+				}
 			}
 
-			// if we have enough to make the recipe
-			for (ItemType item : ingredients.keySet()) {
-				int nb = ingredients.get(item);
-				currentIngredients.put(item, currentIngredients.get(item) - nb);
-				contentSize -= nb;
-			}
+			System.out.println(makeIt);
 
-			for (int i = 0; i < recipe.getAmount(); i++) {
-				Item item = new Item();
-				item.type = recipe.getProduct();
-				output.addItem(item);
+			// if we have enough ingredients to make the recipe
+			if (makeIt) {
+				for (ItemType item : ingredients.keySet()) {
+					int nb = ingredients.get(item);
+					currentIngredients.put(item, currentIngredients.get(item) - nb);
+					contentSize -= nb;
+				}
+
+				for (int i = 0; i < recipe.getAmount(); i++) {
+					Item item = new Item();
+					item.type = recipe.getProduct();
+					output.addItem(item);
+				}
 			}
 		}
 	}
