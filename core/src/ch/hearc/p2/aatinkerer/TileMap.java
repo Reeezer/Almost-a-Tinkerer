@@ -256,7 +256,7 @@ public class TileMap
 		return inputOutputPosition;
 	}
 
-	public void placeBuilding(int x, int y, int direction, FactoryType factoryType)
+	public void placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
 		if (isEmpty(x, y)) {
 			int x2 = (direction % 2 == 0) ? ((direction == 0) ? x + 1 : x - 1) : x;
@@ -276,7 +276,7 @@ public class TileMap
 					buildings.add(conveyor);
 					break;
 				case FURNACE:
-					Furnace furnace = new Furnace(this, x, y, direction);
+					Furnace furnace = new Furnace(this, x, y, direction, mirrored);
 					factories[x][y] = furnace;
 					buildings.add(furnace);
 					break;
@@ -294,12 +294,12 @@ public class TileMap
 					if (!isEmpty(x2, y2))
 						return;
 
-					Mixer mixer = new Mixer(this, x, y, direction, x2, y2);
+					Mixer mixer = new Mixer(this, x, y, direction, mirrored, x2, y2);
 
 					factories[x][y] = mixer;
 					factories[x2][y2] = mixer;
 					buildings.add(mixer);
-					
+
 					updateOutputs(x2, y2);
 					break;
 				case ASSEMBLER:
@@ -312,7 +312,7 @@ public class TileMap
 					factories[x2][y2] = assembler;
 					factories[x3][y3] = assembler;
 					buildings.add(assembler);
-					
+
 					updateOutputs(x2, y2);
 					updateOutputs(x3, y3);
 					break;
@@ -322,12 +322,12 @@ public class TileMap
 					buildings.add(trash);
 					break;
 				case SPLITTER:
-					Splitter splitter = new Splitter(this, x, y, direction);
+					Splitter splitter = new Splitter(this, x, y, direction, mirrored);
 					factories[x][y] = splitter;
 					buildings.add(splitter);
 					break;
 				case MERGER:
-					Merger merger = new Merger(this, x, y, direction);
+					Merger merger = new Merger(this, x, y, direction, mirrored);
 					factories[x][y] = merger;
 					buildings.add(merger);
 					break;

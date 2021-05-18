@@ -23,6 +23,7 @@ public class GameScreen implements Screen
 	private int direction;
 	private float zoom;
 	private int fpsDisplayTicks;
+	private boolean mirrored;
 
 	private long lastTime;
 	private long unprocessedTime;
@@ -46,6 +47,7 @@ public class GameScreen implements Screen
 		height = 0;
 		zoomLevel = 0;
 		direction = 0;
+		mirrored = false;
 		fpsDisplayTicks = 0;
 
 		lastTime = TimeUtils.millis();
@@ -71,7 +73,7 @@ public class GameScreen implements Screen
 		/* input */
 
 		// regen new map FIXME debug
-		if (Gdx.input.isKeyJustPressed(Keys.T)) {
+		if (Gdx.input.isKeyJustPressed(Keys.A)) {
 			map.dispose();
 			map = new TileMap(250, 250);
 		}
@@ -130,6 +132,8 @@ public class GameScreen implements Screen
 		// rotation of buildings you are about to place
 		if (Gdx.input.isKeyJustPressed(Keys.R))
 			direction = (direction + 1) % 4;
+		if (Gdx.input.isKeyJustPressed(Keys.T))
+			mirrored = !mirrored;
 
 		// choose building
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
@@ -162,7 +166,7 @@ public class GameScreen implements Screen
 			System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
 			if (factoryType != FactoryType.NONE)
-				map.placeBuilding(tileX, tileY, direction, factoryType);
+				map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 		}
 
 		// delete building

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public enum Ressource
 {
 	NONE("Tile/grid.png", ItemType.NONE),
+	COAL("Tile/CoalTile.png", ItemType.COAL),
 	WOOD("Tile/WoodTile.png", ItemType.WOODLOG),
 	STONE("Tile/RockTile.png", ItemType.STONE),
 	IRON("Tile/IronTile.png", ItemType.IRONORE),
