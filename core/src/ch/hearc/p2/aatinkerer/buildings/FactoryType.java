@@ -14,4 +14,21 @@ public enum FactoryType
 	MERGER,
 	TUNNEL,
 	NONE;
+	
+	private int level;
+	
+	private FactoryType()
+	{
+		level = 1;
+	}
+	
+	public int getLevel()
+	{
+		return level;
+	}
+	
+	public void levelUp()
+	{
+		level++;
+	}
 }
