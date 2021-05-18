@@ -259,6 +259,11 @@ public class TileMap
 	public void placeBuilding(int x, int y, int direction, FactoryType factoryType)
 	{
 		if (isEmpty(x, y)) {
+			int x2 = (direction % 2 == 0) ? ((direction == 0) ? x + 1 : x - 1) : x;
+			int y2 = (direction % 2 != 0) ? ((direction == 1) ? y + 1 : y - 1) : y;
+			int x3 = (direction % 2 == 0) ? ((direction == 0) ? x + 2 : x - 2) : x;
+			int y3 = (direction % 2 != 0) ? ((direction == 1) ? y + 2 : y - 2) : y;
+
 			switch (factoryType) {
 				case EXTRACTOR:
 					Extractor extractor = new Extractor(this, x, y, direction, map[x][y]);
@@ -286,13 +291,24 @@ public class TileMap
 					buildings.add(press);
 					break;
 				case MIXER:
-					Mixer mixer = new Mixer(this, x, y, direction);
+					if (!isEmpty(x2, y2))
+						return;
+
+					Mixer mixer = new Mixer(this, x, y, direction, x2, y2);
+
 					factories[x][y] = mixer;
+					factories[x2][y2] = mixer;
 					buildings.add(mixer);
 					break;
 				case ASSEMBLER:
-					Assembler assembler = new Assembler(this, x, y, direction);
+					if (!isEmpty(x2, y2) || !isEmpty(x3, y3))
+						return;
+
+					Assembler assembler = new Assembler(this, x, y, direction, x2, y2, x3, y3);
+
 					factories[x][y] = assembler;
+					factories[x2][y2] = assembler;
+					factories[x3][y3] = assembler;
 					buildings.add(assembler);
 					break;
 				case TRASH:
