@@ -8,6 +8,6 @@ public class Press extends Building
 	{
 		super(tilemap, x, y, direction, 1, "Tile/Press/", 1, 6, FactoryType.PRESS);
 		this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 } };
-		this.outputPositions = new int[] { x, y, direction };
+		this.outputPosition = new int[] { x, y, direction };
 	}
 }

@@ -8,6 +8,6 @@ public class Merger extends Building
 	{
 		super(tilemap, x, y, direction, 1, "Tile/Merger/", 1, 1, FactoryType.MERGER);
 		this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, (direction + 1) % 4 } };
-		this.outputPositions = new int[] { x, y, direction };
+		this.outputPosition = new int[] { x, y, direction };
 	}
 }

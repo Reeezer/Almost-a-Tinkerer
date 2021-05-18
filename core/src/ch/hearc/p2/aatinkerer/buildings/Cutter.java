@@ -8,6 +8,6 @@ public class Cutter extends Building
 	{
 		super(tilemap, x, y, direction, 1, "Tile/Cutter/", 1, 4, FactoryType.CUTTER);
 		this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 } };
-		this.outputPositions = new int[] { x, y, direction };
+		this.outputPosition = new int[] { x, y, direction };
 	}
 }
