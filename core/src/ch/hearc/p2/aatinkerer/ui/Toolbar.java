@@ -8,16 +8,19 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 
-public class Toolbar
+public class Toolbar implements Clickable
 {
 	private ArrayList<ToolbarItem> items;
 	private int activeItemIndex;
 	
 	private Texture backgroundTexture;
 	private Texture activeBackgroundTexture;
+	
+	private Rectangle bounds;
 	
 	public final static int TEXSIZE = 32;
 
@@ -67,5 +70,24 @@ public class Toolbar
 	public void setActiveItem(int itemno)
 	{
 		activeItemIndex = ((itemno >= 0) && (itemno < items.size())) ? itemno : -1;
+	}
+
+	@Override
+	public Rectangle getBounds()
+	{
+		return bounds;
+	}
+
+	@Override
+	public void setBounds(int x, int y, int w, int h)
+	{
+		bounds = new Rectangle(x, y, w, h);
+	}
+
+	@Override
+	public void passRelativeClick(int x, int y)
+	{
+		int itemno = x / TEXSIZE;
+		setActiveItem(itemno);	
 	}
 }
