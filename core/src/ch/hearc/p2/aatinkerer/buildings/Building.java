@@ -1,11 +1,13 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.ItemType;
+import ch.hearc.p2.aatinkerer.Recipe;
 import ch.hearc.p2.aatinkerer.TileMap;
 
 public abstract class Building
@@ -28,6 +30,7 @@ public abstract class Building
 
 	protected TileMap tilemap;
 	protected BuildingTile[] tiles;
+	protected FactoryType type;
 
 	protected int direction;
 	protected int x;
@@ -35,7 +38,8 @@ public abstract class Building
 
 	protected int contentSize;
 	protected int maxSize;
-	protected Queue<Item> items;
+	protected LinkedList<Item> items;
+	protected HashMap<ItemType, Integer> currentIngredients;
 
 	protected Building output;
 	protected int[][] inputPositions;
@@ -44,9 +48,12 @@ public abstract class Building
 	protected static int transferTimeout = 50;
 	protected static int ticks = 0;
 
+	protected Recipe[] recipes;
+
 	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames, FactoryType type)
 	{
 		this.tilemap = tilemap;
+		this.type = type;
 
 		this.x = x;
 		this.y = y;
@@ -60,6 +67,7 @@ public abstract class Building
 		this.contentSize = 0;
 		this.maxSize = size;
 		this.items = new LinkedList<Item>();
+		this.currentIngredients = new HashMap<ItemType, Integer>();
 	}
 
 	public void render(SpriteBatch batch, int tileSize)
@@ -103,6 +111,12 @@ public abstract class Building
 			System.err.format("Item %s inserted despite building being full\n", item.type.toString());
 
 		items.add(item);
+
+		if (currentIngredients.containsKey(item.type))
+			currentIngredients.put(item.type, currentIngredients.get(item.type) + 1);
+		else
+			currentIngredients.put(item.type, 1);
+
 		item.ticksSpent = 0;
 		item.justTransfered = true;
 	}
@@ -110,11 +124,40 @@ public abstract class Building
 	public void transferItem()
 	{
 		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
-			Item item = items.poll();
-			contentSize--;
+			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
+				checkRecipes();
+			}
+			else {
+				Item item = items.poll();
+				contentSize--;
 
-			System.out.println("Item transfered " + item.type);
-			output.addItem(item);
+				System.out.println("Item transfered " + item.type);
+				output.addItem(item);
+			}
+		}
+	}
+
+	public void checkRecipes()
+	{
+		for (Recipe recipe : recipes) {
+			Map<ItemType, Integer> ingredients = recipe.getIngredients();
+			for (ItemType item : ingredients.keySet()) {
+				if (currentIngredients.get(item) < ingredients.get(item))
+					break; // if there is not enough item for this recipe
+			}
+
+			// if we have enough to make the recipe
+			for (ItemType item : ingredients.keySet()) {
+				int nb = ingredients.get(item);
+				currentIngredients.put(item, currentIngredients.get(item) - nb);
+				contentSize -= nb;
+			}
+
+			for (int i = 0; i < recipe.getAmount(); i++) {
+				Item item = new Item();
+				item.type = recipe.getProduct();
+				output.addItem(item);
+			}
 		}
 	}
 
