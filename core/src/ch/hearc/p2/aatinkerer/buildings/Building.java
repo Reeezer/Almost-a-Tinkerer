@@ -14,9 +14,10 @@ public abstract class Building
 	{
 		public ItemType type;
 		public long ticksSpent;
-		// necessary because otherwise an item might get teleported to the other side of a conveyor system if updates happen in the right order (also know as black magic)
+		// necessary because otherwise an item might get teleported to the other side of a conveyor system if updates happen in the right order (also know as
+		// black magic)
 		public boolean justTransfered;
-		
+
 		public Item()
 		{
 			type = ItemType.NONE;
@@ -43,7 +44,7 @@ public abstract class Building
 	protected static int transferTimeout = 50;
 	protected static int ticks = 0;
 
-	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames)
+	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames, FactoryType type)
 	{
 		this.tilemap = tilemap;
 
@@ -53,7 +54,7 @@ public abstract class Building
 
 		this.tiles = new BuildingTile[tiles];
 		for (int i = 0; i < tiles; i++) {
-			this.tiles[i] = new BuildingTile(spritePath + String.format("%02d", i) + "/", frames);
+			this.tiles[i] = new BuildingTile(spritePath + String.format("%02d", i) + "/", frames, type);
 		}
 
 		this.contentSize = 0;
@@ -65,10 +66,10 @@ public abstract class Building
 	{
 		for (int i = 0; i < tiles.length; i++) {
 			BuildingTile tile = tiles[i];
-			
+
 			int tx = (direction % 2 == 0) ? ((direction == 0) ? x + i : x - i) : x;
 			int ty = (direction % 2 != 0) ? ((direction == 1) ? y + i : y - i) : y;
-			
+
 			tile.render(batch, tileSize, direction, tx, ty);
 		}
 	}
@@ -77,12 +78,12 @@ public abstract class Building
 	{
 		return inputPositions;
 	}
-	
+
 	public int[] getOutput()
 	{
 		return outputPositions;
 	}
-	
+
 	public void updateOutputs()
 	{
 		if (outputPositions != null) {

@@ -12,7 +12,7 @@ public class Extractor extends Building
 
 	public Extractor(TileMap tilemap, int x, int y, int direction, Ressource ressource)
 	{
-		super(tilemap, x, y, direction, 1, "Tile/Extractor/", 1, 8);
+		super(tilemap, x, y, direction, 1, "Tile/Extractor/", 1, 8, FactoryType.EXTRACTOR);
 		this.ressource = ressource;
 		this.inputPositions = null;
 		this.outputPositions = new int[] { x, y, direction };

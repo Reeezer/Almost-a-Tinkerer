@@ -12,11 +12,15 @@ public class BuildingTile
 	protected Texture[] frames;
 
 	protected int frame;
+	protected FactoryType type;
 
 	protected static int animationTimeout;
 	protected static int animationTicks;
 
-	public BuildingTile(String framesPath, int framecount)
+	protected static int conveyorTimeout;
+	protected static int conveyorTicks;
+
+	public BuildingTile(String framesPath, int framecount, FactoryType type)
 	{
 		baseFramesPath = framesPath;
 		frames = new Texture[framecount];
@@ -26,17 +30,25 @@ public class BuildingTile
 		}
 
 		frame = 0;
-		
-		animationTimeout = 2;
+		this.type = type;
+
+		conveyorTimeout = 2;
+		conveyorTicks = 0;
+
+		animationTimeout = 3;
 		animationTicks = 0;
 	}
 
 	public void render(SpriteBatch batch, int tileSize, int direction, int x, int y)
 	{
-		if (BuildingTile.animationTicks == BuildingTile.animationTimeout) {
+		if (type != FactoryType.CONVEYOR && BuildingTile.animationTicks == BuildingTile.animationTimeout) {
 			frame = (frame + 1) % frames.length;
 		}
-		
+
+		if (type == FactoryType.CONVEYOR && BuildingTile.conveyorTicks == BuildingTile.conveyorTimeout) {
+			frame = (frame + 1) % frames.length;
+		}
+
 		// FIXME need a static frame count for each building type to have every building (of a type) displaying the same frame
 		// Unless conveyors (for example) don't render very well
 
@@ -49,6 +61,10 @@ public class BuildingTile
 	{
 		if (BuildingTile.animationTicks++ >= BuildingTile.animationTimeout) {
 			BuildingTile.animationTicks = 0;
+		}
+
+		if (BuildingTile.conveyorTicks++ >= BuildingTile.conveyorTimeout) {
+			BuildingTile.conveyorTicks = 0;
 		}
 	}
 }
