@@ -57,7 +57,7 @@ public class SplashScreen implements Screen
 		game.batch.begin();
 
 		TextureRegion textureRegion = new TextureRegion(background[frame]);
-		game.batch.draw(textureRegion, 0, 0, (float) width, (float) height, (float) width, (float) height, 1.f, 1.f, (float) 0 * 90.f);
+		game.batch.draw(textureRegion, 0, 0, (float) width, (float) height, (float) background[frame].getWidth() / 2.f, (float) background[frame].getHeight() / (float) 1.8, 1.f, 1.f, (float) 0 * 90.f);
 
 		game.batch.end();
 	}

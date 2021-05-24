@@ -125,9 +125,7 @@ public abstract class Building
 	public void transferItem()
 	{
 		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
-			System.out.println("transfer : " + type);
 			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
-				System.out.println("dfsqfdsq");
 				checkRecipes();
 			}
 			else {
@@ -152,8 +150,6 @@ public abstract class Building
 					break;
 				}
 			}
-
-			System.out.println(makeIt);
 
 			// if we have enough ingredients to make the recipe
 			if (makeIt) {
