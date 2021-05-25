@@ -29,7 +29,7 @@ public class Conveyor extends Building
 			int xPixPosition = ((x * tileSize) + (int) (position * (float) tileSize * xOrientation) - (tileSize * xOrientation) / 2);
 			int yPixPosition = ((y * tileSize) + (int) (position * (float) tileSize * yOrientation) - (tileSize * yOrientation) / 2);
 
-			item.type.render(batch, xPixPosition, yPixPosition); // FIXME Draw sprite 32x32 instead of 24x24														// correct the +4
+			item.type.render(batch, xPixPosition, yPixPosition); // FIXME Draw sprite 32x32 instead of 24x24 // correct the +4
 		}
 	}
 

@@ -95,10 +95,13 @@ public abstract class Building
 
 	public void updateOutputs()
 	{
-		if (outputPosition != null) {
+		if (outputPosition != null) 
 			output = tilemap.getNeighbourBuilding(outputPosition);
-			System.out.println("Output (" + x + ", " + y + ") : " + output);
-		}
+	}
+
+	public FactoryType getType()
+	{
+		return type;
 	}
 	
 	public FactoryType getType()
@@ -113,6 +116,7 @@ public abstract class Building
 
 	public void addItem(Item item)
 	{
+		// Called by the building who gives the item to insert in this building the item
 		if (contentSize++ >= maxSize)
 			System.err.format("Item %s inserted despite building being full\n", item.type.toString());
 
@@ -129,17 +133,14 @@ public abstract class Building
 
 	public void transferItem()
 	{
+		// Gives an item to the building linked (output) and verify if there is a recipe for something for that
 		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
-			System.out.println("transfer : " + type);
 			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
-				System.out.println("dfsqfdsq");
 				checkRecipes();
 			}
 			else {
 				Item item = items.poll();
 				contentSize--;
-
-				System.out.println("Item transfered " + item.type);
 				output.addItem(item);
 			}
 		}
@@ -148,9 +149,9 @@ public abstract class Building
 	public void checkRecipes()
 	{
 		for (Recipe recipe : recipes) {
+			// Check if there are enough items for the recipe
 			boolean makeIt = true;
 			Map<ItemType, Integer> ingredients = recipe.getIngredients();
-			System.out.println(ingredients);
 			for (ItemType item : ingredients.keySet()) {
 				if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item)) {
 					makeIt = false; // if there is not enough item for this recipe
@@ -158,16 +159,16 @@ public abstract class Building
 				}
 			}
 
-			System.out.println(makeIt);
-
 			// if we have enough ingredients to make the recipe
 			if (makeIt) {
+				// Make the recipe by decreasing the amount of all the ingredients
 				for (ItemType item : ingredients.keySet()) {
 					int nb = ingredients.get(item);
 					currentIngredients.put(item, currentIngredients.get(item) - nb);
 					contentSize -= nb;
 				}
 
+				// Adding the item produced 
 				for (int i = 0; i < recipe.getAmount(); i++) {
 					Item item = new Item();
 					item.type = recipe.getProduct();
