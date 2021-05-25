@@ -48,6 +48,8 @@ public class GameScreen implements Screen
 
 	private TileMap map;
 
+	private MilestoneListener milestoneListener;
+
 	public GameScreen(AATinkererGame game)
 	{
 		this.game = game;
@@ -77,6 +79,20 @@ public class GameScreen implements Screen
 		factoryToolbar = new Toolbar(FactoryType.values());
 
 		uiElements.add(factoryToolbar);
+
+		milestoneListener = new MilestoneListener() {
+			@Override
+			public void unlockMilestone(Milestone milestone)
+			{
+				// TODO on récupère les factories unlock par la milestone et on les active dans la toolbar et dans les raccourcis
+				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
+				{
+					factoryToolbar.setItemEnabled(factoryType, true);
+				}
+			}
+		};
+
+		ContractManager.init().addMilestoneListener(milestoneListener);
 	}
 
 	@Override
@@ -133,7 +149,8 @@ public class GameScreen implements Screen
 			x -= 1 * dd;
 
 		// with the mouse (drag and drop)
-		if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+		if (Gdx.input.isButtonPressed(Buttons.RIGHT))
+		{
 			x -= (int) (Gdx.input.getDeltaX() * zoom);
 			y += (int) (Gdx.input.getDeltaY() * zoom);
 		}
@@ -229,11 +246,13 @@ public class GameScreen implements Screen
 		/* update */
 
 		// cap on fixed TPS
-		while (unprocessedTime >= processingTimeCap) {
+		while (unprocessedTime >= processingTimeCap)
+		{
 			unprocessedTime -= processingTimeCap;
 			map.update();
 
 			// FIXME do all logic updates here
+			ContractManager.getInstance().tick();
 		}
 
 		if (fpsDisplayTicks++ > 60) {

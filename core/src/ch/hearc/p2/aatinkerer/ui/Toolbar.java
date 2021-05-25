@@ -52,7 +52,7 @@ public class Toolbar implements Clickable
 		{
 			Texture texture = item.getItemTexture();
 
-			if (texture != null)
+			if (texture != null && item.enabled())
 				batch.draw(texture, x + offset, y);
 
 			offset += TEXSIZE;
@@ -67,6 +67,7 @@ public class Toolbar implements Clickable
 			return null;
 	}
 	
+	// FIXME faire qu'on puisse pas sélectionner un truc disabled
 	public void setActiveItem(int itemno)
 	{
 		activeItemIndex = ((itemno >= 0) && (itemno < items.size())) ? itemno : -1;
@@ -84,10 +85,16 @@ public class Toolbar implements Clickable
 		bounds = new Rectangle(x, y, w, h);
 	}
 
+	// FIXME faire qu'on puisse pas sélectionner un truc disabled
 	@Override
 	public void passRelativeClick(int x, int y)
 	{
 		int itemno = x / TEXSIZE;
 		setActiveItem(itemno);	
+	}
+	
+	public void setItemEnabled(ToolbarItem item, boolean enabled)
+	{
+		items.get(items.indexOf(item)).setEnabled(enabled);
 	}
 }
