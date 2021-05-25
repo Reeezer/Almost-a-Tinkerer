@@ -33,6 +33,8 @@ public class Splitter extends Building
 	public void transferItem()
 	{
 		super.transferItem();
+		
+		// FIXME need an item to be selected
 
 		if (secondOutput != null && !secondOutput.isFull() && contentSize > 0 && !items.peek().justTransfered) {
 			Item item = items.poll();

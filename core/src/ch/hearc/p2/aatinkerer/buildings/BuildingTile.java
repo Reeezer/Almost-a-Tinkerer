@@ -11,6 +11,9 @@ public class BuildingTile
 
 	protected FactoryType type;
 
+	// Using all of these static attribute to be able to animate each factory type at the same time, the problem is that each factory does not have the
+	// same amount of sprites
+
 	protected static int conveyorTimeout = 3;
 	protected static int conveyorTicks = 0;
 	protected static int conveyorFrame = 0;

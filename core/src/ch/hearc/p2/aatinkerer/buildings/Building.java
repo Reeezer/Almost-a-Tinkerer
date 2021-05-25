@@ -111,6 +111,7 @@ public abstract class Building
 
 	public void addItem(Item item)
 	{
+		// Called by the building who gives the item to insert in this building the item
 		if (contentSize++ >= maxSize)
 			System.err.format("Item %s inserted despite building being full\n", item.type.toString());
 
@@ -127,6 +128,7 @@ public abstract class Building
 
 	public void transferItem()
 	{
+		// Gives an item to the building linked (output) and verify if there is a recipe for something for that
 		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
 			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
 				checkRecipes();
@@ -142,6 +144,7 @@ public abstract class Building
 	public void checkRecipes()
 	{
 		for (Recipe recipe : recipes) {
+			// Check if there are enough items for the recipe
 			boolean makeIt = true;
 			Map<ItemType, Integer> ingredients = recipe.getIngredients();
 			for (ItemType item : ingredients.keySet()) {
@@ -153,12 +156,14 @@ public abstract class Building
 
 			// if we have enough ingredients to make the recipe
 			if (makeIt) {
+				// Make the recipe by decreasing the amount of all the ingredients
 				for (ItemType item : ingredients.keySet()) {
 					int nb = ingredients.get(item);
 					currentIngredients.put(item, currentIngredients.get(item) - nb);
 					contentSize -= nb;
 				}
 
+				// Adding the item produced 
 				for (int i = 0; i < recipe.getAmount(); i++) {
 					Item item = new Item();
 					item.type = recipe.getProduct();

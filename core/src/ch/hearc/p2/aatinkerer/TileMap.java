@@ -130,6 +130,7 @@ public class TileMap
 
 	private void updateOutput(int x, int y, Building[][] tabBuilding)
 	{
+		// Update all the outputs of the surrounding buildings
 		if (tabBuilding[x][y] != null)
 			tabBuilding[x][y].updateOutputs();
 
@@ -152,6 +153,8 @@ public class TileMap
 
 	public Building getNeighbourBuilding(int[] outputPosition)
 	{
+		// Check the surroundings to find a building that might be the output to the building who calls this method
+
 		int x = outputPosition[0];
 		int y = outputPosition[1];
 
@@ -245,14 +248,17 @@ public class TileMap
 		if (!tileExists(x + dx, y + dy))
 			return;
 
+		// Search for a building to connect with (in factories and conveyors)
 		checkSurroundings(conveyors, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 		checkSurroundings(factories, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 	}
 
 	private int[][] connexion(int x, int y, int direction)
 	{
+		// Default behavior
 		int[][] inputOutputPosition = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, direction } };
 
+		// Check in all directions if a corner has to be made
 		connect(x, y, direction, inputOutputPosition, false, false); // output right-side
 		connect(x, y, direction, inputOutputPosition, false, true); // output left-side
 		connect(x, y, (direction + 2) % 4, inputOutputPosition, true, false); // input right-side
@@ -307,6 +313,7 @@ public class TileMap
 	public void placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
 		if (isEmpty(x, y)) {
+			// for multi tiles (2 or 3 tiles in a row)
 			int x2 = (direction % 2 == 0) ? ((direction == 0) ? x + 1 : x - 1) : x;
 			int y2 = (direction % 2 != 0) ? ((direction == 1) ? y + 1 : y - 1) : y;
 			int x3 = (direction % 2 == 0) ? ((direction == 0) ? x + 2 : x - 2) : x;
@@ -319,6 +326,7 @@ public class TileMap
 					buildings.add(extractor);
 					break;
 				case CONVEYOR:
+					// Making corners automatically
 					Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
 					conveyors[x][y] = conveyor;
 					buildings.add(conveyor);
@@ -389,6 +397,7 @@ public class TileMap
 					System.out.println("Wrong factory type : " + factoryType);
 					break;
 			}
+			// Check for link buildings already placed
 			updateOutputs(x, y);
 		}
 	}
@@ -414,8 +423,10 @@ public class TileMap
 			factories[x][y] = null;
 		}
 
+		// Check for link/unlink buildings already placed
 		updateOutputs(x, y);
 
+		// Remove the parts of multi tiles building in the surroundings
 		if (deleted != null)
 			for (int i = -1; i <= 1; i++)
 				for (int j = -1; j <= 1; j++)
@@ -443,8 +454,10 @@ public class TileMap
 			factories[x][y] = null;
 		}
 
+		// Check for link/unlink buildings already placed
 		updateOutputs(x, y);
 
+		// Remove the parts of multi tiles building in the surroundings
 		if (deleted != null)
 			for (int i = -1; i <= 1; i++)
 				for (int j = -1; j <= 1; j++)
