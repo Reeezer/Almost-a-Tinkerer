@@ -10,7 +10,7 @@ public enum Milestone
 	// TODO add milestone description to tell the player what just happened
 	START(FactoryType.CONVEYOR, FactoryType.EXTRACTOR),
 	UNLOCK_CUTTERTUNNEL(FactoryType.CUTTER, FactoryType.TUNNEL),
-	UNLOCK_FURNACE(FactoryType.FURNACE),
+	UNLOCK_FURNACETRASH(FactoryType.FURNACE, FactoryType.TRASH),
 	UNLOCK_MIXER(FactoryType.MIXER),
 	UNLOCK_PRESS(FactoryType.PRESS),
 	UNLOCK_ASSEMBLERMERGER(FactoryType.ASSEMBLER, FactoryType.MERGER),

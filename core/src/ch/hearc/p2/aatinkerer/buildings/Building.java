@@ -95,15 +95,10 @@ public abstract class Building
 
 	public void updateOutputs()
 	{
-		if (outputPosition != null) 
+		if (outputPosition != null)
 			output = tilemap.getNeighbourBuilding(outputPosition);
 	}
 
-	public FactoryType getType()
-	{
-		return type;
-	}
-	
 	public FactoryType getType()
 	{
 		return type;
@@ -168,7 +163,7 @@ public abstract class Building
 					contentSize -= nb;
 				}
 
-				// Adding the item produced 
+				// Adding the item produced
 				for (int i = 0; i < recipe.getAmount(); i++) {
 					Item item = new Item();
 					item.type = recipe.getProduct();
