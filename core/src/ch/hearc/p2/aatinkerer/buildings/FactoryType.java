@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import ch.hearc.p2.aatinkerer.ui.HoverableItem;
 import ch.hearc.p2.aatinkerer.ui.ToolbarItem;
 
-// TODO add support for rotations of hover elements for the Merger and the Splitter
+// TODO add support for rotations of hover elements for the Merger, Splitter, furnace, mixer
 public enum FactoryType implements ToolbarItem, HoverableItem
 {
 	CONVEYOR("Ui/Icons/ConveyorIcon.png", "Ui/Icons/ConveyorHover.png"),
@@ -24,11 +24,13 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	private Texture itemTexture;
 	private Texture hoverTexture;
 	private boolean enabled; // obligatoire par l'interface ToolbarItem mais on en profite pour l'utiliser pour savoir si on a débloqué la factory en essayant de la placer
+	private int level;
 
 	private FactoryType(String itemTexturePath, String hoverTexturePath)
 	{
 		itemTexture = new Texture(Gdx.files.internal(itemTexturePath));
 		hoverTexture = new Texture(Gdx.files.internal(hoverTexturePath));
+		level = 1;
 	}
 
 	@Override
@@ -53,5 +55,15 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	public boolean enabled()
 	{
 		return this.enabled;
+	}
+	
+	public int getLevel()
+	{
+		return level;
+	}
+	
+	public void levelUp()
+	{
+		level++;
 	}
 }

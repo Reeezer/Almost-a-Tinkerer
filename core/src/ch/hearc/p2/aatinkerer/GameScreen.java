@@ -38,6 +38,7 @@ public class GameScreen implements Screen
 	private int direction;
 	private float zoom;
 	private int fpsDisplayTicks;
+	private boolean mirrored;
 
 	private long lastTime;
 	private long unprocessedTime;
@@ -69,6 +70,7 @@ public class GameScreen implements Screen
 		height = 0;
 		zoomLevel = 0;
 		direction = 0;
+		mirrored = false;
 		fpsDisplayTicks = 0;
 
 		lastTime = TimeUtils.millis();
@@ -110,8 +112,7 @@ public class GameScreen implements Screen
 		/* input */
 
 		// regen new map FIXME debug
-		if (Gdx.input.isKeyJustPressed(Keys.T))
-		{
+		if (Gdx.input.isKeyJustPressed(Keys.A)) {
 			map.dispose();
 			map = new TileMap(250, 250);
 		}
@@ -169,13 +170,15 @@ public class GameScreen implements Screen
 		// buildings
 
 		// rotation of buildings you are about to place
-		if (Gdx.input.isKeyJustPressed(Keys.R))
-		{
+		if (Gdx.input.isKeyJustPressed(Keys.R)) {
 			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 				direction = (direction + 3) % 4;
 			else
 				direction = (direction + 1) % 4;
 		}
+		if (Gdx.input.isKeyJustPressed(Keys.T))
+			mirrored = !mirrored;
+
 		// choose building
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_1))
 			factoryToolbar.setActiveItem(0);
@@ -200,22 +203,18 @@ public class GameScreen implements Screen
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
 		// handle left mouse click
-		if (Gdx.input.isButtonPressed(Buttons.LEFT))
-		{
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
 			boolean mouseCaptured = false;
 
-			// check if we need to capture mouse input or let it through to the rest of the
-			// UI to place buildings
-			for (Clickable clickable : uiElements)
-			{
+			// check if we need to capture mouse input or let it through to the rest of the UI to place buildings
+			for (Clickable clickable : uiElements) {
 				int mx = Gdx.input.getX();
 				int my = height - Gdx.input.getY();
 
 				Rectangle bounds = factoryToolbar.getBounds();
 
-				if (bounds.contains(new Vector2(mx, my)))
-				{
+				if (bounds.contains(new Vector2(mx, my))) {
 					mouseCaptured = true;
 
 					// inner positions
@@ -227,16 +226,14 @@ public class GameScreen implements Screen
 				}
 			}
 
-			if (!mouseCaptured)
-			{
+			if (!mouseCaptured) {
 				// place building
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
-				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(),
-						Gdx.input.getY(), tileX, tileY);
+				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
 				if (factoryType != null)
-					map.placeBuilding(tileX, tileY, direction, factoryType);
+					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 			}
 		}
 
@@ -253,13 +250,12 @@ public class GameScreen implements Screen
 		{
 			unprocessedTime -= processingTimeCap;
 			map.update();
-			
+
 			// FIXME do all logic updates here
 			ContractManager.getInstance().tick();
 		}
 
-		if (fpsDisplayTicks++ > 60)
-		{
+		if (fpsDisplayTicks++ > 60) {
 			fpsDisplayTicks = 0;
 			System.out.println(Gdx.graphics.getFramesPerSecond());
 		}
@@ -292,8 +288,7 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
-		if (factoryType != null)
-		{
+		if (factoryType != null) {
 			Texture hoverTexture = factoryType.getHoverTexture();
 			int x = Gdx.input.getX();
 			int y = height - Gdx.input.getY();
@@ -307,18 +302,13 @@ public class GameScreen implements Screen
 				yoffset = 32;
 			TextureRegion textureRegion = new TextureRegion(hoverTexture);
 
-			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0,
-					(float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f,
-					(float) direction * 90.f);
+			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0, (float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f, (float) direction * 90.f);
 		}
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
-		factoryToolbar.setBounds((int) ((width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2),
-				0, (int) (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom),
-				(int) (Toolbar.TEXSIZE / uiCamera.zoom));
-		factoryToolbar.render(game.batch, (int) (factoryToolbar.getBounds().x * uiCamera.zoom),
-				(int) factoryToolbar.getBounds().y);
+		factoryToolbar.setBounds((int) ((width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2), 0, (int) (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom), (int) (Toolbar.TEXSIZE / uiCamera.zoom));
+		factoryToolbar.render(game.batch, (int) (factoryToolbar.getBounds().x * uiCamera.zoom), (int) factoryToolbar.getBounds().y);
 
 		game.batch.end();
 	}
