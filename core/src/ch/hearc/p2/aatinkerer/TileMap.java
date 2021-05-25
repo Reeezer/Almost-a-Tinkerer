@@ -359,6 +359,9 @@ public class TileMap
 		if (!tileExists(x, y))
 			return;
 
+		if ((factories[x][y] != null && factories[x][y].getType() == null) || (conveyors[x][y] != null && conveyors[x][y].getType() == null))
+			return;
+
 		// conveyors layer
 		if (conveyors[x][y] != null) {
 			buildings.remove(conveyors[x][y]);

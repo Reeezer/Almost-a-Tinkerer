@@ -100,6 +100,11 @@ public abstract class Building
 			System.out.println("Output (" + x + ", " + y + ") : " + output);
 		}
 	}
+	
+	public FactoryType getType()
+	{
+		return type;
+	}
 
 	public boolean isFull()
 	{
