@@ -95,10 +95,8 @@ public abstract class Building
 
 	public void updateOutputs()
 	{
-		if (outputPosition != null) {
+		if (outputPosition != null) 
 			output = tilemap.getNeighbourBuilding(outputPosition);
-			System.out.println("Output (" + x + ", " + y + ") : " + output);
-		}
 	}
 
 	public FactoryType getType()
@@ -129,8 +127,6 @@ public abstract class Building
 
 	public void transferItem()
 	{
-		if (output != null)
-			System.out.println(this.type + " - " + (output.isFull() ? "full - " : "empty - ") + contentSize + " * " + maxSize);
 		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
 			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
 				checkRecipes();
@@ -138,8 +134,6 @@ public abstract class Building
 			else {
 				Item item = items.poll();
 				contentSize--;
-
-				System.out.println("Item transfered " + item.type);
 				output.addItem(item);
 			}
 		}
@@ -150,7 +144,6 @@ public abstract class Building
 		for (Recipe recipe : recipes) {
 			boolean makeIt = true;
 			Map<ItemType, Integer> ingredients = recipe.getIngredients();
-			System.out.println(ingredients);
 			for (ItemType item : ingredients.keySet()) {
 				if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item)) {
 					makeIt = false; // if there is not enough item for this recipe

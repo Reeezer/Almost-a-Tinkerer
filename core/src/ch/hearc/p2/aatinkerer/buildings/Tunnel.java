@@ -1,5 +1,7 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
+import java.util.Arrays;
+
 import ch.hearc.p2.aatinkerer.TileMap;
 
 public class Tunnel extends Building
@@ -10,8 +12,8 @@ public class Tunnel extends Building
 	public Tunnel(TileMap tilemap, int x, int y, int direction, boolean isInput)
 	{
 		super(tilemap, x, y, (isInput ? direction : (direction + 2) % 4), 1, (isInput ? "Tile/TunnelIn/" : "Tile/TunnelOut/"), 1, 1, FactoryType.TUNNEL);
-		this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 } };
-		this.outputPosition = isInput ? null : new int[] { x, y, (direction + 2) % 4 };
+		this.inputPositions = new int[][] { { x, y, (this.direction + 2) % 4 } };
+		this.outputPosition = isInput ? null : new int[] { x, y, (this.direction + 2) % 4 };
 		this.isInput = isInput;
 
 		if (!isInput)
@@ -26,15 +28,5 @@ public class Tunnel extends Building
 	public boolean isInput()
 	{
 		return isInput;
-	}
-
-	@Override
-	public void updateOutputs()
-	{
-		// TODO
-//		if (outputPosition != null) {
-//			output = tilemap.getNeighbourBuilding(outputPosition);
-//			System.out.println("Output (" + x + ", " + y + ") : " + output);
-//		}
 	}
 }

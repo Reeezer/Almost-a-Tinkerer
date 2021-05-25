@@ -299,7 +299,7 @@ public class TileMap
 			if (!tunnel.isInput() || tunnel.getInputs()[0][2] != direction)
 				continue;
 
-			outputTunnel.setOutputTunnel(tunnel);
+			tunnel.setOutputTunnel(outputTunnel);
 			return;
 		}
 	}
