@@ -290,10 +290,10 @@ public class TileMap
 
 			if (!tileExists(posX, posY) || factories[posX][posY] == null)
 				continue;
-			
+
 			if (factories[posX][posY].getType() != FactoryType.TUNNEL)
 				continue;
-			
+
 			Tunnel tunnel = (Tunnel) factories[posX][posY];
 
 			if (!tunnel.isInput() || tunnel.getInputs()[0][2] != direction)
@@ -398,18 +398,57 @@ public class TileMap
 		if (!tileExists(x, y))
 			return;
 
+		Building deleted = null;
+
 		// conveyors layer
 		if (conveyors[x][y] != null) {
+			deleted = conveyors[x][y];
 			buildings.remove(conveyors[x][y]);
 			conveyors[x][y] = null;
 		}
 
 		// factories layer
 		if (factories[x][y] != null) {
+			deleted = factories[x][y];
 			buildings.remove(factories[x][y]);
 			factories[x][y] = null;
 		}
+
 		updateOutputs(x, y);
+
+		if (deleted != null)
+			for (int i = -1; i <= 1; i++)
+				for (int j = -1; j <= 1; j++)
+					delete(x + i, y + j, deleted);
+	}
+
+	public void delete(int x, int y, Building building)
+	{
+		if (!tileExists(x, y))
+			return;
+
+		Building deleted = null;
+
+		// conveyors layer
+		if (conveyors[x][y] != null && conveyors[x][y] == building) {
+			deleted = conveyors[x][y];
+			buildings.remove(conveyors[x][y]);
+			conveyors[x][y] = null;
+		}
+
+		// factories layer
+		if (factories[x][y] != null && factories[x][y] == building) {
+			deleted = factories[x][y];
+			buildings.remove(factories[x][y]);
+			factories[x][y] = null;
+		}
+
+		updateOutputs(x, y);
+
+		if (deleted != null)
+			for (int i = -1; i <= 1; i++)
+				for (int j = -1; j <= 1; j++)
+					delete(x + i, y + j, building);
 	}
 
 	public void render(SpriteBatch batch)
