@@ -19,6 +19,7 @@ import ch.hearc.p2.aatinkerer.buildings.Mixer;
 import ch.hearc.p2.aatinkerer.buildings.Press;
 import ch.hearc.p2.aatinkerer.buildings.Splitter;
 import ch.hearc.p2.aatinkerer.buildings.Trash;
+import ch.hearc.p2.aatinkerer.buildings.Tunnel;
 
 public class TileMap
 {
@@ -31,6 +32,8 @@ public class TileMap
 
 	private Set<Building> buildings;
 
+	private boolean isInputTunnel;
+
 	Random random;
 
 	public TileMap(int w, int h)
@@ -39,6 +42,8 @@ public class TileMap
 
 		width = w;
 		height = h;
+
+		isInputTunnel = false;
 
 		// - initialise the map to have no resources
 		// - create an empty table of conveyors
@@ -256,6 +261,49 @@ public class TileMap
 		return inputOutputPosition;
 	}
 
+	public void findInputTunnel(Tunnel outputTunnel, int x, int y, int direction, int distance)
+	{
+		int dx = 0;
+		int dy = 0;
+
+		switch (direction) {
+			case 0:
+				dx = 1;
+				break;
+			case 1:
+				dy = 1;
+				break;
+			case 2:
+				dx = -1;
+				break;
+			case 3:
+				dy = -1;
+				break;
+			default:
+				System.out.println("Wrong direction : " + direction);
+				break;
+		}
+
+		for (int i = 1; i <= distance; i++) {
+			int posX = x + dx * i;
+			int posY = y + dy * i;
+
+			if (!tileExists(posX, posY) || factories[posX][posY] == null)
+				continue;
+			
+			if (factories[posX][posY].getType() != FactoryType.TUNNEL)
+				continue;
+			
+			Tunnel tunnel = (Tunnel) factories[posX][posY];
+
+			if (!tunnel.isInput() || tunnel.getInputs()[0][2] != direction)
+				continue;
+
+			outputTunnel.setOutputTunnel(tunnel);
+			return;
+		}
+	}
+
 	public void placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
 		if (isEmpty(x, y)) {
@@ -332,6 +380,10 @@ public class TileMap
 					buildings.add(merger);
 					break;
 				case TUNNEL:
+					isInputTunnel = !isInputTunnel;
+					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
+					factories[x][y] = tunnel;
+					buildings.add(tunnel);
 					break;
 				default:
 					System.out.println("Wrong factory type : " + factoryType);

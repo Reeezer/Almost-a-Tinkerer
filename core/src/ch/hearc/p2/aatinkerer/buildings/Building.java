@@ -101,6 +101,11 @@ public abstract class Building
 		}
 	}
 
+	public FactoryType getType()
+	{
+		return type;
+	}
+
 	public boolean isFull()
 	{
 		return contentSize >= maxSize;
@@ -124,6 +129,8 @@ public abstract class Building
 
 	public void transferItem()
 	{
+		if (output != null)
+			System.out.println(this.type + " - " + (output.isFull() ? "full - " : "empty - ") + contentSize + " * " + maxSize);
 		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
 			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
 				checkRecipes();

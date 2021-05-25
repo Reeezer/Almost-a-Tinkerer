@@ -216,7 +216,7 @@ public class GameScreen implements Screen
 				int tileY = screenToTileY(Gdx.input.getY());
 				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
-				if (factoryType != null)
+				if (factoryType != null) 
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 			}
 		}
