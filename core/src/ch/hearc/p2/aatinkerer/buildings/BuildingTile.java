@@ -60,43 +60,48 @@ public class BuildingTile
 	{
 		Texture texture = null;
 
-		switch (type) {
-			case ASSEMBLER:
-				texture = frames[assemblerFrame];
-				break;
-			case CONVEYOR:
-				texture = frames[conveyorFrame];
-				break;
-			case CUTTER:
-				texture = frames[cutterFrame];
-				break;
-			case EXTRACTOR:
-				texture = frames[extractorFrame];
-				break;
-			case FURNACE:
-				texture = frames[furnaceFrame];
-				break;
-			case MERGER:
-				texture = frames[mergerFrame];
-				break;
-			case MIXER:
-				texture = frames[mixerFrame];
-				break;
-			case PRESS:
-				texture = frames[pressFrame];
-				break;
-			case SPLITTER:
-				texture = frames[splitterFrame];
-				break;
-			case TRASH:
-				texture = frames[trashFrame];
-				break;
-			case TUNNEL:
-				texture = frames[tunnelFrame];
-				break;
-			default:
-				System.err.println("Wrong building type");
-				break;
+		if (type != null) {
+			switch (type) {
+				case ASSEMBLER:
+					texture = frames[assemblerFrame];
+					break;
+				case CONVEYOR:
+					texture = frames[conveyorFrame];
+					break;
+				case CUTTER:
+					texture = frames[cutterFrame];
+					break;
+				case EXTRACTOR:
+					texture = frames[extractorFrame];
+					break;
+				case FURNACE:
+					texture = frames[furnaceFrame];
+					break;
+				case MERGER:
+					texture = frames[mergerFrame];
+					break;
+				case MIXER:
+					texture = frames[mixerFrame];
+					break;
+				case PRESS:
+					texture = frames[pressFrame];
+					break;
+				case SPLITTER:
+					texture = frames[splitterFrame];
+					break;
+				case TRASH:
+					texture = frames[trashFrame];
+					break;
+				case TUNNEL:
+					texture = frames[tunnelFrame];
+					break;
+				default:
+					System.err.println("Wrong building type");
+					break;
+			}
+		}
+		else {
+			texture = frames[0];
 		}
 
 		TextureRegion textureRegion = new TextureRegion(texture);

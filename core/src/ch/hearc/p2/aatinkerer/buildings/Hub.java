@@ -9,7 +9,7 @@ public class Hub extends Building
 {
 	public Hub(TileMap tilemap, int x, int y)
 	{
-		super(tilemap, x, y, 0, Integer.MAX_VALUE, "Tile/Hub/", 9, 1);
+		super(tilemap, x, y, 0, Integer.MAX_VALUE, "Tile/Hub/", 9, 1, null);
 		this.inputPositions = new int[][] { { x + 1, y + 1, 0 }, { x + 1, y, 0 }, { x + 1, y - 1, 0 }, { x - 1, y + 1, 1 }, { x, y + 1, 1 }, { x + 1, y + 1, 1 }, { x - 1, y + 1, 2 }, { x - 1, y, 2 }, { x - 1, y - 1, 2 }, { x - 1, y - 1, 3 }, { x, y - 1, 3 }, { x + 1, y - 1, 3 } };
 		this.outputPosition = null;
 	}

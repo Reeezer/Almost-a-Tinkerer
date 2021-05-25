@@ -9,14 +9,13 @@ public enum Milestone
 {
 	// TODO add milestone description to tell the player what just happened
 	START(FactoryType.CONVEYOR, FactoryType.EXTRACTOR),
-	UNLOCK_CUTTER(FactoryType.CUTTER),
+	UNLOCK_CUTTERTUNNEL(FactoryType.CUTTER, FactoryType.TUNNEL),
 	UNLOCK_FURNACE(FactoryType.FURNACE),
 	UNLOCK_MIXER(FactoryType.MIXER),
 	UNLOCK_PRESS(FactoryType.PRESS),
-	UNLOCK_ASSEMBLER(FactoryType.ASSEMBLER),
-	UNLOCK_SPLITTERMERGER(FactoryType.SPLITTER, FactoryType.MERGER),
-	UNLOCK_TRASH(FactoryType.TRASH),
-	UNLOCK_TUNNEL(FactoryType.TUNNEL);
+	UNLOCK_ASSEMBLERMERGER(FactoryType.ASSEMBLER, FactoryType.MERGER),
+	UNLOCK_SPLITTER(FactoryType.SPLITTER),
+	UNLOCK_TRASH(FactoryType.TRASH);
 	
 	private final List<FactoryType> factoryTypes;
 
