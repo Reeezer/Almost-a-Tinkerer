@@ -93,7 +93,8 @@ public abstract class Building
 	
 	public void updateOutputs()
 	{
-		output = tilemap.getNeighbourBuilding(outputPosition);
+		if(outputPosition != null)
+			output = tilemap.getNeighbourBuilding(outputPosition);
 		System.out.println("Output (" + x + ", " + y + ") : " + output);
 	}
 

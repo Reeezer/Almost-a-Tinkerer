@@ -11,6 +11,7 @@ import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
 import ch.hearc.p2.aatinkerer.buildings.Extractor;
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
+import ch.hearc.p2.aatinkerer.buildings.Hub;
 
 public class TileMap
 {
@@ -60,7 +61,16 @@ public class TileMap
 			generate(ressource, life, x, y);
 		}
 
-		factories[width / 2][height / 2] = new Hub(this, width / 2, height / 2);
+		Hub hub = new Hub(this, width / 2, height / 2);
+		factories[width / 2 + 1][height / 2] = hub;
+		factories[width / 2 + 1][height / 2 - 1] = hub;
+		factories[width / 2 + 1][height / 2 + 1] = hub;
+		factories[width / 2][height / 2] = hub;
+		factories[width / 2][height / 2 - 1] = hub;
+		factories[width / 2][height / 2 + 1] = hub;
+		factories[width / 2 - 1][height / 2] = hub;
+		factories[width / 2 - 1][height / 2 - 1] = hub;
+		factories[width / 2 - 1][height / 2 + 1] = hub;
 		buildings.add(factories[width / 2][height / 2]);
 	}
 
