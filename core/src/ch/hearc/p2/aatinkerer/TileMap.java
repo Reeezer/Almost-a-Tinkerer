@@ -59,6 +59,9 @@ public class TileMap
 
 			generate(ressource, life, x, y);
 		}
+
+		factories[width / 2][height / 2] = new Hub(this, width / 2, height / 2);
+		buildings.add(factories[width / 2][height / 2]);
 	}
 
 	// recursively generate a resource patch from the specified coordinates
@@ -141,7 +144,7 @@ public class TileMap
 	{
 		int x = outputPosition[0];
 		int y = outputPosition[1];
-		
+
 		int dx = 0;
 		int dy = 0;
 
@@ -195,7 +198,8 @@ public class TileMap
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getOutput() != null) {
 				int[] output = buildings[x + dx][y + dy].getOutput();
 				if (output[0] == x + dx && output[1] == y + dy && output[2] == (direction + 1 + addToDirection) % 4)
@@ -230,7 +234,7 @@ public class TileMap
 
 		if (!tileExists(x + dx, y + dy))
 			return;
-		
+
 		checkSurroundings(conveyors, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 		checkSurroundings(factories, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 	}
@@ -315,7 +319,8 @@ public class TileMap
 			}
 		}
 
-		// factories FIXME ce code va effectuer le rendu des batiments à plus d'une tile plus qu'une fois, utiliser un rendu comme le code de update(), sans les convoyeurs
+		// factories FIXME ce code va effectuer le rendu des batiments à plus d'une tile plus qu'une fois, utiliser un rendu comme le code de update(), sans
+		// les convoyeurs
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (factories[i][j] != null) {
