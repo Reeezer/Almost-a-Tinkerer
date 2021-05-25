@@ -50,7 +50,7 @@ public class ContractManager
 		Contract cutterContract = new Contract("We need some wood! Please cut some trees");
 		cutterContract.addRequestedItem(ItemType.WOODLOG, 40);
 		storyContracts.add(cutterContract);
-		storyMilestones.add(Milestone.UNLOCK_CUTTER);
+		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
 		
 		Contract furnaceContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs");
 		furnaceContract.addRequestedItem(ItemType.PLANK, 40);
@@ -71,7 +71,7 @@ public class ContractManager
 		Contract assemblerContract = new Contract("We have a lot of materials, but the problem is that we cannot assemble them, we need glue. Please compress some petroleum. Yes, exactly.");
 		assemblerContract.addRequestedItem(ItemType.GLUE, 200);
 		storyContracts.add(assemblerContract);
-		storyMilestones.add(Milestone.UNLOCK_ASSEMBLER);
+		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
 		
 		Contract splitterMergerContract = new Contract("Now we can finally glue everything together! Please make furniture");
 		splitterMergerContract.addRequestedItem(ItemType.CHAIR, 200);
@@ -83,7 +83,7 @@ public class ContractManager
 		splitterMergerContract.addRequestedItem(ItemType.PLANT, 80);
 		splitterMergerContract.addRequestedItem(ItemType.TABLE, 50);
 		storyContracts.add(splitterMergerContract);
-		storyMilestones.add(Milestone.UNLOCK_SPLITTERMERGER);
+		storyMilestones.add(Milestone.UNLOCK_SPLITTER);
 	}
 	
 	public void itemDelivered(ItemType type)
