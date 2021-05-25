@@ -11,8 +11,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -23,7 +21,6 @@ import ch.hearc.p2.aatinkerer.ui.Toolbar;
 
 public class GameScreen implements Screen
 {
-
 	final private AATinkererGame game;
 
 	private OrthographicCamera mapCamera;
@@ -200,6 +197,10 @@ public class GameScreen implements Screen
 			factoryToolbar.setActiveItem(8);
 		if (Gdx.input.isKeyJustPressed(Keys.NUM_0))
 			factoryToolbar.setActiveItem(9);
+		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_0))
+			factoryToolbar.setActiveItem(10);
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+			factoryToolbar.setActiveItem(-1);
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
 		// handle left mouse click
@@ -230,9 +231,9 @@ public class GameScreen implements Screen
 				// place building
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
-				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
+				// System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
-				if (factoryType != null)
+				if (factoryType != null) 
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 			}
 		}
@@ -257,7 +258,7 @@ public class GameScreen implements Screen
 
 		if (fpsDisplayTicks++ > 60) {
 			fpsDisplayTicks = 0;
-			System.out.println(Gdx.graphics.getFramesPerSecond());
+			// System.out.println(Gdx.graphics.getFramesPerSecond());
 		}
 		/* render */
 
