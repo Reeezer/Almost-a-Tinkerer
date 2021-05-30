@@ -103,6 +103,7 @@ public class ContractManager
 	
 	public void unlockMilestone(Milestone milestone)
 	{
+		System.out.println("Unlocking new milestone: " + milestone);
 		for (MilestoneListener listener : milestoneListeners)
 			listener.unlockMilestone(milestone);
 	}

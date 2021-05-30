@@ -15,10 +15,14 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 import ch.hearc.p2.aatinkerer.ui.Clickable;
+import ch.hearc.p2.aatinkerer.ui.PopupManager;
 import ch.hearc.p2.aatinkerer.ui.Toolbar;
 
 public class GameScreen implements Screen
@@ -48,6 +52,7 @@ public class GameScreen implements Screen
 
 	private TileMap map;
 
+	private PopupManager popupManager;
 	private MilestoneListener milestoneListener;
 
 	public GameScreen(AATinkererGame game)
@@ -80,14 +85,18 @@ public class GameScreen implements Screen
 
 		uiElements.add(factoryToolbar);
 
+		popupManager = new PopupManager();
 		milestoneListener = new MilestoneListener() {
 			@Override
 			public void unlockMilestone(Milestone milestone)
 			{
-				// TODO on récupère les factories unlock par la milestone et on les active dans la toolbar et dans les raccourcis
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
-				{
 					factoryToolbar.setItemEnabled(factoryType, true);
+
+				if (milestone != Milestone.START)
+				{
+					Popup popup = new Popup("Milestone Unlocked", milestone.description());
+					popupManager.displayPopup(popup);
 				}
 			}
 		};
@@ -112,7 +121,8 @@ public class GameScreen implements Screen
 		/* input */
 
 		// regen new map FIXME debug
-		if (Gdx.input.isKeyJustPressed(Keys.A)) {
+		if (Gdx.input.isKeyJustPressed(Keys.A))
+		{
 			map.dispose();
 			map = new TileMap(250, 250);
 		}
@@ -170,7 +180,8 @@ public class GameScreen implements Screen
 		// buildings
 
 		// rotation of buildings you are about to place
-		if (Gdx.input.isKeyJustPressed(Keys.R)) {
+		if (Gdx.input.isKeyJustPressed(Keys.R))
+		{
 			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 				direction = (direction + 3) % 4;
 			else
@@ -203,18 +214,22 @@ public class GameScreen implements Screen
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
 		// handle left mouse click
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT))
+		{
 
 			boolean mouseCaptured = false;
 
-			// check if we need to capture mouse input or let it through to the rest of the UI to place buildings
-			for (Clickable clickable : uiElements) {
+			// check if we need to capture mouse input or let it through to the rest of the
+			// UI to place buildings
+			for (Clickable clickable : uiElements)
+			{
 				int mx = Gdx.input.getX();
 				int my = height - Gdx.input.getY();
 
 				Rectangle bounds = factoryToolbar.getBounds();
 
-				if (bounds.contains(new Vector2(mx, my))) {
+				if (bounds.contains(new Vector2(mx, my)))
+				{
 					mouseCaptured = true;
 
 					// inner positions
@@ -226,11 +241,13 @@ public class GameScreen implements Screen
 				}
 			}
 
-			if (!mouseCaptured) {
+			if (!mouseCaptured)
+			{
 				// place building
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
-				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
+				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(),
+						Gdx.input.getY(), tileX, tileY);
 
 				if (factoryType != null)
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
@@ -255,7 +272,8 @@ public class GameScreen implements Screen
 			ContractManager.getInstance().tick();
 		}
 
-		if (fpsDisplayTicks++ > 60) {
+		if (fpsDisplayTicks++ > 60)
+		{
 			fpsDisplayTicks = 0;
 			System.out.println(Gdx.graphics.getFramesPerSecond());
 		}
@@ -288,7 +306,8 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
-		if (factoryType != null) {
+		if (factoryType != null)
+		{
 			Texture hoverTexture = factoryType.getHoverTexture();
 			int x = Gdx.input.getX();
 			int y = height - Gdx.input.getY();
@@ -302,13 +321,20 @@ public class GameScreen implements Screen
 				yoffset = 32;
 			TextureRegion textureRegion = new TextureRegion(hoverTexture);
 
-			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0, (float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f, (float) direction * 90.f);
+			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0,
+					(float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f,
+					(float) direction * 90.f);
 		}
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
-		factoryToolbar.setBounds((int) ((width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2), 0, (int) (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom), (int) (Toolbar.TEXSIZE / uiCamera.zoom));
-		factoryToolbar.render(game.batch, (int) (factoryToolbar.getBounds().x * uiCamera.zoom), (int) factoryToolbar.getBounds().y);
+		factoryToolbar.setBounds((int) ((width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2),
+				0, (int) (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom),
+				(int) (Toolbar.TEXSIZE / uiCamera.zoom));
+		factoryToolbar.render(game.batch, (int) (factoryToolbar.getBounds().x * uiCamera.zoom),
+				(int) factoryToolbar.getBounds().y);
+		
+		popupManager.render(game.batch, this.width, this.height);
 
 		game.batch.end();
 	}
