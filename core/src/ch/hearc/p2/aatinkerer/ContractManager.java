@@ -48,7 +48,7 @@ public class ContractManager
 		storyMilestones.add(Milestone.START);
 
 		Contract cutterTunnelContract = new Contract("We need some wood! Please cut some trees");
-		cutterTunnelContract.addRequestedItem(ItemType.WOODLOG, 1);
+		// cutterTunnelContract.addRequestedItem(ItemType.WOODLOG, 40);
 		storyContracts.add(cutterTunnelContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
 

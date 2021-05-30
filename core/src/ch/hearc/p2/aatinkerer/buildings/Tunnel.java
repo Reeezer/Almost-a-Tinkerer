@@ -11,8 +11,8 @@ public class Tunnel extends Building
 
 	public Tunnel(TileMap tilemap, int x, int y, int direction, boolean isInput)
 	{
-		super(tilemap, x, y, (isInput ? direction : (direction + 2) % 4), 1, (isInput ? "Tile/TunnelIn/" : "Tile/TunnelOut/"), 1, 1, FactoryType.TUNNEL);
-		this.inputPositions = new int[][] { { x, y, (this.direction + 2) % 4 } };
+		super(tilemap, x, y, (isInput ? direction : (direction + 2) % 4), 2, (isInput ? "Tile/TunnelIn/" : "Tile/TunnelOut/"), 1, 1, FactoryType.TUNNEL);
+		this.inputPositions = isInput ? new int[][] { { x, y, (this.direction + 2) % 4 } } : null;
 		this.outputPosition = isInput ? null : new int[] { x, y, (this.direction + 2) % 4 };
 		this.isInput = isInput;
 

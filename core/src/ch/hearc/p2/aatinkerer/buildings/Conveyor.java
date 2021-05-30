@@ -35,6 +35,7 @@ public class Conveyor extends Building
 
 	private static String getSpritePath(int outputDirection, int inputDirection)
 	{
+		System.out.println(outputDirection + " + " + inputDirection);
 		if (outputDirection == (inputDirection + 2) % 4)
 			return "Tile/Conveyor/";
 		else if (outputDirection == (inputDirection + 1) % 4)
