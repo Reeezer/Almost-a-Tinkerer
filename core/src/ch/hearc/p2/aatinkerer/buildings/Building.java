@@ -45,7 +45,6 @@ public abstract class Building
 	protected int[][] inputPositions;
 	protected int[] outputPosition;
 
-	protected static int transferTimeout = 50;
 	protected static int ticks = 0;
 
 	protected Recipe[] recipes;
@@ -175,22 +174,17 @@ public abstract class Building
 
 	public void update()
 	{
-		if (Building.ticks == Building.transferTimeout) {
-			transferItem();
+		if (type != null) {
+			if (type.getTicks() == type.getTransferTimeout()) {
+				transferItem();
+			}
 		}
 
 		for (Item item : items) {
-			if (item.ticksSpent < transferTimeout) {
+			if (item.ticksSpent < type.getTransferTimeout()) {
 				item.ticksSpent++;
 				item.justTransfered = false;
 			}
-		}
-	}
-
-	public static void staticUpdate()
-	{
-		if (Building.ticks++ >= Building.transferTimeout) {
-			Building.ticks = 0;
 		}
 	}
 }
