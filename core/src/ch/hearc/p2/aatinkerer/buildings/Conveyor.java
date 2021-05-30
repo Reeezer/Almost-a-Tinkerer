@@ -26,22 +26,22 @@ public class Conveyor extends Building
 			if (index > 0) // FIXME Teleport himself when move after being stopped
 				position = position / (float) maxSize;
 
-			int xPixPosition = ((x * tileSize) + (int) (position * (float) tileSize * xOrientation) - (tileSize * xOrientation) / 2);
-			int yPixPosition = ((y * tileSize) + (int) (position * (float) tileSize * yOrientation) - (tileSize * yOrientation) / 2);
+			// FIXME if we do want to correct corner animation, we can take off (- (tileSize * xOrientation) / 2) but now the items goes completely on the next tile
+			int xPixPosition = ((x * tileSize) + (int) (position * (float) tileSize * xOrientation) /*- (tileSize * xOrientation) / 2*/);
+			int yPixPosition = ((y * tileSize) + (int) (position * (float) tileSize * yOrientation) /*- (tileSize * yOrientation) / 2*/);
 
-			item.type.render(batch, xPixPosition, yPixPosition); // FIXME Draw sprite 32x32 instead of 24x24 // correct the +4
+			item.type.render(batch, xPixPosition, yPixPosition);
 		}
 	}
 
 	private static String getSpritePath(int outputDirection, int inputDirection)
 	{
-		System.out.println(outputDirection + " + " + inputDirection);
 		if (outputDirection == (inputDirection + 2) % 4)
 			return "Tile/Conveyor/";
 		else if (outputDirection == (inputDirection + 1) % 4)
 			return "Tile/ConveyorRight/";
 		else if (outputDirection == (inputDirection + 3) % 4)
 			return "Tile/ConveyorLeft/";
-		return null; // FIXME shouldn't happen, if it happens, then crash, instead check that on return by caller
+		return null; // shouldn't happen, if it happens, then crash, instead check that on return by caller
 	}
 }
