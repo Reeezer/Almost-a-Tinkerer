@@ -521,13 +521,19 @@ public class TileMap
 	public void update()
 	{
 		for (FactoryType type : FactoryType.values()) {
-			type.ticksIncrease();
-			if (type.getTicks() > type.getTransferTimeout()) {
-				type.resetTicks();
+			type.transferTicksIncrease();
+			if (type.getTransferTicks() > type.getTransferTimeout()) {
+				type.resetTransferTicks();
 			}
 		}
 
-		BuildingTile.staticUpdate();
+		for (FactoryType type : FactoryType.values()) {
+			type.animationTicksIncrease();
+			if (type.getAnimationTicks() > type.getAnimationTimeout()) {
+				type.resetAnimationTicks();
+				type.frameIncrease();
+			}
+		}
 
 		for (Building building : buildings) {
 			building.update();

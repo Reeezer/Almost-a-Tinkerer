@@ -175,7 +175,7 @@ public abstract class Building
 	public void update()
 	{
 		if (type != null) {
-			if (type.getTicks() == type.getTransferTimeout()) {
+			if (type.getTransferTicks() == type.getTransferTimeout()) {
 				transferItem();
 			}
 		}
