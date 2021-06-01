@@ -46,44 +46,43 @@ public class ContractManager
 		// No actual requirements for the first contract so we unlock everything we need
 		storyContracts.add(new Contract("Hi! Welcome to almost a tinkerer"));
 		storyMilestones.add(Milestone.START);
-
-		Contract cutterTunnelContract = new Contract("We need some wood! Please cut some trees");
-		// cutterTunnelContract.addRequestedItem(ItemType.WOODLOG, 40);
-		storyContracts.add(cutterTunnelContract);
+		
+		Contract cutterContract = new Contract("We need some wood! Please cut some trees");
+		cutterContract.addRequestedItem(ItemType.WOODLOG, 5);
+		storyContracts.add(cutterContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
-
-		Contract furnaceTrashContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs");
-		// furnaceTrashContract.addRequestedItem(ItemType.PLANK, 40);
-		// furnaceTrashContract.addRequestedItem(ItemType.STICK, 80);
-		storyContracts.add(furnaceTrashContract);
-		storyMilestones.add(Milestone.UNLOCK_FURNACETRASH);
-
+		
+		Contract furnaceContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs");
+		furnaceContract.addRequestedItem(ItemType.PLANK, 4);
+		furnaceContract.addRequestedItem(ItemType.STICK, 8);
+		storyContracts.add(furnaceContract);
+		storyMilestones.add(Milestone.UNLOCK_FURNACE);
+		
 		Contract mixerContract = new Contract("I can finally sit! Now please make some iron");
-		// mixerContract.addRequestedItem(ItemType.IRONPLATE, 100);
+		mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
 		storyContracts.add(mixerContract);
 		storyMilestones.add(Milestone.UNLOCK_MIXER);
 
 		Contract pressContract = new Contract("Our company is starting to take off! Nice! We need a runway for planes, so please make concrete");
-		// pressContract.addRequestedItem(ItemType.CONCRETE, 200);
+		pressContract.addRequestedItem(ItemType.CONCRETE, 20);
 		storyContracts.add(pressContract);
 		storyMilestones.add(Milestone.UNLOCK_PRESS);
-
-		Contract assemblerMergerContract = new Contract("We have a lot of materials, but the problem is that we cannot assemble them, we need glue. Please compress some petroleum. Yes, exactly.");
-		// assemblerMergerContract.addRequestedItem(ItemType.GLUE, 200);
-		storyContracts.add(assemblerMergerContract);
+		
+		Contract assemblerContract = new Contract("We have a lot of materials, but the problem is that we cannot assemble them, we need glue. Please compress some petroleum. Yes, exactly.");
+		assemblerContract.addRequestedItem(ItemType.GLUE, 20);
+		storyContracts.add(assemblerContract);
 		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
-
-		Contract splitterContract = new Contract("Now we can finally glue everything together! Please make furniture");
-		// splitterContract.addRequestedItem(ItemType.CHAIR, 200);
-		// splitterContract.addRequestedItem(ItemType.FABRIC, 20); // FIXME peut être l'unlock avant comme ça on a déjà la production de matières premières
-		// pour les meubles?
-		// splitterContract.addRequestedItem(ItemType.DESK, 100);
-		// splitterContract.addRequestedItem(ItemType.TABLE, 50);
-		// splitterContract.addRequestedItem(ItemType.BED, 30);
-		// splitterContract.addRequestedItem(ItemType.SHELF, 50);
-		// splitterContract.addRequestedItem(ItemType.PLANT, 80);
-		// splitterContract.addRequestedItem(ItemType.TABLE, 50);
-		storyContracts.add(splitterContract);
+		
+		Contract splitterMergerContract = new Contract("Now we can finally glue everything together! Please make furniture");
+		splitterMergerContract.addRequestedItem(ItemType.CHAIR, 20);
+		splitterMergerContract.addRequestedItem(ItemType.FABRIC, 20); // FIXME peut être l'unlock avant comme ça on a déjà la production de matières premières pour les meubles?
+		splitterMergerContract.addRequestedItem(ItemType.DESK, 100);
+		splitterMergerContract.addRequestedItem(ItemType.TABLE, 50);
+		splitterMergerContract.addRequestedItem(ItemType.BED, 30);
+		splitterMergerContract.addRequestedItem(ItemType.SHELF, 50);
+		splitterMergerContract.addRequestedItem(ItemType.PLANT, 80);
+		splitterMergerContract.addRequestedItem(ItemType.TABLE, 50);
+		storyContracts.add(splitterMergerContract);
 		storyMilestones.add(Milestone.UNLOCK_SPLITTER);
 	}
 
@@ -104,6 +103,7 @@ public class ContractManager
 
 	public void unlockMilestone(Milestone milestone)
 	{
+		System.out.println("Unlocking new milestone: " + milestone);
 		for (MilestoneListener listener : milestoneListeners)
 			listener.unlockMilestone(milestone);
 	}

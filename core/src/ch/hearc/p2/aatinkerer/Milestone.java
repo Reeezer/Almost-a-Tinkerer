@@ -7,20 +7,20 @@ import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 
 public enum Milestone
 {
-	// TODO add milestone description to tell the player what just happened
-	START(FactoryType.CONVEYOR, FactoryType.EXTRACTOR),
-	UNLOCK_CUTTERTUNNEL(FactoryType.CUTTER, FactoryType.TUNNEL),
-	UNLOCK_FURNACETRASH(FactoryType.FURNACE, FactoryType.TRASH),
-	UNLOCK_MIXER(FactoryType.MIXER),
-	UNLOCK_PRESS(FactoryType.PRESS),
-	UNLOCK_ASSEMBLERMERGER(FactoryType.ASSEMBLER, FactoryType.MERGER),
-	UNLOCK_SPLITTER(FactoryType.SPLITTER),
-	UNLOCK_TRASH(FactoryType.TRASH);
+	START("Unlocks base items", FactoryType.CONVEYOR, FactoryType.EXTRACTOR),
+	UNLOCK_CUTTERTUNNEL("The cutter and tunnel are now unlocked", FactoryType.CUTTER, FactoryType.TUNNEL),
+	UNLOCK_FURNACETRASH("The furnace is now unlocked", FactoryType.FURNACE),
+	UNLOCK_MIXER("The mixer is now unlocked", FactoryType.MIXER),
+	UNLOCK_PRESS("The press is now unlocked", FactoryType.PRESS),
+	UNLOCK_ASSEMBLERMERGER("The assembler and the merger are now unlocked", FactoryType.ASSEMBLER, FactoryType.MERGER),
+	UNLOCK_SPLITTER("The splitter is now unlocked", FactoryType.SPLITTER);
 	
 	private final List<FactoryType> factoryTypes;
+	private final String description;
 
-	private Milestone(FactoryType ...types)
+	private Milestone(String description, FactoryType ...types)
 	{
+		this.description = description;
 		factoryTypes = new LinkedList<FactoryType>();
 		
 		for (FactoryType factoryType : types)
@@ -32,4 +32,8 @@ public enum Milestone
 		return factoryTypes;
 	}
 	
+	public String description()
+	{
+		return description;
+	}
 }
