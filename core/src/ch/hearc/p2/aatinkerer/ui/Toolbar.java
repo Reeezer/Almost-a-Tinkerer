@@ -65,7 +65,6 @@ public class Toolbar implements Clickable
 			return null;
 	}
 
-	// FIXME faire qu'on puisse pas sélectionner un truc disabled
 	public void setActiveItem(int itemno)
 	{
 		if (itemno < 0 || itemno >= items.size()) {
@@ -92,7 +91,6 @@ public class Toolbar implements Clickable
 		bounds = new Rectangle(x, y, w, h);
 	}
 
-	// FIXME faire qu'on puisse pas sélectionner un truc disabled
 	@Override
 	public void passRelativeClick(int x, int y)
 	{

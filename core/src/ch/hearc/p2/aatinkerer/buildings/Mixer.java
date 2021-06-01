@@ -1,5 +1,7 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
+import java.util.ArrayList;
+
 import ch.hearc.p2.aatinkerer.ItemType;
 import ch.hearc.p2.aatinkerer.Recipe;
 import ch.hearc.p2.aatinkerer.TileMap;
@@ -20,10 +22,11 @@ public class Mixer extends Building
 
 	private void createRecipes()
 	{
+		this.recipes = new ArrayList<Recipe>();
+
 		Recipe recipe1 = new Recipe(ItemType.CONCRETE);
 		recipe1.addIngredient(ItemType.WATER);
 		recipe1.addIngredient(ItemType.STONE);
-
-		this.recipes = new Recipe[] { recipe1 };
+		recipes.add(recipe1);
 	}
 }

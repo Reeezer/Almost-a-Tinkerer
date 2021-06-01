@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import ch.hearc.p2.aatinkerer.ui.HoverableItem;
 import ch.hearc.p2.aatinkerer.ui.ToolbarItem;
 
-// TODO add support for rotations of hover elements for the Merger, Splitter, furnace, mixer
 public enum FactoryType implements ToolbarItem, HoverableItem
 {
 	CONVEYOR("Ui/Icons/ConveyorIcon.png", new String[] { "Ui/Hover/Conveyor.png" }, 8, 3), //
