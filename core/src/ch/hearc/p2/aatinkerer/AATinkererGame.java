@@ -3,7 +3,6 @@ package ch.hearc.p2.aatinkerer;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 public class AATinkererGame extends Game
 {
@@ -11,6 +10,7 @@ public class AATinkererGame extends Game
 	public Input input;
 	
 	private GameScreen gameScreen;
+	private SplashScreen splashScreen;
 
 	@Override
 	public void create()
@@ -21,7 +21,13 @@ public class AATinkererGame extends Game
 		Gdx.input.setInputProcessor(input);
 		
 		gameScreen = new GameScreen(this);
+		splashScreen = new SplashScreen(this);
 		
+		setScreen(splashScreen);
+	}
+	
+	public void toGameScreen()
+	{
 		setScreen(gameScreen);
 	}
 

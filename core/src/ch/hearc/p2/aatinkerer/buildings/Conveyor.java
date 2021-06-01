@@ -22,14 +22,16 @@ public class Conveyor extends Building
 			int xOrientation = (direction == 2 || direction == 0) ? ((direction == 2) ? -1 : 1) : 0;
 			int yOrientation = (direction == 3 || direction == 1) ? ((direction == 3) ? -1 : 1) : 0;
 
-			float position = (float) item.ticksSpent / (float) transferTimeout;
+			float position = (float) item.ticksSpent / (float) type.getTransferTimeout();
 			if (index > 0) // FIXME Teleport himself when move after being stopped
 				position = position / (float) maxSize;
 
-			int xPixPosition = ((x * tileSize) + (int) (position * (float) tileSize * xOrientation) - (tileSize * xOrientation) / 2);
-			int yPixPosition = ((y * tileSize) + (int) (position * (float) tileSize * yOrientation) - (tileSize * yOrientation) / 2);
+			// FIXME if we do want to correct corner animation, we can take off (- (tileSize * xOrientation) / 2) but now the items goes completely on the next
+			// tile
+			int xPixPosition = ((x * tileSize) + (int) (position * (float) tileSize * xOrientation) /*- (tileSize * xOrientation) / 2*/);
+			int yPixPosition = ((y * tileSize) + (int) (position * (float) tileSize * yOrientation) /*- (tileSize * yOrientation) / 2*/);
 
-			item.type.render(batch, xPixPosition, yPixPosition); // FIXME Draw sprite 32x32 instead of 24x24														// correct the +4
+			item.type.render(batch, xPixPosition, yPixPosition);
 		}
 	}
 
@@ -41,6 +43,6 @@ public class Conveyor extends Building
 			return "Tile/ConveyorRight/";
 		else if (outputDirection == (inputDirection + 3) % 4)
 			return "Tile/ConveyorLeft/";
-		return null; // FIXME shouldn't happen, if it happens, then crash, instead check that on return by caller
+		return null; // shouldn't happen, if it happens, then crash, instead check that on return by caller
 	}
 }

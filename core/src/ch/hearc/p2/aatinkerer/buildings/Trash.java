@@ -10,4 +10,10 @@ public class Trash extends Building
 		this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 } };
 		this.outputPosition = null;
 	}
+	
+	@Override
+	public void addItem(Item item)
+	{
+		// Don't do anything
+	}
 }

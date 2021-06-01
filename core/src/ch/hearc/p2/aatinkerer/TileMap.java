@@ -20,6 +20,7 @@ import ch.hearc.p2.aatinkerer.buildings.Mixer;
 import ch.hearc.p2.aatinkerer.buildings.Press;
 import ch.hearc.p2.aatinkerer.buildings.Splitter;
 import ch.hearc.p2.aatinkerer.buildings.Trash;
+import ch.hearc.p2.aatinkerer.buildings.Tunnel;
 
 public class TileMap
 {
@@ -32,6 +33,8 @@ public class TileMap
 
 	private Set<Building> buildings;
 
+	private boolean isInputTunnel;
+
 	Random random;
 
 	public TileMap(int w, int h)
@@ -40,6 +43,8 @@ public class TileMap
 
 		width = w;
 		height = h;
+
+		isInputTunnel = false;
 
 		// - initialise the map to have no resources
 		// - create an empty table of conveyors
@@ -138,6 +143,7 @@ public class TileMap
 
 	private void updateOutput(int x, int y, Building[][] tabBuilding)
 	{
+		// Update all the outputs of the surrounding buildings
 		if (tabBuilding[x][y] != null)
 			tabBuilding[x][y].updateOutputs();
 
@@ -160,6 +166,8 @@ public class TileMap
 
 	public Building getNeighbourBuilding(int[] outputPosition)
 	{
+		// Check the surroundings to find a building that might be the output to the building who calls this method
+
 		int x = outputPosition[0];
 		int y = outputPosition[1];
 
@@ -253,14 +261,17 @@ public class TileMap
 		if (!tileExists(x + dx, y + dy))
 			return;
 
+		// Search for a building to connect with (in factories and conveyors)
 		checkSurroundings(conveyors, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 		checkSurroundings(factories, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 	}
 
 	private int[][] connexion(int x, int y, int direction)
 	{
+		// Default behavior
 		int[][] inputOutputPosition = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, direction } };
 
+		// Check in all directions if a corner has to be made
 		connect(x, y, direction, inputOutputPosition, false, false); // output right-side
 		connect(x, y, direction, inputOutputPosition, false, true); // output left-side
 		connect(x, y, (direction + 2) % 4, inputOutputPosition, true, false); // input right-side
@@ -269,9 +280,53 @@ public class TileMap
 		return inputOutputPosition;
 	}
 
+	public void findInputTunnel(Tunnel outputTunnel, int x, int y, int direction, int distance)
+	{
+		int dx = 0;
+		int dy = 0;
+
+		switch (direction) {
+			case 0:
+				dx = 1;
+				break;
+			case 1:
+				dy = 1;
+				break;
+			case 2:
+				dx = -1;
+				break;
+			case 3:
+				dy = -1;
+				break;
+			default:
+				System.out.println("Wrong direction : " + direction);
+				break;
+		}
+
+		for (int i = 1; i <= distance; i++) {
+			int posX = x + dx * i;
+			int posY = y + dy * i;
+
+			if (!tileExists(posX, posY) || factories[posX][posY] == null)
+				continue;
+
+			if (factories[posX][posY].getType() != FactoryType.TUNNEL)
+				continue;
+
+			Tunnel tunnel = (Tunnel) factories[posX][posY];
+
+			if (!tunnel.isInput() || tunnel.getInputs()[0][2] != direction)
+				continue;
+
+			tunnel.setOutputTunnel(outputTunnel);
+			return;
+		}
+	}
+
 	public void placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
 		if (isEmpty(x, y)) {
+			// for multi tiles (2 or 3 tiles in a row)
 			int x2 = (direction % 2 == 0) ? ((direction == 0) ? x + 1 : x - 1) : x;
 			int y2 = (direction % 2 != 0) ? ((direction == 1) ? y + 1 : y - 1) : y;
 			int x3 = (direction % 2 == 0) ? ((direction == 0) ? x + 2 : x - 2) : x;
@@ -284,6 +339,7 @@ public class TileMap
 					buildings.add(extractor);
 					break;
 				case CONVEYOR:
+					// Making corners automatically
 					Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
 					conveyors[x][y] = conveyor;
 					buildings.add(conveyor);
@@ -345,11 +401,16 @@ public class TileMap
 					buildings.add(merger);
 					break;
 				case TUNNEL:
+					isInputTunnel = !isInputTunnel;
+					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
+					factories[x][y] = tunnel;
+					buildings.add(tunnel);
 					break;
 				default:
 					System.out.println("Wrong factory type : " + factoryType);
 					break;
 			}
+			// Check for link buildings already placed
 			updateOutputs(x, y);
 		}
 	}
@@ -359,18 +420,64 @@ public class TileMap
 		if (!tileExists(x, y))
 			return;
 
+		if ((factories[x][y] != null && factories[x][y].getType() == null) || (conveyors[x][y] != null && conveyors[x][y].getType() == null))
+			return;
+
+		Building deleted = null;
+
 		// conveyors layer
 		if (conveyors[x][y] != null) {
+			deleted = conveyors[x][y];
 			buildings.remove(conveyors[x][y]);
 			conveyors[x][y] = null;
 		}
 
 		// factories layer
 		if (factories[x][y] != null) {
+			deleted = factories[x][y];
 			buildings.remove(factories[x][y]);
 			factories[x][y] = null;
 		}
+
+		// Check for link/unlink buildings already placed
 		updateOutputs(x, y);
+
+		// Remove the parts of multi tiles building in the surroundings
+		if (deleted != null)
+			for (int i = -1; i <= 1; i++)
+				for (int j = -1; j <= 1; j++)
+					delete(x + i, y + j, deleted);
+	}
+
+	public void delete(int x, int y, Building building)
+	{
+		if (!tileExists(x, y))
+			return;
+
+		Building deleted = null;
+
+		// conveyors layer
+		if (conveyors[x][y] != null && conveyors[x][y] == building) {
+			deleted = conveyors[x][y];
+			buildings.remove(conveyors[x][y]);
+			conveyors[x][y] = null;
+		}
+
+		// factories layer
+		if (factories[x][y] != null && factories[x][y] == building) {
+			deleted = factories[x][y];
+			buildings.remove(factories[x][y]);
+			factories[x][y] = null;
+		}
+
+		// Check for link/unlink buildings already placed
+		updateOutputs(x, y);
+
+		// Remove the parts of multi tiles building in the surroundings
+		if (deleted != null)
+			for (int i = -1; i <= 1; i++)
+				for (int j = -1; j <= 1; j++)
+					delete(x + i, y + j, building);
 	}
 
 	public void render(SpriteBatch batch)
@@ -413,8 +520,20 @@ public class TileMap
 
 	public void update()
 	{
-		Building.staticUpdate();
-		BuildingTile.staticUpdate();
+		for (FactoryType type : FactoryType.values()) {
+			type.transferTicksIncrease();
+			if (type.getTransferTicks() > type.getTransferTimeout()) {
+				type.resetTransferTicks();
+			}
+		}
+
+		for (FactoryType type : FactoryType.values()) {
+			type.animationTicksIncrease();
+			if (type.getAnimationTicks() > type.getAnimationTimeout()) {
+				type.resetAnimationTicks();
+				type.frameIncrease();
+			}
+		}
 
 		for (Building building : buildings) {
 			building.update();

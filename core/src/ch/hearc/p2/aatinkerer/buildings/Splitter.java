@@ -25,10 +25,8 @@ public class Splitter extends Building
 	{
 		super.updateOutputs();
 
-		if (secondOutputPosition != null) {
+		if (secondOutputPosition != null)
 			secondOutput = tilemap.getNeighbourBuilding(secondOutputPosition);
-			System.out.println("Output (" + x + ", " + y + ") : " + secondOutput);
-		}
 	}
 
 	@Override
@@ -36,11 +34,11 @@ public class Splitter extends Building
 	{
 		super.transferItem();
 
-		if (secondOutput != null && !secondOutput.isFull() && contentSize > 0 && !items.peek().justTransfered) {
+		// FIXME need an item to be selected
+		Item itemToTransfer = items.peek();
+		if (secondOutput != null && !secondOutput.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered) {
 			Item item = items.poll();
 			contentSize--;
-
-			System.out.println("Item transfered " + item.type);
 			secondOutput.addItem(item);
 		}
 	}
