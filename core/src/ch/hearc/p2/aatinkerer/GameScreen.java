@@ -98,10 +98,10 @@ public class GameScreen implements Screen
 			}
 		};
 		
-		//Popup popup = new Popup("Bleh", "Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications.", 5.f);
-		//Popup popup2 = new Popup("Salut", "Wesh la famille", 5.f);
-		//popupManager.displayPopup(popup);
-		//popupManager.displayPopup(popup2);
+		Popup popup = new Popup("Bleh", "Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications.", 5.f);
+		Popup popup2 = new Popup("Salut", "Wesh la famille", 5.f);
+		popupManager.displayPopup(popup);
+		popupManager.displayPopup(popup2);
 
 		ContractManager.init().addMilestoneListener(milestoneListener);
 	}
