@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.buildings.Assembler;
 import ch.hearc.p2.aatinkerer.buildings.Building;
-import ch.hearc.p2.aatinkerer.buildings.BuildingTile;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
 import ch.hearc.p2.aatinkerer.buildings.Cutter;
 import ch.hearc.p2.aatinkerer.buildings.Extractor;
@@ -510,8 +509,7 @@ public class TileMap
 			}
 		}
 
-		// factories FIXME ce code va effectuer le rendu des batiments à plus d'une tile plus qu'une fois, utiliser un rendu comme le code de update(), sans
-		// les convoyeurs
+		// factories
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (factories[i][j] != null) {
