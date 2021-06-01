@@ -1,7 +1,5 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
-import java.util.Arrays;
-
 import ch.hearc.p2.aatinkerer.TileMap;
 
 public class Tunnel extends Building

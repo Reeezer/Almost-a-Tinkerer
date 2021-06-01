@@ -520,8 +520,20 @@ public class TileMap
 
 	public void update()
 	{
-		Building.staticUpdate();
-		BuildingTile.staticUpdate();
+		for (FactoryType type : FactoryType.values()) {
+			type.transferTicksIncrease();
+			if (type.getTransferTicks() > type.getTransferTimeout()) {
+				type.resetTransferTicks();
+			}
+		}
+
+		for (FactoryType type : FactoryType.values()) {
+			type.animationTicksIncrease();
+			if (type.getAnimationTicks() > type.getAnimationTimeout()) {
+				type.resetAnimationTicks();
+				type.frameIncrease();
+			}
+		}
 
 		for (Building building : buildings) {
 			building.update();

@@ -25,7 +25,7 @@ public class Splitter extends Building
 	{
 		super.updateOutputs();
 
-		if (secondOutputPosition != null) 
+		if (secondOutputPosition != null)
 			secondOutput = tilemap.getNeighbourBuilding(secondOutputPosition);
 	}
 
@@ -33,10 +33,10 @@ public class Splitter extends Building
 	public void transferItem()
 	{
 		super.transferItem();
-		
-		// FIXME need an item to be selected
 
-		if (secondOutput != null && !secondOutput.isFull() && contentSize > 0 && !items.peek().justTransfered) {
+		// FIXME need an item to be selected
+		Item itemToTransfer = items.peek();
+		if (secondOutput != null && !secondOutput.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered) {
 			Item item = items.poll();
 			contentSize--;
 			secondOutput.addItem(item);
