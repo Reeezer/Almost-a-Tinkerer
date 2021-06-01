@@ -20,6 +20,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 import ch.hearc.p2.aatinkerer.ui.Clickable;
+import ch.hearc.p2.aatinkerer.ui.ContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.PopupManager;
 import ch.hearc.p2.aatinkerer.ui.Toolbar;
 
@@ -50,7 +51,10 @@ public class GameScreen implements Screen
 	private TileMap map;
 
 	private PopupManager popupManager;
+	private ContractDisplay contractDisplay;
+
 	private MilestoneListener milestoneListener;
+	private ContractListener contractListener;
 
 	public GameScreen(AATinkererGame game)
 	{
@@ -79,10 +83,13 @@ public class GameScreen implements Screen
 		unprocessedTime = 0;
 
 		factoryToolbar = new Toolbar(FactoryType.values());
-
 		uiElements.add(factoryToolbar);
 
 		popupManager = new PopupManager();
+
+		contractDisplay = new ContractDisplay();
+		uiElements.add(contractDisplay);
+
 		milestoneListener = new MilestoneListener() {
 			@Override
 			public void unlockMilestone(Milestone milestone)
@@ -97,13 +104,25 @@ public class GameScreen implements Screen
 				}
 			}
 		};
-		
-		Popup popup = new Popup("Bleh", "Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications.", 5.f);
-		Popup popup2 = new Popup("Salut", "Wesh la famille", 5.f);
-		popupManager.displayPopup(popup);
-		popupManager.displayPopup(popup2);
+
+		contractListener = new ContractListener() {
+			@Override
+			public void contractAdded(Contract contract, boolean isStoryContract)
+			{
+				popupManager.displayPopup(new Popup("New contract", contract.description(), 10.f));
+				contractDisplay.setContract(contract);
+				
+				// FIXME faire que ça calcule les bounds en fonction de la hauteur et largeur de la view pour les autres clickable aussi
+				contractDisplay.setBounds(-1, -1, width, height);
+			}
+		};
+
+		//popupManager.displayPopup(new Popup("Bleh", "Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications.", 3.f));
+		//popupManager.displayPopup(new Popup("Salut", "Wesh la famille", 3.f));
+		//popupManager.displayPopup(new Popup("Ouais ben ouais voilà quoi", "Salut yo yo ouais yo yo yo ouais ouais yo", 10.f));
 
 		ContractManager.init().addMilestoneListener(milestoneListener);
+		ContractManager.getInstance().addContractListener(contractListener);
 	}
 
 	@Override
@@ -232,7 +251,9 @@ public class GameScreen implements Screen
 				int mx = Gdx.input.getX();
 				int my = height - Gdx.input.getY();
 
-				Rectangle bounds = factoryToolbar.getBounds();
+				Rectangle bounds = clickable.getBounds();
+				System.out.println(bounds);
+				System.out.println(mx + ", " + my);
 
 				if (bounds.contains(new Vector2(mx, my)))
 				{
@@ -244,6 +265,8 @@ public class GameScreen implements Screen
 
 					// the item doesn't care about zoom so it needs to be taken into account
 					clickable.passRelativeClick((int) (ix * uiCamera.zoom), (int) (iy * uiCamera.zoom));
+
+					break; // stop checking for clicks on clickables, only one should capture the click
 				}
 			}
 
@@ -252,9 +275,10 @@ public class GameScreen implements Screen
 				// place building
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
-				// System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
+				// System.out.format("Button left at (%d, %d), converted to (%d, %d)\n",
+				// Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
-				if (factoryType != null) 
+				if (factoryType != null)
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 			}
 		}
@@ -338,7 +362,8 @@ public class GameScreen implements Screen
 				(int) (Toolbar.TEXSIZE / uiCamera.zoom));
 		factoryToolbar.render(game.batch, (int) (factoryToolbar.getBounds().x * uiCamera.zoom),
 				(int) factoryToolbar.getBounds().y);
-		
+
+		contractDisplay.render(game.batch, this.width, this.height);
 		popupManager.render(game.batch, delta, this.width, this.height);
 
 		game.batch.end();
