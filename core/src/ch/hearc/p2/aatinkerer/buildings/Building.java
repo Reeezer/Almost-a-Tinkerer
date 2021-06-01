@@ -105,6 +105,9 @@ public abstract class Building
 
 	public boolean isFull(Item item)
 	{
+		if (item == null)
+			return true;
+					
 		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
 			if (!currentIngredients.containsKey(item.type))
 				return false;
