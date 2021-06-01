@@ -107,7 +107,7 @@ public abstract class Building
 	{
 		if (item == null)
 			return true;
-					
+
 		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
 			if (!currentIngredients.containsKey(item.type))
 				return false;
@@ -177,7 +177,8 @@ public abstract class Building
 				for (int i = 0; i < recipe.getAmount(); i++) {
 					Item item = new Item();
 					item.type = recipe.getProduct();
-					output.addItem(item);
+					if (!output.isFull(item))
+						output.addItem(item);
 				}
 			}
 		}
