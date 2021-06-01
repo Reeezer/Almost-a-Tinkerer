@@ -26,7 +26,7 @@ public enum ItemType
 	FABRIC("Item/Fabric.png"),
 	GRAPHITE("Item/Graphite.png"),
 	TABLE("Item/Table.png"),
-	CHAIR("Item/Char.png"),
+	CHAIR("Item/Chair.png"),
 	DESK("Item/Desk.png"),
 	SHELF("Item/Shelf.png"),
 	LAMP("Item/Lamp.png"),
