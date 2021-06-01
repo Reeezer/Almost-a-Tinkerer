@@ -56,7 +56,7 @@ public class ContractManager
 		furnaceContract.addRequestedItem(ItemType.PLANK, 4);
 		furnaceContract.addRequestedItem(ItemType.STICK, 8);
 		storyContracts.add(furnaceContract);
-		storyMilestones.add(Milestone.UNLOCK_FURNACE);
+		storyMilestones.add(Milestone.UNLOCK_FURNACETRASH);
 		
 		Contract mixerContract = new Contract("I can finally sit! Now please make some iron");
 		mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
