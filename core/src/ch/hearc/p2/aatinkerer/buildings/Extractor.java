@@ -19,7 +19,7 @@ public class Extractor extends Building
 	}
 
 	@Override
-	public boolean isFull()
+	public boolean isFull(Item item)
 	{
 		return false;
 	}

@@ -103,9 +103,16 @@ public abstract class Building
 		return type;
 	}
 
-	public boolean isFull()
+	public boolean isFull(Item item)
 	{
-		return contentSize >= maxSize;
+		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
+			if (!currentIngredients.containsKey(item.type))
+				return false;
+			else
+				return currentIngredients.get(item.type) >= maxSize;
+		}
+		else
+			return contentSize >= maxSize;
 	}
 
 	public void addItem(Item item)
@@ -127,8 +134,9 @@ public abstract class Building
 
 	public void transferItem()
 	{
+		Item itemToTransfer = items.peek();
 		// Gives an item to the building linked (output) and verify if there is a recipe for something for that
-		if (output != null && !output.isFull() && contentSize > 0 && !items.peek().justTransfered) {
+		if (output != null && !output.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered) {
 			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
 				checkRecipes();
 			}
