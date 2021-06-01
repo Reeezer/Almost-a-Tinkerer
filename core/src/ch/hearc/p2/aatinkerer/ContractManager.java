@@ -48,33 +48,33 @@ public class ContractManager
 		storyMilestones.add(Milestone.START);
 		
 		Contract cutterContract = new Contract("We need some wood! Please cut some trees");
-		cutterContract.addRequestedItem(ItemType.WOODLOG, 40);
+		cutterContract.addRequestedItem(ItemType.WOODLOG, 5);
 		storyContracts.add(cutterContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
 		
 		Contract furnaceContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs");
-		furnaceContract.addRequestedItem(ItemType.PLANK, 40);
-		furnaceContract.addRequestedItem(ItemType.STICK, 80);
+		furnaceContract.addRequestedItem(ItemType.PLANK, 4);
+		furnaceContract.addRequestedItem(ItemType.STICK, 8);
 		storyContracts.add(furnaceContract);
 		storyMilestones.add(Milestone.UNLOCK_FURNACE);
 		
 		Contract mixerContract = new Contract("I can finally sit! Now please make some iron");
-		mixerContract.addRequestedItem(ItemType.IRONPLATE, 100);
+		mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
 		storyContracts.add(mixerContract);
 		storyMilestones.add(Milestone.UNLOCK_MIXER);
 		
 		Contract pressContract = new Contract("Our company is starting to take off! Nice! We need a runway for planes, so please make concrete");
-		pressContract.addRequestedItem(ItemType.CONCRETE, 200);
+		pressContract.addRequestedItem(ItemType.CONCRETE, 20);
 		storyContracts.add(pressContract);
 		storyMilestones.add(Milestone.UNLOCK_PRESS);
 		
 		Contract assemblerContract = new Contract("We have a lot of materials, but the problem is that we cannot assemble them, we need glue. Please compress some petroleum. Yes, exactly.");
-		assemblerContract.addRequestedItem(ItemType.GLUE, 200);
+		assemblerContract.addRequestedItem(ItemType.GLUE, 20);
 		storyContracts.add(assemblerContract);
 		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
 		
 		Contract splitterMergerContract = new Contract("Now we can finally glue everything together! Please make furniture");
-		splitterMergerContract.addRequestedItem(ItemType.CHAIR, 200);
+		splitterMergerContract.addRequestedItem(ItemType.CHAIR, 20);
 		splitterMergerContract.addRequestedItem(ItemType.FABRIC, 20); // FIXME peut être l'unlock avant comme ça on a déjà la production de matières premières pour les meubles?
 		splitterMergerContract.addRequestedItem(ItemType.DESK, 100);
 		splitterMergerContract.addRequestedItem(ItemType.TABLE, 50);

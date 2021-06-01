@@ -95,11 +95,16 @@ public class GameScreen implements Screen
 
 				if (milestone != Milestone.START)
 				{
-					Popup popup = new Popup("Milestone Unlocked", milestone.description());
+					Popup popup = new Popup("Milestone Unlocked", milestone.description(), 8.f);
 					popupManager.displayPopup(popup);
 				}
 			}
 		};
+		
+		//Popup popup = new Popup("Bleh", "Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications.", 5.f);
+		//Popup popup2 = new Popup("Salut", "Wesh la famille", 5.f);
+		//popupManager.displayPopup(popup);
+		//popupManager.displayPopup(popup2);
 
 		ContractManager.init().addMilestoneListener(milestoneListener);
 	}
@@ -334,7 +339,7 @@ public class GameScreen implements Screen
 		factoryToolbar.render(game.batch, (int) (factoryToolbar.getBounds().x * uiCamera.zoom),
 				(int) factoryToolbar.getBounds().y);
 		
-		popupManager.render(game.batch, this.width, this.height);
+		popupManager.render(game.batch, delta, this.width, this.height);
 
 		game.batch.end();
 	}
