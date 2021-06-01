@@ -48,13 +48,13 @@ public class ContractManager
 		storyMilestones.add(Milestone.START);
 		
 		Contract cutterContract = new Contract("We need some wood! Please cut some trees");
-		cutterContract.addRequestedItem(ItemType.WOODLOG, 5);
+		//cutterContract.addRequestedItem(ItemType.WOODLOG, 5);
 		storyContracts.add(cutterContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
 		
 		Contract furnaceContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs");
-		furnaceContract.addRequestedItem(ItemType.PLANK, 4);
-		furnaceContract.addRequestedItem(ItemType.STICK, 8);
+		//furnaceContract.addRequestedItem(ItemType.PLANK, 4);
+		//furnaceContract.addRequestedItem(ItemType.STICK, 8);
 		storyContracts.add(furnaceContract);
 		storyMilestones.add(Milestone.UNLOCK_FURNACETRASH);
 		

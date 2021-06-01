@@ -323,8 +323,9 @@ public class TileMap
 		}
 	}
 
-	public void placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
+	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
+		int ret = 0;
 		if (isEmpty(x, y)) {
 			// for multi tiles (2 or 3 tiles in a row)
 			int x2 = (direction % 2 == 0) ? ((direction == 0) ? x + 1 : x - 1) : x;
@@ -361,7 +362,7 @@ public class TileMap
 					break;
 				case MIXER:
 					if (!isEmpty(x2, y2))
-						return;
+						return ret;
 
 					Mixer mixer = new Mixer(this, x, y, direction, mirrored, x2, y2);
 
@@ -373,7 +374,7 @@ public class TileMap
 					break;
 				case ASSEMBLER:
 					if (!isEmpty(x2, y2) || !isEmpty(x3, y3))
-						return;
+						return ret;
 
 					Assembler assembler = new Assembler(this, x, y, direction, x2, y2, x3, y3);
 
@@ -402,6 +403,7 @@ public class TileMap
 					break;
 				case TUNNEL:
 					isInputTunnel = !isInputTunnel;
+					ret = isInputTunnel ? 1 : 2;
 					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
 					factories[x][y] = tunnel;
 					buildings.add(tunnel);
@@ -413,6 +415,7 @@ public class TileMap
 			// Check for link buildings already placed
 			updateOutputs(x, y);
 		}
+		return ret;
 	}
 
 	public void deleteBuilding(int x, int y)
