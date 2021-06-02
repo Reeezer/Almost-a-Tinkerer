@@ -10,6 +10,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -215,6 +216,8 @@ public class GameScreen implements Screen
 			factoryToolbar.setActiveItem(9);
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_0))
 			factoryToolbar.setActiveItem(10);
+		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_1))
+			factoryToolbar.setActiveItem(11);
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			factoryToolbar.setActiveItem(-1);
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
@@ -262,6 +265,11 @@ public class GameScreen implements Screen
 		if (Gdx.input.isKeyPressed(Keys.DEL))
 			map.deleteBuilding(screenToTileX(Gdx.input.getX()), screenToTileY(Gdx.input.getY()));
 
+		// display controls
+		boolean ctrlPressed = false;
+		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT))
+			ctrlPressed = true;
+
 		game.input.reset();
 
 		/* update */
@@ -279,6 +287,7 @@ public class GameScreen implements Screen
 			fpsDisplayTicks = 0;
 			// System.out.println(Gdx.graphics.getFramesPerSecond());
 		}
+
 		/* render */
 
 		Gdx.gl.glClearColor(0, 0.2f, 0.3f, 1);
@@ -327,6 +336,35 @@ public class GameScreen implements Screen
 		}
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
+
+		BitmapFont font = new BitmapFont();
+		font.getData().setScale(0.6f);
+		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
+		if (ctrlPressed) {
+			int toolbarHeight = 50;
+			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2;
+			float deltaa = (Toolbar.TEXSIZE / uiCamera.zoom);
+			for (int i = 1; i <= 9; i++)
+				font.draw(game.batch, String.format("[%d]", i), (pos + (i - 1) * deltaa + (Toolbar.TEXSIZE / 2) / uiCamera.zoom - 8) / 2, toolbarHeight);
+			font.draw(game.batch, "[Num 0]", (pos + 9 * deltaa + 6) / 2, toolbarHeight);
+			font.draw(game.batch, "[Num 1]", (pos + 10 * deltaa + 6) / 2, toolbarHeight);
+
+			font.draw(game.batch, "[R]\nRotate left", width / 6, 250);
+			font.draw(game.batch, "[Shift + R]\nRotate right", width / 6, 200);
+			font.draw(game.batch, "[T]\nMirror rotation", width / 6, 150);
+			font.draw(game.batch, "[Escape]\nUnselect", width / 6, 100);
+
+			font.draw(game.batch, "[Left click + drag]\nMove", width / 4, 350);
+			font.draw(game.batch, "[Up]\nMove up", width / 4, 300);
+			font.draw(game.batch, "[Down]\nMove down", width / 4, 250);
+			font.draw(game.batch, "[Left]\nMove left", width / 4, 200);
+			font.draw(game.batch, "[Right]\nMove right", width / 4, 150);
+			font.draw(game.batch, "[Hold Shift]\nMove faster", width / 4, 100);
+
+			font.draw(game.batch, "[Scroll]\nZoom", width / 3, 200);
+			font.draw(game.batch, "[Num +]\nZoom in", width / 3, 150);
+			font.draw(game.batch, "[Num -]\nZoom out", width / 3, 100);
+		}
 
 		factoryToolbar.setBounds((int) ((width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2), 0, (int) (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom), (int) (Toolbar.TEXSIZE / uiCamera.zoom));
 		factoryToolbar.render(game.batch, (int) (factoryToolbar.getBounds().x * uiCamera.zoom), (int) factoryToolbar.getBounds().y);
