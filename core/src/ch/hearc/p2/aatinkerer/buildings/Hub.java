@@ -2,7 +2,7 @@ package ch.hearc.p2.aatinkerer.buildings;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import ch.hearc.p2.aatinkerer.ContractManager;
+import ch.hearc.p2.aatinkerer.GameManager;
 import ch.hearc.p2.aatinkerer.TileMap;
 
 public class Hub extends Building
@@ -32,6 +32,6 @@ public class Hub extends Building
 	@Override
 	public void addItem(Item item)
 	{
-		ContractManager.getInstance().itemDelivered(item.type);
+		GameManager.getInstance().itemDelivered(item.type);
 	}
 }

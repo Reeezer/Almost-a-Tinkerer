@@ -7,14 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 // singleton
-public class ContractManager
+public class GameManager
 {
-	private static ContractManager instance = null;
+	private static GameManager instance = null;
 
 	private List<MilestoneListener> milestoneListeners;
 	private List<ContractListener> contractListeners;
+	private List<MoneyListener> moneyListeners;
 
 	private Map<ItemType, Integer> producedItems;
+	private int money;
 
 	// the int is an index for the two other arrays that are both of the same size
 	// and match
@@ -22,12 +24,12 @@ public class ContractManager
 	private ArrayList<Contract> storyContracts;
 	private ArrayList<Milestone> storyMilestones;
 
-	public static ContractManager init()
+	public static GameManager init()
 	{
-		return (instance = new ContractManager());
+		return (instance = new GameManager());
 	}
 
-	public static ContractManager getInstance()
+	public static GameManager getInstance()
 	{
 		if (instance != null)
 			return instance;
@@ -35,12 +37,14 @@ public class ContractManager
 			return init();
 	}
 
-	private ContractManager()
+	private GameManager()
 	{
 		milestoneListeners = new LinkedList<MilestoneListener>();
 		contractListeners = new LinkedList<ContractListener>();
+		moneyListeners = new LinkedList<MoneyListener>();
 
 		producedItems = new HashMap<ItemType, Integer>();
+		money = 0;
 
 		contractMilestoneIndex = 0;
 		storyContracts = new ArrayList<Contract>();
@@ -101,6 +105,8 @@ public class ContractManager
 		else
 			producedItems.put(type, 1);
 		
+		receiveMoney(type.value());
+		
 		if (contractMilestoneIndex < storyMilestones.size())
 		{
 			Contract ongoingStoryContract = storyContracts.get(contractMilestoneIndex);
@@ -119,6 +125,11 @@ public class ContractManager
 	{
 		contractListeners.add(listener);
 	}
+	
+	public void addMoneyListener(MoneyListener listener)
+	{
+		moneyListeners.add(listener);
+	}
 
 	public void unlockContract(Contract contract, boolean isStory)
 	{
@@ -132,6 +143,15 @@ public class ContractManager
 		System.out.println("Unlocking new milestone: " + milestone);
 		for (MilestoneListener listener : milestoneListeners)
 			listener.unlockMilestone(milestone);
+	}
+	
+	public void receiveMoney(int amount)
+	{
+		this.money += amount;
+		
+		System.out.println("Received money: " + amount + ", total money: " + this.money);
+		for (MoneyListener listener : moneyListeners)
+			listener.moneyReceived(amount);
 	}
 
 	public void tick()

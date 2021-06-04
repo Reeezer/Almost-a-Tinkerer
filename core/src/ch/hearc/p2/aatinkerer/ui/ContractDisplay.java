@@ -94,11 +94,11 @@ public class ContractDisplay implements Clickable
 		
 		
 		/* FIXME debug 
-		Pixmap pixmap = new Pixmap((int)this.bounds.width, (int)this.bounds.height, Pixmap.Format.RGB888);
+		Pixmap pixmap = new Pixmap((int)this.bounds.width / 2, (int)this.bounds.height / 2, Pixmap.Format.RGB888);
 		pixmap.setColor(Color.RED);
-		pixmap.fillRectangle(0, 0, (int)this.bounds.width, (int)this.bounds.height);
-		batch.draw(new Texture(pixmap), this.bounds.x, this.bounds.y);
-		pixmap.dispose();*/
+		pixmap.fillRectangle(0, 0, (int)this.bounds.width / 2, (int)this.bounds.height / 2);
+		batch.draw(new Texture(pixmap), (screenWidth / 2) - 256 - 5, (screenHeight / 2) - 34 - 5);
+		pixmap.dispose();//*/
 	}
 	
 	@Override

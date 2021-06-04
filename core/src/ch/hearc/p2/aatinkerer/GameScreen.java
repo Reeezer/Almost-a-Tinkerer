@@ -19,8 +19,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
+import ch.hearc.p2.aatinkerer.ui.BuildingRecipeDisplay;
 import ch.hearc.p2.aatinkerer.ui.Clickable;
 import ch.hearc.p2.aatinkerer.ui.ContractDisplay;
+import ch.hearc.p2.aatinkerer.ui.ItemDropdownMenu;
 import ch.hearc.p2.aatinkerer.ui.PopupManager;
 import ch.hearc.p2.aatinkerer.ui.Toolbar;
 
@@ -55,6 +57,7 @@ public class GameScreen implements Screen
 
 	private MilestoneListener milestoneListener;
 	private ContractListener contractListener;
+	private BuildingRecipeDisplay buildingRecipeDisplay;
 
 	public GameScreen(AATinkererGame game)
 	{
@@ -89,6 +92,8 @@ public class GameScreen implements Screen
 
 		contractDisplay = new ContractDisplay();
 		uiElements.add(contractDisplay);
+		
+		buildingRecipeDisplay = new BuildingRecipeDisplay();
 
 		milestoneListener = new MilestoneListener() {
 			@Override
@@ -121,8 +126,8 @@ public class GameScreen implements Screen
 		//popupManager.displayPopup(new Popup("Salut", "Wesh la famille", 3.f));
 		//popupManager.displayPopup(new Popup("Ouais ben ouais voilà quoi", "Salut yo yo ouais yo yo yo ouais ouais yo", 10.f));
 
-		ContractManager.init().addMilestoneListener(milestoneListener);
-		ContractManager.getInstance().addContractListener(contractListener);
+		GameManager.init().addMilestoneListener(milestoneListener);
+		GameManager.getInstance().addContractListener(contractListener);
 	}
 
 	@Override
@@ -238,6 +243,7 @@ public class GameScreen implements Screen
 			factoryToolbar.setActiveItem(-1);
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
+		// FIXME ça marche pas pour le contract display
 		// handle left mouse click
 		if (Gdx.input.isButtonPressed(Buttons.LEFT))
 		{
@@ -298,7 +304,7 @@ public class GameScreen implements Screen
 			map.update();
 
 			// FIXME do all logic updates here
-			ContractManager.getInstance().tick();
+			GameManager.getInstance().tick();
 		}
 
 		if (fpsDisplayTicks++ > 60)
@@ -365,6 +371,10 @@ public class GameScreen implements Screen
 
 		contractDisplay.render(game.batch, this.width, this.height);
 		popupManager.render(game.batch, delta, this.width, this.height);
+		buildingRecipeDisplay.render(game.batch, this.width, this.height);
+		
+		ItemDropdownMenu itemMenu = new ItemDropdownMenu();
+		itemMenu.render(game.batch, Gdx.input.getX() / 2, (this.height - Gdx.input.getY()) / 2);
 
 		game.batch.end();
 	}
