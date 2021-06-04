@@ -2,6 +2,7 @@ package ch.hearc.p2.aatinkerer.buildings;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -47,7 +48,8 @@ public abstract class Building
 
 	protected static int ticks = 0;
 
-	protected Recipe[] recipes;
+	protected List<Recipe> recipes;
+	protected int recipeIndex;
 
 	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames, FactoryType type)
 	{
@@ -107,7 +109,7 @@ public abstract class Building
 	{
 		if (item == null)
 			return true;
-					
+
 		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
 			if (!currentIngredients.containsKey(item.type))
 				return false;
@@ -177,7 +179,8 @@ public abstract class Building
 				for (int i = 0; i < recipe.getAmount(); i++) {
 					Item item = new Item();
 					item.type = recipe.getProduct();
-					output.addItem(item);
+					if (!output.isFull(item))
+						output.addItem(item);
 				}
 			}
 		}
@@ -197,5 +200,15 @@ public abstract class Building
 				item.justTransfered = false;
 			}
 		}
+	}
+
+	public List<Recipe> getRecipes()
+	{
+		return recipes;
+	}
+
+	public void setRecipe(Recipe recipe)
+	{
+		recipeIndex = recipes.indexOf(recipe);
 	}
 }

@@ -1,5 +1,7 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
+import java.util.ArrayList;
+
 import ch.hearc.p2.aatinkerer.ItemType;
 import ch.hearc.p2.aatinkerer.Recipe;
 import ch.hearc.p2.aatinkerer.TileMap;
@@ -17,18 +19,22 @@ public class Cutter extends Building
 
 	private void createRecipes()
 	{
+		this.recipes = new ArrayList<Recipe>();
+
 		Recipe recipe1 = new Recipe(ItemType.IRONROD, 2);
 		recipe1.addIngredient(ItemType.IRONPLATE);
+		recipes.add(recipe1);
 
 		Recipe recipe2 = new Recipe(ItemType.COPPERWIRE, 2);
 		recipe2.addIngredient(ItemType.COPPERPLATE);
+		recipes.add(recipe2);
 
 		Recipe recipe3 = new Recipe(ItemType.PLANK, 2);
 		recipe3.addIngredient(ItemType.WOODLOG);
+		recipes.add(recipe3);
 
 		Recipe recipe4 = new Recipe(ItemType.STICK, 2);
 		recipe4.addIngredient(ItemType.PLANK);
-
-		this.recipes = new Recipe[] { recipe1, recipe2, recipe3, recipe4 };
+		recipes.add(recipe4);
 	}
 }

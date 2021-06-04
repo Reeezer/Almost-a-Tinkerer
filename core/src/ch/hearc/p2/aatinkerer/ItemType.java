@@ -37,8 +37,8 @@ public enum ItemType
 	BOX("Item/Crate.png"),
 	PLANT("Item/Plant.png"),
 	PENCIL("Item/Pencil.png"),
-	WALLPAPER("Item/None.png"),
-	CARPET("Item/None.png");
+	WALLPAPER("Item/Wallpaper.png"),
+	CARPET("Item/Carpet.png");
 
 	private Texture texture;
 

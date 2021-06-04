@@ -1,5 +1,7 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
+import java.util.ArrayList;
+
 import ch.hearc.p2.aatinkerer.ItemType;
 import ch.hearc.p2.aatinkerer.Recipe;
 import ch.hearc.p2.aatinkerer.TileMap;
@@ -17,12 +19,14 @@ public class Press extends Building
 
 	private void createRecipes()
 	{
+		
+
 		Recipe recipe1 = new Recipe(ItemType.GLUE);
 		recipe1.addIngredient(ItemType.OIL);
+		recipes.add(recipe1);
 
-		Recipe recipe2 = new Recipe(ItemType.GRAPHITE);	
+		Recipe recipe2 = new Recipe(ItemType.GRAPHITE);
 		recipe2.addIngredient(ItemType.COAL);
-
-		this.recipes = new Recipe[] { recipe1, recipe2 };
+		recipes.add(recipe2);
 	}
 }
