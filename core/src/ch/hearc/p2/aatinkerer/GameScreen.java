@@ -100,8 +100,7 @@ public class GameScreen implements Screen
 			}
 		};
 
-		Popup popup = new Popup("Bleh", "Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications.",
-				5.f);
+		Popup popup = new Popup("Bleh", "Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications.", 5.f);
 		Popup popup2 = new Popup("Salut", "Wesh la famille", 5.f);
 		popupManager.displayPopup(popup);
 		popupManager.displayPopup(popup2);
@@ -317,7 +316,10 @@ public class GameScreen implements Screen
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
 		if (factoryType != null) {
-			factoryType.setMirrored(mirrored || isInputTunnel);
+			if (factoryType == FactoryType.TUNNEL)
+				factoryType.setMirrored(isInputTunnel);
+			else
+				factoryType.setMirrored(mirrored);
 			Texture hoverTexture = factoryType.getHoverTexture();
 			int x = Gdx.input.getX();
 			int y = height - Gdx.input.getY();
