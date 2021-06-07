@@ -19,8 +19,8 @@ public class Press extends Building
 
 	private void createRecipes()
 	{
+		this.recipes = new ArrayList<Recipe>();
 		
-
 		Recipe recipe1 = new Recipe(ItemType.GLUE);
 		recipe1.addIngredient(ItemType.OIL);
 		recipes.add(recipe1);

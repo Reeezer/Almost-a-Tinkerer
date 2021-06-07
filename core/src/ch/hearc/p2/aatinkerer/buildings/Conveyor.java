@@ -17,7 +17,7 @@ public class Conveyor extends Building
 	{
 		int index = -1;
 		for (Item item : items) {
-			// FIXME On corner conveyor, move items in diagonal or something else
+			// move item on conveyor depends on time spent on it
 			index++;
 			int xOrientation = (direction == 2 || direction == 0) ? ((direction == 2) ? -1 : 1) : 0;
 			int yOrientation = (direction == 3 || direction == 1) ? ((direction == 3) ? -1 : 1) : 0;
@@ -26,8 +26,6 @@ public class Conveyor extends Building
 			if (index > 0) // FIXME Teleport himself when move after being stopped
 				position = position / (float) maxSize;
 
-			// FIXME if we do want to correct corner animation, we can take off (- (tileSize * xOrientation) / 2) but now the items goes completely on the next
-			// tile
 			int xPixPosition = ((x * tileSize) + (int) (position * (float) tileSize * xOrientation) /*- (tileSize * xOrientation) / 2*/);
 			int yPixPosition = ((y * tileSize) + (int) (position * (float) tileSize * yOrientation) /*- (tileSize * yOrientation) / 2*/);
 

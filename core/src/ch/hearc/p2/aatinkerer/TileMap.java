@@ -159,6 +159,7 @@ public class TileMap
 
 	public void updateOutputs(int x, int y)
 	{
+		// update buildings on both table
 		updateOutput(x, y, conveyors);
 		updateOutput(x, y, factories);
 	}
@@ -281,6 +282,8 @@ public class TileMap
 
 	public void findInputTunnel(Tunnel outputTunnel, int x, int y, int direction, int distance)
 	{
+		// Method called by an the outputTunnel to connect himself with an input one
+
 		int dx = 0;
 		int dy = 0;
 
@@ -306,17 +309,21 @@ public class TileMap
 			int posX = x + dx * i;
 			int posY = y + dy * i;
 
+			// If there is no building on the tile
 			if (!tileExists(posX, posY) || factories[posX][posY] == null)
 				continue;
 
+			// If the building is not a tunnel
 			if (factories[posX][posY].getType() != FactoryType.TUNNEL)
 				continue;
 
 			Tunnel tunnel = (Tunnel) factories[posX][posY];
 
+			// If the tunnel is not an input or the direction is not the right one
 			if (!tunnel.isInput() || tunnel.getInputs()[0][2] != direction)
 				continue;
 
+			// If all conditions are great the input tunnel can set his output to the tunnel who has called this method
 			tunnel.setOutputTunnel(outputTunnel);
 			return;
 		}
@@ -326,7 +333,7 @@ public class TileMap
 	{
 		int ret = 0;
 		if (isEmpty(x, y)) {
-			// for multi tiles (2 or 3 tiles in a row)
+			// For multi-tiles (2 or 3 tiles in a row)
 			int x2 = (direction % 2 == 0) ? ((direction == 0) ? x + 1 : x - 1) : x;
 			int y2 = (direction % 2 != 0) ? ((direction == 1) ? y + 1 : y - 1) : y;
 			int x3 = (direction % 2 == 0) ? ((direction == 0) ? x + 2 : x - 2) : x;
@@ -365,6 +372,7 @@ public class TileMap
 
 					Mixer mixer = new Mixer(this, x, y, direction, mirrored, x2, y2);
 
+					// Multi-tiles building
 					factories[x][y] = mixer;
 					factories[x2][y2] = mixer;
 					buildings.add(mixer);
@@ -377,6 +385,7 @@ public class TileMap
 
 					Assembler assembler = new Assembler(this, x, y, direction, x2, y2, x3, y3);
 
+					// Multi-tiles building
 					factories[x][y] = assembler;
 					factories[x2][y2] = assembler;
 					factories[x3][y3] = assembler;
@@ -401,8 +410,10 @@ public class TileMap
 					buildings.add(merger);
 					break;
 				case TUNNEL:
+					// For the hover icons rotation
 					isInputTunnel = !isInputTunnel;
 					ret = isInputTunnel ? 1 : 2;
+					// We do want to place an input tunnel and right after be able to place the output one
 					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
 					factories[x][y] = tunnel;
 					buildings.add(tunnel);
@@ -422,6 +433,7 @@ public class TileMap
 		if (!tileExists(x, y))
 			return;
 
+		// If it is the hub
 		if ((factories[x][y] != null && factories[x][y].getType() == null) || (conveyors[x][y] != null && conveyors[x][y].getType() == null))
 			return;
 
@@ -521,6 +533,7 @@ public class TileMap
 
 	public void update()
 	{
+		// update transfer ticks
 		for (FactoryType type : FactoryType.values()) {
 			type.transferTicksIncrease();
 			if (type.getTransferTicks() > type.getTransferTimeout()) {
@@ -528,6 +541,7 @@ public class TileMap
 			}
 		}
 
+		// update animation ticks
 		for (FactoryType type : FactoryType.values()) {
 			type.animationTicksIncrease();
 			if (type.getAnimationTicks() > type.getAnimationTimeout()) {
@@ -536,6 +550,7 @@ public class TileMap
 			}
 		}
 
+		// update buildings
 		for (Building building : buildings) {
 			building.update();
 		}

@@ -110,6 +110,7 @@ public abstract class Building
 		if (item == null)
 			return true;
 
+		// We do want to be able to store multiple itemtype in multiple amount
 		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
 			if (!currentIngredients.containsKey(item.type))
 				return false;
@@ -123,37 +124,39 @@ public abstract class Building
 	public void addItem(Item item)
 	{
 		// Called by the building who gives the item to insert in this building the item
-		if (contentSize++ >= maxSize)
-			System.err.format("Item %s inserted despite building being full\n", item.type.toString());
-
+		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
+			if (currentIngredients.containsKey(item.type))
+				currentIngredients.put(item.type, currentIngredients.get(item.type) + 1);
+			else
+				currentIngredients.put(item.type, 1);
+		}
 		items.add(item);
-
-		if (currentIngredients.containsKey(item.type))
-			currentIngredients.put(item.type, currentIngredients.get(item.type) + 1);
-		else
-			currentIngredients.put(item.type, 1);
 
 		item.ticksSpent = 0;
 		item.justTransfered = true;
+		contentSize++;
 	}
 
 	public void transferItem()
 	{
 		Item itemToTransfer = items.peek();
-		// Gives an item to the building linked (output) and verify if there is a recipe for something for that
-		if (output != null && !output.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered) {
+		// Check if the building can make a recipe or otherwise if it has an item to transfer
+		if (output != null && contentSize > 0) {
 			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
-				checkRecipes();
+				if (!output.isFull(itemToTransfer))
+					checkRecipes();
 			}
 			else {
-				Item item = items.poll();
-				contentSize--;
-				output.addItem(item);
+				if (!output.isFull(itemToTransfer) && !itemToTransfer.justTransfered) {
+					Item item = items.poll();
+					contentSize--;
+					output.addItem(item);
+				}
 			}
 		}
 	}
 
-	public void checkRecipes()
+	private void checkRecipes()
 	{
 		for (Recipe recipe : recipes) {
 			// Check if there are enough items for the recipe
@@ -186,22 +189,6 @@ public abstract class Building
 		}
 	}
 
-	public void update()
-	{
-		if (type != null) {
-			if (type.getTransferTicks() == type.getTransferTimeout()) {
-				transferItem();
-			}
-		}
-
-		for (Item item : items) {
-			if (item.ticksSpent < type.getTransferTimeout()) {
-				item.ticksSpent++;
-				item.justTransfered = false;
-			}
-		}
-	}
-
 	public List<Recipe> getRecipes()
 	{
 		return recipes;
@@ -210,5 +197,23 @@ public abstract class Building
 	public void setRecipe(Recipe recipe)
 	{
 		recipeIndex = recipes.indexOf(recipe);
+	}
+
+	public void update()
+	{
+		// transfer item if it is the right time
+		if (type != null) {
+			if (type.getTransferTicks() == type.getTransferTimeout()) {
+				transferItem();
+			}
+		}
+
+		// update items
+		for (Item item : items) {
+			if (item.ticksSpent < type.getTransferTimeout()) {
+				item.ticksSpent++;
+				item.justTransfered = false;
+			}
+		}
 	}
 }

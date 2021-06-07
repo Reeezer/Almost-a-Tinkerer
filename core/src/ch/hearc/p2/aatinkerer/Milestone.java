@@ -9,7 +9,7 @@ public enum Milestone
 {
 	START("Unlocks base items", FactoryType.CONVEYOR, FactoryType.EXTRACTOR),
 	UNLOCK_CUTTERTUNNEL("The cutter and tunnel are now unlocked", FactoryType.CUTTER, FactoryType.TUNNEL),
-	UNLOCK_FURNACETRASH("The furnace is now unlocked", FactoryType.FURNACE),
+	UNLOCK_FURNACETRASH("The furnace is now unlocked", FactoryType.FURNACE, FactoryType.TRASH),
 	UNLOCK_MIXER("The mixer is now unlocked", FactoryType.MIXER),
 	UNLOCK_PRESS("The press is now unlocked", FactoryType.PRESS),
 	UNLOCK_ASSEMBLERMERGER("The assembler and the merger are now unlocked", FactoryType.ASSEMBLER, FactoryType.MERGER),

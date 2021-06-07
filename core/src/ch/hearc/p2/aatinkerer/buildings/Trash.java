@@ -14,6 +14,6 @@ public class Trash extends Building
 	@Override
 	public void addItem(Item item)
 	{
-		// Don't do anything
+		// Don't do anything and GC will delete the item (in transferItem method)
 	}
 }
