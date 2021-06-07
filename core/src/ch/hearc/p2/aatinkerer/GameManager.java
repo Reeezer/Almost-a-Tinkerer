@@ -55,30 +55,30 @@ public class GameManager
 		storyMilestones.add(Milestone.START);
 
 		Contract cutterContract = new Contract("We need some wood! Please cut some trees");
-		cutterContract.addRequestedItem(ItemType.WOODLOG, 10);
+		//cutterContract.addRequestedItem(ItemType.WOODLOG, 10);
 		storyContracts.add(cutterContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
 
 		Contract furnaceContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs");
-		furnaceContract.addRequestedItem(ItemType.PLANK, 10);
-		furnaceContract.addRequestedItem(ItemType.STICK, 10);
+		//furnaceContract.addRequestedItem(ItemType.PLANK, 10);
+		//furnaceContract.addRequestedItem(ItemType.STICK, 10);
 		storyContracts.add(furnaceContract);
 		storyMilestones.add(Milestone.UNLOCK_FURNACETRASH);
 
 		Contract mixerContract = new Contract("I can finally sit! Now please make some iron");
-		mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
+		//mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
 		storyContracts.add(mixerContract);
 		storyMilestones.add(Milestone.UNLOCK_MIXER);
 
 		Contract pressContract = new Contract(
 				"Our company is starting to take off! Nice! We need a runway for planes, so please make concrete");
-		pressContract.addRequestedItem(ItemType.CONCRETE, 10);
+		//pressContract.addRequestedItem(ItemType.CONCRETE, 10);
 		storyContracts.add(pressContract);
 		storyMilestones.add(Milestone.UNLOCK_PRESS);
 
 		Contract assemblerContract = new Contract(
 				"We have a lot of materials, but the problem is that we cannot assemble them, we need glue. Please compress some petroleum. Yes, exactly.");
-		assemblerContract.addRequestedItem(ItemType.GLUE, 10);
+		//assemblerContract.addRequestedItem(ItemType.GLUE, 10);
 		storyContracts.add(assemblerContract);
 		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
 

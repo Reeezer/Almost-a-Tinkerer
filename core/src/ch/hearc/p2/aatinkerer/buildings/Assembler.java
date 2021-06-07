@@ -17,6 +17,7 @@ public class Assembler extends Building
 		createRecipes();
 		
 		this.canSelectRecipe = true;
+		this.selectedRecipe = this.recipes.get(0);
 	}
 
 	private void createRecipes()

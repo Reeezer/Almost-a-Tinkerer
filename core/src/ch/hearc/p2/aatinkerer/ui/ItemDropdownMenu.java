@@ -45,6 +45,7 @@ public class ItemDropdownMenu implements UIElement
 		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
 
 		this.bounds = new Rectangle();
+		this.listeners = new LinkedList<ItemDropdownListener>();
 	}
 
 	public void setItems(List<ItemType> items)
@@ -94,6 +95,7 @@ public class ItemDropdownMenu implements UIElement
 
 	public void selectItem(ItemType type)
 	{
+		System.out.println("Bonsoir " + type.name());
 		for (ItemDropdownListener listener : this.listeners)
 			listener.itemSelected(type);
 	}
@@ -123,7 +125,8 @@ public class ItemDropdownMenu implements UIElement
 			int yInList = y - this.bottomBorderRegion.getRegionHeight();
 			int itemno = yInList / this.itemRegion.getRegionHeight();
 			
-			selectItem(this.items.get(itemno));
+			if (itemno < this.items.size())
+				selectItem(this.items.get(itemno));
 		}
 	}
 

@@ -77,10 +77,15 @@ public class BuildingRecipeDisplay implements UIElement
 			@Override
 			public void itemSelected(ItemType type)
 			{
-				//if (BuildingRecipeDisplay.this.building != null)
-				//	BuildingRecipeDisplay.this.building.setRecipeTarget(type);
+				if (BuildingRecipeDisplay.this.building != null)
+					BuildingRecipeDisplay.this.building.setRecipeTarget(type);
+				
+				setBuilding(building);
+				
+				System.out.println("MAHEA HOOOOOO " + type.name()); // FIXME
 			}
 		};
+		dropdownMenu.addListener(listener);
 	}
 	
 	@Override
@@ -129,11 +134,11 @@ public class BuildingRecipeDisplay implements UIElement
 		if (this.building != null)
 		{
 			// aussi récupérer les recettes du batiment pour l'affichage
-			Recipe[] recipes = this.building.recipes();
+			List<Recipe> recipes = this.building.recipes();
 
-			if (recipes != null && recipes.length > 0)
+			if (recipes != null && recipes.size() > 0)
 			{
-				this.selectedRecipe = recipes[0];
+				this.selectedRecipe = this.building.activeRecipe();
 			}
 		}
 		else

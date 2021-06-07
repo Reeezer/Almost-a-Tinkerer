@@ -11,18 +11,16 @@ import ch.hearc.p2.aatinkerer.ItemType;
 import ch.hearc.p2.aatinkerer.Recipe;
 import ch.hearc.p2.aatinkerer.TileMap;
 
-public abstract class Building
-{
-	protected class Item
-	{
+public abstract class Building {
+	protected class Item {
 		public ItemType type;
 		public long ticksSpent;
-		// necessary because otherwise an item might get teleported to the other side of a conveyor system if updates happen in the right order (also know as
+		// necessary because otherwise an item might get teleported to the other side of
+		// a conveyor system if updates happen in the right order (also know as
 		// black magic)
 		public boolean justTransfered;
 
-		public Item()
-		{
+		public Item() {
 			type = ItemType.NONE;
 			ticksSpent = 0;
 			justTransfered = false;
@@ -49,11 +47,11 @@ public abstract class Building
 	protected static int ticks = 0;
 
 	protected List<Recipe> recipes;
-	protected int recipeIndex;
+	protected Recipe selectedRecipe;
 	protected boolean canSelectRecipe;
 
-	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames, FactoryType type)
-	{
+	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames,
+			FactoryType type) {
 		this.tilemap = tilemap;
 		this.type = type;
 
@@ -72,15 +70,14 @@ public abstract class Building
 		this.currentIngredients = new HashMap<ItemType, Integer>();
 		this.recipes = null;
 		this.canSelectRecipe = false;
+
 	}
-	
-	public boolean canSelectRecipe()
-	{
+
+	public boolean canSelectRecipe() {
 		return this.canSelectRecipe;
 	}
 
-	public void render(SpriteBatch batch, int tileSize)
-	{
+	public void render(SpriteBatch batch, int tileSize) {
 		for (int i = 0; i < tiles.length; i++) {
 			BuildingTile tile = tiles[i];
 
@@ -91,47 +88,42 @@ public abstract class Building
 		}
 	}
 
-	public int[][] getInputs()
-	{
+	public int[][] getInputs() {
 		return inputPositions;
 	}
 
-	public int[] getOutput()
-	{
+	public int[] getOutput() {
 		return outputPosition;
 	}
 
-	public void updateOutputs()
-	{
+	public void updateOutputs() {
 		if (outputPosition != null)
 			output = tilemap.getNeighbourBuilding(outputPosition);
 	}
 
-	public FactoryType getType()
-	{
+	public FactoryType getType() {
 		return type;
 	}
 
-	public boolean isFull(Item item)
-	{
+	public boolean isFull(Item item) {
 		if (item == null)
 			return true;
 
 		// We do want to be able to store multiple itemtype in multiple amount
-		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
+		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE
+				|| type == FactoryType.MIXER || type == FactoryType.PRESS) {
 			if (!currentIngredients.containsKey(item.type))
 				return false;
 			else
 				return currentIngredients.get(item.type) >= maxSize;
-		}
-		else
+		} else
 			return contentSize >= maxSize;
 	}
 
-	public void addItem(Item item)
-	{
+	public void addItem(Item item) {
 		// Called by the building who gives the item to insert in this building the item
-		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
+		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE
+				|| type == FactoryType.MIXER || type == FactoryType.PRESS) {
 			if (currentIngredients.containsKey(item.type))
 				currentIngredients.put(item.type, currentIngredients.get(item.type) + 1);
 			else
@@ -144,16 +136,16 @@ public abstract class Building
 		contentSize++;
 	}
 
-	public void transferItem()
-	{
+	public void transferItem() {
 		Item itemToTransfer = items.peek();
-		// Check if the building can make a recipe or otherwise if it has an item to transfer
+		// Check if the building can make a recipe or otherwise if it has an item to
+		// transfer
 		if (output != null && contentSize > 0) {
-			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
+			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE
+					|| type == FactoryType.MIXER || type == FactoryType.PRESS) {
 				if (!output.isFull(itemToTransfer))
 					checkRecipes();
-			}
-			else {
+			} else {
 				if (!output.isFull(itemToTransfer) && !itemToTransfer.justTransfered) {
 					Item item = items.poll();
 					contentSize--;
@@ -163,9 +155,40 @@ public abstract class Building
 		}
 	}
 
-	private void checkRecipes()
-	{
-		for (Recipe recipe : recipes) {
+	private void checkRecipes() {
+		if (this.selectedRecipe == null) {
+			for (Recipe recipe : recipes) { // FIXME code dupliqué
+
+				// Check if there are enough items for the recipe
+				boolean makeIt = true;
+				Map<ItemType, Integer> ingredients = recipe.getIngredients();
+				for (ItemType item : ingredients.keySet()) {
+					if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item)) {
+						makeIt = false; // if there is not enough item for this recipe
+						break;
+					}
+				}
+
+				// if we have enough ingredients to make the recipe
+				if (makeIt) {
+					// Make the recipe by decreasing the amount of all the ingredients
+					for (ItemType item : ingredients.keySet()) {
+						int nb = ingredients.get(item);
+						currentIngredients.put(item, currentIngredients.get(item) - nb);
+						contentSize -= nb;
+					}
+
+					// Adding the item produced
+					for (int i = 0; i < recipe.getAmount(); i++) {
+						Item item = new Item();
+						item.type = recipe.getProduct();
+						if (!output.isFull(item))
+							output.addItem(item);
+					}
+				}
+			}
+		} else {
+			Recipe recipe = this.selectedRecipe;
 			// Check if there are enough items for the recipe
 			boolean makeIt = true;
 			Map<ItemType, Integer> ingredients = recipe.getIngredients();
@@ -194,20 +217,30 @@ public abstract class Building
 				}
 			}
 		}
+
 	}
 
-	public List<Recipe> getRecipes()
-	{
+	public List<Recipe> getRecipes() {
 		return recipes;
 	}
 
-	public void setRecipe(Recipe recipe)
-	{
-		recipeIndex = recipes.indexOf(recipe);
+	public void setRecipe(Recipe recipe) {
+		if (this.recipes != null && this.recipes.contains(recipe))
+			this.selectedRecipe = recipe;
 	}
 
-	public void update()
-	{
+	public void setRecipeTarget(ItemType type) {
+		for (Recipe recipe : this.recipes) {
+			if (recipe.getProduct() == type)
+				setRecipe(recipe);
+		}
+	}
+
+	public Recipe activeRecipe() {
+		return this.selectedRecipe;
+	}
+
+	public void update() {
 		// transfer item if it is the right time
 		if (type != null) {
 			if (type.getTransferTicks() == type.getTransferTimeout()) {
@@ -223,9 +256,8 @@ public abstract class Building
 			}
 		}
 	}
-	
-	public Recipe[] recipes()
-	{
+
+	public List<Recipe> recipes() {
 		return this.recipes;
 	}
 }

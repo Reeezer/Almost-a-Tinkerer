@@ -251,7 +251,8 @@ public class GameScreen implements Screen
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 		{
 			factoryToolbar.setActiveItem(-1);
-			buildingRecipeDisplay.setBuilding(null); // FIXME implement close method for clickable
+			buildingRecipeDisplay.setBuilding(null);
+			itemDropdownMenu.setItems(null);
 		}
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
@@ -310,7 +311,10 @@ public class GameScreen implements Screen
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
 						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
 					else
+					{
 						buildingRecipeDisplay.setBuilding(null);
+						itemDropdownMenu.setItems(null);
+					}
 				}
 			}
 		}
