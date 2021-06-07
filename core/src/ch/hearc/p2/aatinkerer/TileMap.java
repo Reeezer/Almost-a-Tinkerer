@@ -539,6 +539,14 @@ public class TileMap
 			building.update();
 		}
 	}
+	
+	public Building factoryAt(int x, int y)
+	{
+		if (tileExists(x, y))
+			return factories[x][y];
+		else
+			return null;
+	}
 
 	public void dispose()
 	{

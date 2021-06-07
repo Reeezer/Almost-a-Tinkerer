@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 
-public class Toolbar implements Clickable
+public class Toolbar implements UIElement
 {
 	private ArrayList<ToolbarItem> items;
 	private int activeItemIndex;
@@ -34,10 +34,16 @@ public class Toolbar implements Clickable
 		
 		backgroundTexture = new Texture(Gdx.files.internal("Ui/Icons/IconBackground.png"));
 		activeBackgroundTexture = new Texture(Gdx.files.internal("Ui/Icons/IconBackgroundSelected.png"));
+		
+		this.bounds = new Rectangle();
 	}
 
-	public void render(SpriteBatch batch, int x, int y)
+	@Override
+	public void render(SpriteBatch batch, float delta)
 	{
+		int x = (int) this.bounds.x;
+		int y = (int) this.bounds.y;
+		
 		// background
 		for (int i = 0; i < items.size(); i++)
 		{
@@ -80,9 +86,14 @@ public class Toolbar implements Clickable
 	}
 
 	@Override
-	public void setBounds(int x, int y, int w, int h)
+	public void setScreenSize(int w, int h)
 	{
-		bounds = new Rectangle(x, y, w, h);
+		int toolbarWidth = FactoryType.values().length * Toolbar.TEXSIZE;
+		
+		int x = (w - toolbarWidth) / 2;
+		int y = 0;
+		
+		bounds = new Rectangle(x, y, toolbarWidth, Toolbar.TEXSIZE);
 	}
 
 	// FIXME faire qu'on puisse pas sélectionner un truc disabled
@@ -96,5 +107,11 @@ public class Toolbar implements Clickable
 	public void setItemEnabled(ToolbarItem item, boolean enabled)
 	{
 		items.get(items.indexOf(item)).setEnabled(enabled);
+	}
+	
+	@Override
+	public boolean visible()
+	{
+		return true;
 	}
 }

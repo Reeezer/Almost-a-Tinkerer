@@ -18,12 +18,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.TimeUtils;
 
+import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 import ch.hearc.p2.aatinkerer.ui.BuildingRecipeDisplay;
-import ch.hearc.p2.aatinkerer.ui.Clickable;
+import ch.hearc.p2.aatinkerer.ui.UIElement;
 import ch.hearc.p2.aatinkerer.ui.ContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.ItemDropdownMenu;
-import ch.hearc.p2.aatinkerer.ui.PopupManager;
+import ch.hearc.p2.aatinkerer.ui.NotificationManager;
+import ch.hearc.p2.aatinkerer.ui.Notification;
 import ch.hearc.p2.aatinkerer.ui.Toolbar;
 
 public class GameScreen implements Screen
@@ -34,7 +36,7 @@ public class GameScreen implements Screen
 	private OrthographicCamera uiCamera;
 	private OrthographicCamera hoverCamera;
 
-	private List<Clickable> uiElements;
+	private List<UIElement> uiElements;
 
 	private int x, y;
 	private int width, height;
@@ -52,12 +54,13 @@ public class GameScreen implements Screen
 
 	private TileMap map;
 
-	private PopupManager popupManager;
+	private NotificationManager notificationManager;
 	private ContractDisplay contractDisplay;
 
 	private MilestoneListener milestoneListener;
 	private ContractListener contractListener;
 	private BuildingRecipeDisplay buildingRecipeDisplay;
+	private ItemDropdownMenu itemDropdownMenu;
 
 	public GameScreen(AATinkererGame game)
 	{
@@ -67,9 +70,7 @@ public class GameScreen implements Screen
 		uiCamera = new OrthographicCamera();
 		hoverCamera = new OrthographicCamera();
 
-		uiElements = new ArrayList<Clickable>();
-
-		uiCamera.zoom = 0.5f;
+		uiElements = new ArrayList<UIElement>();
 
 		map = new TileMap(250, 250);
 
@@ -88,12 +89,16 @@ public class GameScreen implements Screen
 		factoryToolbar = new Toolbar(FactoryType.values());
 		uiElements.add(factoryToolbar);
 
-		popupManager = new PopupManager();
+		notificationManager = new NotificationManager();
+		uiElements.add(notificationManager);
 
 		contractDisplay = new ContractDisplay();
 		uiElements.add(contractDisplay);
-		
-		buildingRecipeDisplay = new BuildingRecipeDisplay();
+
+		itemDropdownMenu = new ItemDropdownMenu();
+		buildingRecipeDisplay = new BuildingRecipeDisplay(itemDropdownMenu);
+		uiElements.add(buildingRecipeDisplay);
+		uiElements.add(itemDropdownMenu);
 
 		milestoneListener = new MilestoneListener() {
 			@Override
@@ -104,8 +109,8 @@ public class GameScreen implements Screen
 
 				if (milestone != Milestone.START)
 				{
-					Popup popup = new Popup("Milestone Unlocked", milestone.description(), 8.f);
-					popupManager.displayPopup(popup);
+					Notification popup = new Notification("Milestone Unlocked", milestone.description(), 8.f);
+					notificationManager.displayPopup(popup);
 				}
 			}
 		};
@@ -114,17 +119,19 @@ public class GameScreen implements Screen
 			@Override
 			public void contractAdded(Contract contract, boolean isStoryContract)
 			{
-				popupManager.displayPopup(new Popup("New contract", contract.description(), 10.f));
+				notificationManager.displayPopup(new Notification("New contract", contract.description(), 10.f));
 				contractDisplay.setContract(contract);
-				
-				// FIXME faire que ça calcule les bounds en fonction de la hauteur et largeur de la view pour les autres clickable aussi
-				contractDisplay.setBounds(-1, -1, width, height);
 			}
 		};
 
-		//popupManager.displayPopup(new Popup("Bleh", "Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications. Hello everybody, today we are going to write a huge text so we can try notifications.", 3.f));
-		//popupManager.displayPopup(new Popup("Salut", "Wesh la famille", 3.f));
-		//popupManager.displayPopup(new Popup("Ouais ben ouais voilà quoi", "Salut yo yo ouais yo yo yo ouais ouais yo", 10.f));
+		// popupManager.displayPopup(new Popup("Bleh", "Hello everybody, today we are
+		// going to write a huge text so we can try notifications. Hello everybody,
+		// today we are going to write a huge text so we can try notifications. Hello
+		// everybody, today we are going to write a huge text so we can try
+		// notifications.", 3.f));
+		// popupManager.displayPopup(new Popup("Salut", "Wesh la famille", 3.f));
+		// popupManager.displayPopup(new Popup("Ouais ben ouais voilà quoi", "Salut yo
+		// yo ouais yo yo yo ouais ouais yo", 10.f));
 
 		GameManager.init().addMilestoneListener(milestoneListener);
 		GameManager.getInstance().addContractListener(contractListener);
@@ -240,7 +247,10 @@ public class GameScreen implements Screen
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_0))
 			factoryToolbar.setActiveItem(10);
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+		{
 			factoryToolbar.setActiveItem(-1);
+			buildingRecipeDisplay.setBuilding(null); // FIXME implement close method for clickable
+		}
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
 		// FIXME ça marche pas pour le contract display
@@ -252,25 +262,30 @@ public class GameScreen implements Screen
 
 			// check if we need to capture mouse input or let it through to the rest of the
 			// UI to place buildings
-			for (Clickable clickable : uiElements)
+			for (UIElement clickable : uiElements)
 			{
+				// si l'élement est pas visible on ne le considère pas
+				if (!clickable.visible())
+					continue;
+
 				int mx = Gdx.input.getX();
 				int my = height - Gdx.input.getY();
-
+				
 				Rectangle bounds = clickable.getBounds();
-				System.out.println(bounds);
-				System.out.println(mx + ", " + my);
-
+				
+				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n", clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
+				
 				if (bounds.contains(new Vector2(mx, my)))
 				{
+					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
+					
 					mouseCaptured = true;
 
 					// inner positions
 					int ix = (int) (mx - bounds.x);
 					int iy = (int) (my - bounds.y);
 
-					// the item doesn't care about zoom so it needs to be taken into account
-					clickable.passRelativeClick((int) (ix * uiCamera.zoom), (int) (iy * uiCamera.zoom));
+					clickable.passRelativeClick((int) ix, (int) iy);
 
 					break; // stop checking for clicks on clickables, only one should capture the click
 				}
@@ -278,14 +293,23 @@ public class GameScreen implements Screen
 
 			if (!mouseCaptured)
 			{
-				// place building
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
-				// System.out.format("Button left at (%d, %d), converted to (%d, %d)\n",
-				// Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
+				// System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
+				// place a building if one is selected, else interact with the map
 				if (factoryType != null)
+				{
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
+				} else
+				{
+					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
+
+					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
+						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
+					else
+						buildingRecipeDisplay.setBuilding(null);
+				}
 			}
 		}
 
@@ -362,19 +386,14 @@ public class GameScreen implements Screen
 		}
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
-
-		factoryToolbar.setBounds((int) ((width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2),
-				0, (int) (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom),
-				(int) (Toolbar.TEXSIZE / uiCamera.zoom));
-		factoryToolbar.render(game.batch, (int) (factoryToolbar.getBounds().x * uiCamera.zoom),
-				(int) factoryToolbar.getBounds().y);
-
-		contractDisplay.render(game.batch, this.width, this.height);
-		popupManager.render(game.batch, delta, this.width, this.height);
-		buildingRecipeDisplay.render(game.batch, this.width, this.height);
 		
-		ItemDropdownMenu itemMenu = new ItemDropdownMenu();
-		itemMenu.render(game.batch, Gdx.input.getX() / 2, (this.height - Gdx.input.getY()) / 2);
+		for (UIElement uiElement : this.uiElements)
+			uiElement.render(game.batch, delta);
+
+		// FIXME
+		// ItemDropdownMenu itemMenu = new ItemDropdownMenu();
+		// itemMenu.render(game.batch, Gdx.input.getX() / 2, (this.height -
+		// Gdx.input.getY()) / 2);
 
 		game.batch.end();
 	}
@@ -398,6 +417,10 @@ public class GameScreen implements Screen
 		mapCamera.setToOrtho(false, width, height);
 		uiCamera.setToOrtho(false, width, height);
 		hoverCamera.setToOrtho(false, width, height);
+		
+		// changer l'écran pour les élements de l'interface afin qu'ils puissent se repositionner
+		for (UIElement clickable : this.uiElements)
+			clickable.setScreenSize(width, height);
 	}
 
 	@Override

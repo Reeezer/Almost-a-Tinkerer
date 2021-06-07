@@ -48,6 +48,7 @@ public abstract class Building
 	protected static int ticks = 0;
 
 	protected Recipe[] recipes;
+	protected boolean canSelectRecipe;
 
 	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames, FactoryType type)
 	{
@@ -68,6 +69,12 @@ public abstract class Building
 		this.items = new LinkedList<Item>();
 		this.currentIngredients = new HashMap<ItemType, Integer>();
 		this.recipes = null;
+		this.canSelectRecipe = false;
+	}
+	
+	public boolean canSelectRecipe()
+	{
+		return this.canSelectRecipe;
 	}
 
 	public void render(SpriteBatch batch, int tileSize)
@@ -197,5 +204,10 @@ public abstract class Building
 				item.justTransfered = false;
 			}
 		}
+	}
+	
+	public Recipe[] recipes()
+	{
+		return this.recipes;
 	}
 }

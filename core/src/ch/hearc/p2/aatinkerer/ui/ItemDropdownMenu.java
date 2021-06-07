@@ -11,66 +11,125 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.math.Rectangle;
 
 import ch.hearc.p2.aatinkerer.ItemType;
 
-public class ItemDropdownMenu
+public class ItemDropdownMenu implements UIElement
 {
 	private Texture spritesheet;
 
 	private TextureRegion topBorderRegion;
 	private TextureRegion itemRegion;
 	private TextureRegion bottomBorderRegion;
-	
+
 	private List<ItemType> items;
-	
+
 	private BitmapFont font;
+
+	private Rectangle bounds;
 	
+	private List<ItemDropdownListener> listeners;
+
 	public ItemDropdownMenu()
 	{
 		this.spritesheet = new Texture(Gdx.files.internal("Ui/item_dropdown.png"));
-		
+
 		this.topBorderRegion = new TextureRegion(this.spritesheet, 0, 0, 128, 5);
 		this.itemRegion = new TextureRegion(this.spritesheet, 0, 6, 128, 32);
 		this.bottomBorderRegion = new TextureRegion(this.spritesheet, 0, 39, 128, 5);
-		
-		this.items = new LinkedList<ItemType>();
-		
+
 		FreeTypeFontParameter descriptionFontParameter = new FreeTypeFontParameter();
 		descriptionFontParameter.size = 16;
 		descriptionFontParameter.color = Color.WHITE;
 		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
+
+		this.bounds = new Rectangle();
+	}
+
+	public void setItems(List<ItemType> items)
+	{
+		this.items = items;
 		
-		
-		// FIXME debug
-		this.items.add(ItemType.BED);
-		this.items.add(ItemType.BOX);
-		this.items.add(ItemType.COUCH);
+		// bounds height due to variable height
+		this.bounds.height = this.bottomBorderRegion.getRegionHeight() + this.topBorderRegion.getRegionHeight();
+		if (this.items != null)
+			this.bounds.height += this.itemRegion.getRegionHeight() * this.items.size();
+	}
+
+	@Override
+	public void render(SpriteBatch batch, float delta)
+	{
+		if (this.items != null)
+		{
+			int xcorner = (int) this.bounds.x;
+			int ycorner = (int) this.bounds.y;
+
+			batch.draw(this.topBorderRegion, xcorner,
+					ycorner + 5 + (this.items.size() * this.itemRegion.getRegionHeight()));
+
+			int i = 0;
+			for (ItemType item : this.items)
+			{
+				int cx = xcorner;
+				int cy = ycorner + 5 + (i * this.itemRegion.getRegionHeight());
+
+				batch.draw(this.itemRegion, cx, cy);
+
+				font.draw(batch, item.name(), cx + 42, cy + 19, 0, item.name().length(), 86.f, -1, false);
+				item.render(batch, cx + 3, cy);
+
+				i++;
+			}
+
+			batch.draw(this.bottomBorderRegion, xcorner, ycorner);
+		}
+
 	}
 	
-	
-	public void render(SpriteBatch batch, int x, int y)
+	public void addListener(ItemDropdownListener listener)
 	{
-		int xcorner = x;
-		int ycorner = y;
-		
-		batch.draw(this.topBorderRegion, xcorner, ycorner + 5 + (this.items.size() * this.itemRegion.getRegionHeight()));
-		
-		
-		int i = 0;
-		for (ItemType item : this.items)
+		this.listeners.add(listener);
+	}
+
+	public void selectItem(ItemType type)
+	{
+		for (ItemDropdownListener listener : this.listeners)
+			listener.itemSelected(type);
+	}
+	
+	@Override
+	public void setScreenSize(int w, int h)
+	{
+		this.bounds.x = 0;
+		this.bounds.y = 0;
+		this.bounds.width = this.topBorderRegion.getRegionWidth();
+
+		// update bounds
+		setItems(this.items);
+	}
+
+	@Override
+	public Rectangle getBounds()
+	{
+		return this.bounds;
+	}
+
+	@Override
+	public void passRelativeClick(int x, int y)
+	{
+		if (this.items != null)
 		{
-			int cx = xcorner;
-			int cy = ycorner + 5 + (i * this.itemRegion.getRegionHeight());
+			int yInList = y - this.bottomBorderRegion.getRegionHeight();
+			int itemno = yInList / this.itemRegion.getRegionHeight();
 			
-			batch.draw(this.itemRegion, cx, cy);
-			
-			font.draw(batch, item.name(), cx + 42, cy + 19, 0, item.name().length(), 86.f, -1, false);
-			item.render(batch, cx + 3, cy);
-			
-			i++;
+			selectItem(this.items.get(itemno));
 		}
-		
-		batch.draw(this.bottomBorderRegion, xcorner, ycorner);
+	}
+
+	@Override
+	public boolean visible()
+	{
+		return this.items != null;
 	}
 }

@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Rectangle;
 import ch.hearc.p2.aatinkerer.Contract;
 import ch.hearc.p2.aatinkerer.ItemType;
 
-public class ContractDisplay implements Clickable
+public class ContractDisplay implements UIElement
 {
 	private Texture spritesheet;
 
@@ -24,12 +24,13 @@ public class ContractDisplay implements Clickable
 	private TextureRegion contractRowArea;
 	private TextureRegion bottomBorderArea;
 	private TextureRegion checkmarkArea;
-	
+
 	private BitmapFont descriptionFont;
-	
+
 	private Rectangle bounds;
 
 	private Contract currentContract;
+	private int screenHeight; // on est obligés de stocker ça puisque l'élément a une hauteur variable et qu'on le veut en haut de l'écran mais les coordonnées viennent d'en bas
 
 	public ContractDisplay()
 	{
@@ -45,16 +46,29 @@ public class ContractDisplay implements Clickable
 		descriptionFontParameter.size = 16;
 		descriptionFontParameter.color = Color.WHITE;
 		descriptionFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
+		
+		this.bounds = new Rectangle();
+		this.bounds.width = this.titlebarArea.getRegionWidth();
+		// recompute height
+		this.setContract(null);
 	}
 
 	public void setContract(Contract contract)
 	{
 		this.currentContract = contract;
+		int height = this.titlebarArea.getRegionHeight() + this.bottomBorderArea.getRegionHeight();
+		
+		if (contract != null)
+			height += this.contractRowArea.getRegionHeight() * contract.getRequestedItems().size();
+		
+		this.bounds.height = height;
+		this.bounds.y = this.screenHeight - this.bounds.height - 10;
 	}
 
-	public void render(SpriteBatch batch, int screenWidth, int screenHeight)
+	public void render(SpriteBatch batch, float delta)
 	{
-		batch.draw(this.titlebarArea, (screenWidth / 2) - 256 - 5, (screenHeight / 2) - 34 - 5);
+		int y = (int) this.bounds.y + (int) this.bounds.height;
+		batch.draw(this.titlebarArea, this.bounds.x, y - this.titlebarArea.getRegionHeight());
 
 		int linecount = 0;
 		if (currentContract != null)
@@ -64,43 +78,45 @@ public class ContractDisplay implements Clickable
 
 			for (Map.Entry<ItemType, Integer> entry : currentContract.getRequestedItems().entrySet())
 			{
-				int xcorner = (screenWidth / 2) - 256 - 5;
-				int ycorner = ((screenHeight / 2) - 34 - 5) - (i * 36);
-				batch.draw(this.contractRowArea, xcorner, ycorner);
+				int xcorner = (int) this.bounds.x;
+				int ycorner = (int) y - this.titlebarArea.getRegionHeight() - (i * this.contractRowArea.getRegionHeight());
 				
+				batch.draw(this.contractRowArea, xcorner, ycorner);
+
 				ItemType itemType = entry.getKey();
 				String itemName = itemType.name();
 				int itemCount = entry.getValue() - currentContract.producedItems(itemType);
-				
+
 				if (itemCount < 0)
 					itemCount = 0;
-				
+
 				String displayedString = String.format("%3dx : %s", itemCount, itemName);
-				
-				descriptionFont.draw(batch, displayedString, xcorner + 42, ycorner + 19, 0, displayedString.length(), 239.f, -1, false);
-		
+
+				descriptionFont.draw(batch, displayedString, xcorner + 42, ycorner + 19, 0, displayedString.length(),
+						239.f, -1, false);
+
 				itemType.render(batch, xcorner + 5, ycorner + 3);
-		
+
 				if (currentContract.isItemFulfilled(itemType))
 				{
 					batch.draw(checkmarkArea, xcorner + 7, ycorner + 7);
 				}
-				
+
 				i++;
 			}
 		}
-		batch.draw(this.bottomBorderArea, (screenWidth / 2) - 256 - 5,
-				((screenHeight / 2) - 34 - 5) - (linecount * 36) - 5);
-		
-		
-		/* FIXME debug 
-		Pixmap pixmap = new Pixmap((int)this.bounds.width / 2, (int)this.bounds.height / 2, Pixmap.Format.RGB888);
-		pixmap.setColor(Color.RED);
-		pixmap.fillRectangle(0, 0, (int)this.bounds.width / 2, (int)this.bounds.height / 2);
-		batch.draw(new Texture(pixmap), (screenWidth / 2) - 256 - 5, (screenHeight / 2) - 34 - 5);
-		pixmap.dispose();//*/
+		batch.draw(this.bottomBorderArea, this.bounds.x, y - this.titlebarArea.getRegionHeight() - (linecount * this.contractRowArea.getRegionHeight()) - 5);
+
+		/*
+		 * FIXME debug Pixmap pixmap = new Pixmap((int)this.bounds.width / 2,
+		 * (int)this.bounds.height / 2, Pixmap.Format.RGB888);
+		 * pixmap.setColor(Color.RED); pixmap.fillRectangle(0, 0, (int)this.bounds.width
+		 * / 2, (int)this.bounds.height / 2); batch.draw(new Texture(pixmap),
+		 * (screenWidth / 2) - 256 - 5, (screenHeight / 2) - 34 - 5);
+		 * pixmap.dispose();//
+		 */
 	}
-	
+
 	@Override
 	public Rectangle getBounds()
 	{
@@ -108,12 +124,13 @@ public class ContractDisplay implements Clickable
 	}
 
 	@Override
-	public void setBounds(int x, int y, int w, int h)
+	public void setScreenSize(int w, int h)
 	{
-		int lines = 0;
-		if (this.currentContract != null)
-			lines = currentContract.getRequestedItems().size();
-		bounds = new Rectangle(w - 512 - 10, h - 68 - 10, this.titlebarArea.getRegionWidth() * 2, (this.titlebarArea.getRegionHeight() + (this.contractRowArea.getRegionHeight() * lines) + this.bottomBorderArea.getRegionHeight()) * 2);
+		this.bounds.x = w - 256 - 10;
+		this.screenHeight = h;
+		
+		// mettre à jour la position à l'écran
+		setContract(currentContract);
 	}
 
 	@Override
@@ -121,4 +138,12 @@ public class ContractDisplay implements Clickable
 	{
 		// not used
 	}
+
+	@Override
+	public boolean visible()
+	{
+		return true;
+	}
+
+
 }
