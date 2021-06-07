@@ -15,6 +15,8 @@ public class Assembler extends Building
 		this.outputPosition = new int[] { x2, y2, (direction + 3) % 4 };
 
 		createRecipes();
+		
+		this.canSelectRecipe = true;
 	}
 
 	private void createRecipes()

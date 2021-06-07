@@ -1,17 +1,17 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.ui;
 
-public class Popup
+public class Notification
 {
 	private String title;
 	private String description;
 	private float duration;
 
-	public Popup()
+	public Notification()
 	{
 		this("Title", "Description", 2.f);
 	}
 
-	public Popup(String title, String description, float duration)
+	public Notification(String title, String description, float duration)
 	{
 		this.title = title;
 		this.description = description;
