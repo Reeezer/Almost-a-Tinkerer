@@ -155,69 +155,45 @@ public abstract class Building {
 		}
 	}
 
-	private void checkRecipes() {
-		if (this.selectedRecipe == null) {
-			for (Recipe recipe : recipes) { // FIXME code dupliqué
-
-				// Check if there are enough items for the recipe
-				boolean makeIt = true;
-				Map<ItemType, Integer> ingredients = recipe.getIngredients();
-				for (ItemType item : ingredients.keySet()) {
-					if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item)) {
-						makeIt = false; // if there is not enough item for this recipe
-						break;
-					}
-				}
-
-				// if we have enough ingredients to make the recipe
-				if (makeIt) {
-					// Make the recipe by decreasing the amount of all the ingredients
-					for (ItemType item : ingredients.keySet()) {
-						int nb = ingredients.get(item);
-						currentIngredients.put(item, currentIngredients.get(item) - nb);
-						contentSize -= nb;
-					}
-
-					// Adding the item produced
-					for (int i = 0; i < recipe.getAmount(); i++) {
-						Item item = new Item();
-						item.type = recipe.getProduct();
-						if (!output.isFull(item))
-							output.addItem(item);
-					}
-				}
-			}
-		} else {
-			Recipe recipe = this.selectedRecipe;
-			// Check if there are enough items for the recipe
-			boolean makeIt = true;
-			Map<ItemType, Integer> ingredients = recipe.getIngredients();
-			for (ItemType item : ingredients.keySet()) {
-				if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item)) {
-					makeIt = false; // if there is not enough item for this recipe
-					break;
-				}
-			}
-
-			// if we have enough ingredients to make the recipe
-			if (makeIt) {
-				// Make the recipe by decreasing the amount of all the ingredients
-				for (ItemType item : ingredients.keySet()) {
-					int nb = ingredients.get(item);
-					currentIngredients.put(item, currentIngredients.get(item) - nb);
-					contentSize -= nb;
-				}
-
-				// Adding the item produced
-				for (int i = 0; i < recipe.getAmount(); i++) {
-					Item item = new Item();
-					item.type = recipe.getProduct();
-					if (!output.isFull(item))
-						output.addItem(item);
-				}
+	private void checkRecipe(Recipe recipe)
+	{
+		// Check if there are enough items for the recipe
+		boolean makeIt = true;
+		Map<ItemType, Integer> ingredients = recipe.getIngredients();
+		for (ItemType item : ingredients.keySet()) {
+			if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item)) {
+				makeIt = false; // if there is not enough item for this recipe
+				break;
 			}
 		}
 
+		// if we have enough ingredients to make the recipe
+		if (makeIt) {
+			// Make the recipe by decreasing the amount of all the ingredients
+			for (ItemType item : ingredients.keySet()) {
+				int nb = ingredients.get(item);
+				currentIngredients.put(item, currentIngredients.get(item) - nb);
+				contentSize -= nb;
+			}
+
+			// Adding the item produced
+			for (int i = 0; i < recipe.getAmount(); i++) {
+				Item item = new Item();
+				item.type = recipe.getProduct();
+				if (!output.isFull(item))
+					output.addItem(item);
+			}
+		}
+	}
+	
+	private void checkRecipes() {
+		if (this.selectedRecipe == null) {
+			for (Recipe recipe : recipes) {
+				checkRecipe(recipe);
+			}
+		} else {
+			checkRecipe(this.selectedRecipe);
+		}
 	}
 
 	public List<Recipe> getRecipes() {
