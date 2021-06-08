@@ -87,10 +87,13 @@ public class GameScreen implements Screen
 
 		uiElements = new ArrayList<UIElement>();
 
-		map = new TileMap(250, 250);
+		// FIXME use proper values instead of magic numbers
+		final int MAPWIDTH = 160;
+		final int MAPHEIGHT = 160;
+		map = new TileMap(MAPWIDTH, MAPHEIGHT);
 
-		x = 0;
-		y = 0;
+		x = MAPWIDTH / 2 * TileMap.TILESIZE;
+		y = MAPHEIGHT / 2 * TileMap.TILESIZE;
 		width = 0;
 		height = 0;
 		zoomLevel = 0;
@@ -157,7 +160,7 @@ public class GameScreen implements Screen
 	@Override
 	public void show()
 	{
-
+		
 	}
 
 	@Override
