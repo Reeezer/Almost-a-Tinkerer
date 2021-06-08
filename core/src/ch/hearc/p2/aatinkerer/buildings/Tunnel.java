@@ -5,7 +5,7 @@ import ch.hearc.p2.aatinkerer.TileMap;
 public class Tunnel extends Building
 {
 	private boolean isInput;
-	private static final int DISTANCE = 5;
+	private static final int DISTANCE = 10;
 
 	public Tunnel(TileMap tilemap, int x, int y, int direction, boolean isInput)
 	{
