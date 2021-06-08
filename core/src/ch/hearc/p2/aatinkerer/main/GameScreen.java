@@ -262,13 +262,8 @@ public class GameScreen implements Screen
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
 		// handle left mouse click
-<<<<<<< HEAD
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
-
-=======
 		if (Gdx.input.isButtonPressed(Buttons.LEFT))
 		{
->>>>>>> 4e6de5a0d0e57e23607985fce3ea1e68e3c856ec
 			boolean mouseCaptured = false;
 
 			// check if we need to capture mouse input or let it through to the rest of the

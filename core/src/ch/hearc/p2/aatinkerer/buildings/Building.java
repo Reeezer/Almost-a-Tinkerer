@@ -122,7 +122,7 @@ public abstract class Building
 			return true;
 
 		// We do want to be able to store multiple itemtype in multiple amount
-		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS)
+		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER)
 		{
 			if (!currentIngredients.containsKey(item.type))
 				return false;
@@ -136,7 +136,7 @@ public abstract class Building
 	public void addItem(Item item)
 	{
 		// Called by the building who gives the item to insert in this building the item
-		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS)
+		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER)
 		{
 			if (currentIngredients.containsKey(item.type))
 				currentIngredients.put(item.type, currentIngredients.get(item.type) + 1);
@@ -157,10 +157,9 @@ public abstract class Building
 		// transfer
 		if (output != null && contentSize > 0)
 		{
-			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS)
+			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER)
 			{
-				if (!output.isFull(itemToTransfer))
-					checkRecipes();
+				checkRecipes();
 			}
 			else
 			{
@@ -210,7 +209,7 @@ public abstract class Building
 		}
 	}
 
-	private void checkRecipes()
+	protected void checkRecipes()
 	{
 		if (this.selectedRecipe == null)
 		{
