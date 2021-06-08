@@ -150,15 +150,6 @@ public class GameScreen implements Screen
 			}
 		};
 
-		// popupManager.displayPopup(new Popup("Bleh", "Hello everybody, today we are
-		// going to write a huge text so we can try notifications. Hello everybody,
-		// today we are going to write a huge text so we can try notifications. Hello
-		// everybody, today we are going to write a huge text so we can try
-		// notifications.", 3.f));
-		// popupManager.displayPopup(new Popup("Salut", "Wesh la famille", 3.f));
-		// popupManager.displayPopup(new Popup("Ouais ben ouais voilà quoi", "Salut yo
-		// yo ouais yo yo yo ouais ouais yo", 10.f));
-
 		GameManager.init().addMilestoneListener(milestoneListener);
 		GameManager.getInstance().addContractListener(contractListener);
 	}
