@@ -17,7 +17,7 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	MERGER("Ui/Icons/MergerIcon.png", new String[] { "Ui/Hover/Merger.png", "Ui/Hover/MergerMirror.png" }, 1), //
 	SPLITTER("Ui/Icons/SplitterIcon.png", new String[] { "Ui/Hover/Splitter.png", "Ui/Hover/SplitterMirror.png" }, 1), //
 	TUNNEL("Ui/Icons/TunnelInIcon.png", new String[] { "Ui/Hover/TunnelIn.png", "Ui/Hover/TunnelOut.png" }, 1), //
-	MIXER("Ui/Icons/MixerIcon.png", new String[] { "Ui/Hover/Mixer.png" }, 6), //
+	MIXER("Ui/Icons/MixerIcon.png", new String[] { "Ui/Hover/Mixer.png", "Ui/Hover/MixerMirror.png" }, 6), //
 	TRASH("Ui/Icons/TrashIcon.png", new String[] { "Ui/Hover/Trash.png" }, 7);
 
 	private Texture itemTexture;
