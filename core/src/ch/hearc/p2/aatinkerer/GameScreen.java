@@ -452,7 +452,12 @@ public class GameScreen implements Screen
 	@Override
 	public void dispose()
 	{
+		// dipose of instance elements
 		map.dispose();
+		
+		// dispose of static elements
+		ItemType.dispose();
+		Ressource.dispose();
 	}
 
 }

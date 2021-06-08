@@ -59,5 +59,9 @@ public enum ItemType
 		return this.value;
 	}
 
-	// FIXME how to implement dispose() for an enum?
+	public static void dispose()
+	{
+		for (ItemType type : ItemType.values())
+			type.texture.dispose();
+	}
 }
