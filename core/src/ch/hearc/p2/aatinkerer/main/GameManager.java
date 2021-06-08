@@ -88,16 +88,16 @@ public class GameManager
 		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
 
 		Contract splitterContract = new Contract("Now we can finally glue everything together! Please make furniture");
-		splitterContract.addRequestedItem(ItemType.CHAIR, 1);
-		splitterContract.addRequestedItem(ItemType.FABRIC, 1); // FIXME peut être l'unlock avant comme ça on a
+		//splitterContract.addRequestedItem(ItemType.CHAIR, 1);
+		//splitterContract.addRequestedItem(ItemType.FABRIC, 1); // FIXME peut être l'unlock avant comme ça on a
 																// déjà la production de matières premières pour
 																// les meubles?
-		splitterContract.addRequestedItem(ItemType.DESK, 1);
-		splitterContract.addRequestedItem(ItemType.TABLE, 1);
-		splitterContract.addRequestedItem(ItemType.BED, 1);
-		splitterContract.addRequestedItem(ItemType.SHELF, 1);
-		splitterContract.addRequestedItem(ItemType.PLANT, 1);
-		splitterContract.addRequestedItem(ItemType.TABLE, 1);
+		//splitterContract.addRequestedItem(ItemType.DESK, 1);
+		//splitterContract.addRequestedItem(ItemType.TABLE, 1);
+		//splitterContract.addRequestedItem(ItemType.BED, 1);
+		//splitterContract.addRequestedItem(ItemType.SHELF, 1);
+		//splitterContract.addRequestedItem(ItemType.PLANT, 1);
+		//splitterContract.addRequestedItem(ItemType.TABLE, 1);
 		storyContracts.add(splitterContract);
 		storyMilestones.add(Milestone.UNLOCK_SPLITTER);
 	}
