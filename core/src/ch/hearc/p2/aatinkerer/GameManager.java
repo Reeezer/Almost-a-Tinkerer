@@ -169,13 +169,10 @@ public class GameManager
 			}
 		}
 
-		// 2 - check extra contracts conditions
-		// TODO
+		// TODO 2 - check extra contracts conditions
 
-		// 4 - reward the player on extra contract completion
-		// TODO
+		// TODO 4 - reward the player on extra contract completion
 
-		// 5 - generate additional extra contracts every once in a while
-		// TODO
+		// TODO 5 - generate additional extra contracts every once in a while
 	}
 }

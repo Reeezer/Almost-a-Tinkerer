@@ -106,15 +106,6 @@ public class ContractDisplay implements UIElement
 			}
 		}
 		batch.draw(this.bottomBorderArea, this.bounds.x, y - this.titlebarArea.getRegionHeight() - (linecount * this.contractRowArea.getRegionHeight()) - 5);
-
-		/*
-		 * FIXME debug Pixmap pixmap = new Pixmap((int)this.bounds.width / 2,
-		 * (int)this.bounds.height / 2, Pixmap.Format.RGB888);
-		 * pixmap.setColor(Color.RED); pixmap.fillRectangle(0, 0, (int)this.bounds.width
-		 * / 2, (int)this.bounds.height / 2); batch.draw(new Texture(pixmap),
-		 * (screenWidth / 2) - 256 - 5, (screenHeight / 2) - 34 - 5);
-		 * pixmap.dispose();//
-		 */
 	}
 
 	@Override

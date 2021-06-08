@@ -81,8 +81,6 @@ public class BuildingRecipeDisplay implements UIElement
 					BuildingRecipeDisplay.this.building.setRecipeTarget(type);
 				
 				setBuilding(building);
-				
-				System.out.println("MAHEA HOOOOOO " + type.name()); // FIXME
 			}
 		};
 		dropdownMenu.addListener(listener);

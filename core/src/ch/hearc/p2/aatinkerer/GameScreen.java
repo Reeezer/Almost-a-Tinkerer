@@ -254,7 +254,6 @@ public class GameScreen implements Screen
 		}
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
-		// FIXME ça marche pas pour le contract display
 		// handle left mouse click
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 
@@ -330,8 +329,7 @@ public class GameScreen implements Screen
 		while (unprocessedTime >= processingTimeCap) {
 			unprocessedTime -= processingTimeCap;
 			map.update();
-
-			// FIXME do all logic updates here
+			
 			GameManager.getInstance().tick();
 		}
 
@@ -422,11 +420,6 @@ public class GameScreen implements Screen
 
 		for (UIElement uiElement : this.uiElements)
 			uiElement.render(game.batch, delta);
-
-		// FIXME
-		// ItemDropdownMenu itemMenu = new ItemDropdownMenu();
-		// itemMenu.render(game.batch, Gdx.input.getX() / 2, (this.height -
-		// Gdx.input.getY()) / 2);
 
 		game.batch.end();
 	}
