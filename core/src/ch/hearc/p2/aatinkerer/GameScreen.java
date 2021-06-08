@@ -110,8 +110,7 @@ public class GameScreen implements Screen
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
 					factoryToolbar.setItemEnabled(factoryType, true);
 
-				if (milestone != Milestone.START)
-				{
+				if (milestone != Milestone.START) {
 					Notification popup = new Notification("Milestone Unlocked", milestone.description(), 8.f);
 					notificationManager.displayPopup(popup);
 				}
@@ -248,8 +247,7 @@ public class GameScreen implements Screen
 			factoryToolbar.setActiveItem(10);
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_1))
 			factoryToolbar.setActiveItem(11);
-		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
-		{
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
 			factoryToolbar.setActiveItem(-1);
 			buildingRecipeDisplay.setBuilding(null);
 			itemDropdownMenu.setItems(null);
@@ -264,23 +262,21 @@ public class GameScreen implements Screen
 
 			// check if we need to capture mouse input or let it through to the rest of the
 			// UI to place buildings
-			for (UIElement clickable : uiElements)
-			{
+			for (UIElement clickable : uiElements) {
 				// si l'élement est pas visible on ne le considère pas
 				if (!clickable.visible())
 					continue;
 
 				int mx = Gdx.input.getX();
 				int my = height - Gdx.input.getY();
-				
+
 				Rectangle bounds = clickable.getBounds();
-				
+
 				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n", clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
-				
-				if (bounds.contains(new Vector2(mx, my)))
-				{
+
+				if (bounds.contains(new Vector2(mx, my))) {
 					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
-					
+
 					mouseCaptured = true;
 
 					// inner positions
@@ -293,8 +289,7 @@ public class GameScreen implements Screen
 				}
 			}
 
-			if (!mouseCaptured)
-			{
+			if (!mouseCaptured) {
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
 				// System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
@@ -304,14 +299,13 @@ public class GameScreen implements Screen
 					if (inputTunnel == 1 || inputTunnel == 2)
 						isInputTunnel = (inputTunnel == 1) ? true : false;
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
-				} else
-				{
+				}
+				else {
 					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
 						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
-					else
-					{
+					else {
 						buildingRecipeDisplay.setBuilding(null);
 						itemDropdownMenu.setItems(null);
 					}
@@ -399,32 +393,31 @@ public class GameScreen implements Screen
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
 		BitmapFont font = new BitmapFont();
-		font.getData().setScale(0.6f);
 		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
 		if (ctrlPressed) {
 			int toolbarHeight = 50;
-			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE / uiCamera.zoom)) / 2;
-			float deltaa = (Toolbar.TEXSIZE / uiCamera.zoom);
+			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
+			float deltaa = Toolbar.TEXSIZE;
 			for (int i = 1; i <= 9; i++)
-				font.draw(game.batch, String.format("[%d]", i), (pos + (i - 1) * deltaa + (Toolbar.TEXSIZE / 2) / uiCamera.zoom - 8) / 2, toolbarHeight);
-			font.draw(game.batch, "[Num 0]", (pos + 9 * deltaa + 6) / 2, toolbarHeight);
-			font.draw(game.batch, "[Num 1]", (pos + 10 * deltaa + 6) / 2, toolbarHeight);
+				font.draw(game.batch, String.format("[%d]", i), pos + (i - 1) * deltaa + Toolbar.TEXSIZE / 3, toolbarHeight);
+			font.draw(game.batch, "[Num 0]", pos + 9 * deltaa - 6, toolbarHeight);
+			font.draw(game.batch, "[Num 1]", pos + 10 * deltaa + 15, toolbarHeight);
 
-			font.draw(game.batch, "[R]\nRotate left", width / 6, 250);
-			font.draw(game.batch, "[Shift + R]\nRotate right", width / 6, 200);
-			font.draw(game.batch, "[T]\nMirror rotation", width / 6, 150);
-			font.draw(game.batch, "[Escape]\nUnselect", width / 6, 100);
+			font.draw(game.batch, "[R]\nRotate left", width / 3, 250);
+			font.draw(game.batch, "[Shift + R]\nRotate right", width / 3, 200);
+			font.draw(game.batch, "[T]\nMirror rotation", width / 3, 150);
+			font.draw(game.batch, "[Escape]\nUnselect", width / 3, 100);
 
-			font.draw(game.batch, "[Left click + drag]\nMove", width / 4, 350);
-			font.draw(game.batch, "[Up]\nMove up", width / 4, 300);
-			font.draw(game.batch, "[Down]\nMove down", width / 4, 250);
-			font.draw(game.batch, "[Left]\nMove left", width / 4, 200);
-			font.draw(game.batch, "[Right]\nMove right", width / 4, 150);
-			font.draw(game.batch, "[Hold Shift]\nMove faster", width / 4, 100);
+			font.draw(game.batch, "[Left click + drag]\nMove", width / 2, 350);
+			font.draw(game.batch, "[Up]\nMove up", width / 2, 300);
+			font.draw(game.batch, "[Down]\nMove down", width / 2, 250);
+			font.draw(game.batch, "[Left]\nMove left", width / 2, 200);
+			font.draw(game.batch, "[Right]\nMove right", width / 2, 150);
+			font.draw(game.batch, "[Hold Shift]\nMove faster", width / 2, 100);
 
-			font.draw(game.batch, "[Scroll]\nZoom", width / 3, 200);
-			font.draw(game.batch, "[Num +]\nZoom in", width / 3, 150);
-			font.draw(game.batch, "[Num -]\nZoom out", width / 3, 100);
+			font.draw(game.batch, "[Scroll]\nZoom", width * 2 / 3, 200);
+			font.draw(game.batch, "[Num +]\nZoom in", width * 2 / 3, 150);
+			font.draw(game.batch, "[Num -]\nZoom out", width * 2 / 3, 100);
 		}
 
 		for (UIElement uiElement : this.uiElements)
@@ -457,7 +450,7 @@ public class GameScreen implements Screen
 		mapCamera.setToOrtho(false, width, height);
 		uiCamera.setToOrtho(false, width, height);
 		hoverCamera.setToOrtho(false, width, height);
-		
+
 		// changer l'écran pour les élements de l'interface afin qu'ils puissent se repositionner
 		for (UIElement clickable : this.uiElements)
 			clickable.setScreenSize(width, height);
