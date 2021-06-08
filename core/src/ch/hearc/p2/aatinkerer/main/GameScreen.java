@@ -30,7 +30,7 @@ import ch.hearc.p2.aatinkerer.listeners.MilestoneListener;
 import ch.hearc.p2.aatinkerer.ui.Notification;
 import ch.hearc.p2.aatinkerer.ui.UIElement;
 import ch.hearc.p2.aatinkerer.ui.widgets.BuildingRecipeDisplay;
-import ch.hearc.p2.aatinkerer.ui.widgets.ContractDisplay;
+import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.ItemDropdownMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
@@ -63,7 +63,7 @@ public class GameScreen implements Screen
 	private TileMap map;
 
 	private NotificationManager notificationManager;
-	private ContractDisplay contractDisplay;
+	private StoryContractDisplay contractDisplay;
 
 	private MilestoneListener milestoneListener;
 	private ContractListener contractListener;
@@ -102,7 +102,7 @@ public class GameScreen implements Screen
 		notificationManager = new NotificationManager();
 		uiElements.add(notificationManager);
 
-		contractDisplay = new ContractDisplay();
+		contractDisplay = new StoryContractDisplay();
 		uiElements.add(contractDisplay);
 
 		itemDropdownMenu = new ItemDropdownMenu();

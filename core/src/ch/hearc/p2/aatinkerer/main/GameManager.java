@@ -181,8 +181,8 @@ public class GameManager
 
 		// TODO 2 - check extra contracts conditions
 
-		// TODO 4 - reward the player on extra contract completion
+		// TODO 3 - reward the player on extra contract completion
 
-		// TODO 5 - generate additional extra contracts every once in a while
+		// TODO 4 - generate additional extra contracts every once in a while
 	}
 }

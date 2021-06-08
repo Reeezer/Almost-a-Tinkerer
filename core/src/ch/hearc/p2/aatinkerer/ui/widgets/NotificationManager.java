@@ -59,8 +59,6 @@ public class NotificationManager implements UIElement
 		System.out.println("Queueing new popup for display: " + popup);
 	}
 
-	// FIXME taille de la zone du texte
-	// FIXME taille de la font
 	@Override
 	public void render(SpriteBatch batch, float delta)
 	{

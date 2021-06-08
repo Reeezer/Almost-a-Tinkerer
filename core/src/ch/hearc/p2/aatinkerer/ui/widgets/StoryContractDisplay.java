@@ -17,7 +17,7 @@ import ch.hearc.p2.aatinkerer.data.Contract;
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.ui.UIElement;
 
-public class ContractDisplay implements UIElement
+public class StoryContractDisplay implements UIElement
 {
 	private Texture spritesheet;
 
@@ -33,7 +33,7 @@ public class ContractDisplay implements UIElement
 	private Contract currentContract;
 	private int screenHeight; // on est obligés de stocker ça puisque l'élément a une hauteur variable et qu'on le veut en haut de l'écran mais les coordonnées viennent d'en bas
 
-	public ContractDisplay()
+	public StoryContractDisplay()
 	{
 		this.spritesheet = new Texture("Ui/contracts_ui.png");
 

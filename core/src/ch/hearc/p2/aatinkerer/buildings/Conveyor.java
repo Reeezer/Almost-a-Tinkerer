@@ -25,7 +25,7 @@ public class Conveyor extends Building
 			int yOrientation = (direction == 3 || direction == 1) ? ((direction == 3) ? -1 : 1) : 0;
 
 			float position = (float) item.ticksSpent / (float) type.getTransferTimeout();
-			if (index > 0) // FIXME Teleport himself when move after being stopped
+			if (index > 0) // FIXME item teleports if there are two per conveyor or more
 				position = position / (float) maxSize;
 
 			int xPixPosition = ((x * tileSize) + (int) (position * (float) tileSize * xOrientation) /*- (tileSize * xOrientation) / 2*/);
