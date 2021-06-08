@@ -62,42 +62,42 @@ public class GameManager
 		storyMilestones.add(Milestone.START);
 
 		Contract cutterContract = new Contract("We need some wood! Please cut some trees");
-		// cutterContract.addRequestedItem(ItemType.WOODLOG, 10);
+		cutterContract.addRequestedItem(ItemType.WOODLOG, 10);
 		storyContracts.add(cutterContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
 
 		Contract furnaceTrashContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs");
-		// furnaceTrashContract.addRequestedItem(ItemType.PLANK, 10);
-		// furnaceTrashContract.addRequestedItem(ItemType.STICK, 10);
+		furnaceTrashContract.addRequestedItem(ItemType.PLANK, 10);
+		furnaceTrashContract.addRequestedItem(ItemType.STICK, 10);
 		storyContracts.add(furnaceTrashContract);
 		storyMilestones.add(Milestone.UNLOCK_FURNACETRASH);
 
 		Contract mixerContract = new Contract("I can finally sit! Now please make some iron");
-		// mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
+		mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
 		storyContracts.add(mixerContract);
 		storyMilestones.add(Milestone.UNLOCK_MIXER);
 
 		Contract pressContract = new Contract("Our company is starting to take off! Nice! We need a runway for planes, so please make concrete");
-		// pressContract.addRequestedItem(ItemType.CONCRETE, 10);
+		pressContract.addRequestedItem(ItemType.CONCRETE, 10);
 		storyContracts.add(pressContract);
 		storyMilestones.add(Milestone.UNLOCK_PRESS);
 
 		Contract assemblerMergerContract = new Contract("We have a lot of materials, but the problem is that we cannot assemble them, we need glue. Please compress some petroleum. Yes, exactly.");
-		// assemblerMergerContract.addRequestedItem(ItemType.GLUE, 10);
+		assemblerMergerContract.addRequestedItem(ItemType.GLUE, 10);
 		storyContracts.add(assemblerMergerContract);
 		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
 
 		Contract splitterContract = new Contract("Now we can finally glue everything together! Please make furniture");
-		//splitterContract.addRequestedItem(ItemType.CHAIR, 1);
-		//splitterContract.addRequestedItem(ItemType.FABRIC, 1); // FIXME peut être l'unlock avant comme ça on a
+		splitterContract.addRequestedItem(ItemType.CHAIR, 1);
+		splitterContract.addRequestedItem(ItemType.FABRIC, 1); // FIXME peut être l'unlock avant comme ça on a
 																// déjà la production de matières premières pour
 																// les meubles?
-		//splitterContract.addRequestedItem(ItemType.DESK, 1);
-		//splitterContract.addRequestedItem(ItemType.TABLE, 1);
-		//splitterContract.addRequestedItem(ItemType.BED, 1);
-		//splitterContract.addRequestedItem(ItemType.SHELF, 1);
-		//splitterContract.addRequestedItem(ItemType.PLANT, 1);
-		//splitterContract.addRequestedItem(ItemType.TABLE, 1);
+		splitterContract.addRequestedItem(ItemType.DESK, 1);
+		splitterContract.addRequestedItem(ItemType.TABLE, 1);
+		splitterContract.addRequestedItem(ItemType.BED, 1);
+		splitterContract.addRequestedItem(ItemType.SHELF, 1);
+		splitterContract.addRequestedItem(ItemType.PLANT, 1);
+		splitterContract.addRequestedItem(ItemType.TABLE, 1);
 		storyContracts.add(splitterContract);
 		storyMilestones.add(Milestone.UNLOCK_SPLITTER);
 	}
