@@ -1,4 +1,4 @@
-package ch.hearc.p2.aatinkerer.ui;
+package ch.hearc.p2.aatinkerer.ui.widgets;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -15,9 +15,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 
-import ch.hearc.p2.aatinkerer.ItemType;
-import ch.hearc.p2.aatinkerer.Recipe;
 import ch.hearc.p2.aatinkerer.buildings.Building;
+import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.data.Recipe;
+import ch.hearc.p2.aatinkerer.listeners.ItemDropdownListener;
+import ch.hearc.p2.aatinkerer.ui.UIElement;
 
 public class BuildingRecipeDisplay implements UIElement
 {

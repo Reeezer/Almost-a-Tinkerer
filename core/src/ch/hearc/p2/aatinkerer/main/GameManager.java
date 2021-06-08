@@ -1,10 +1,17 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.main;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import ch.hearc.p2.aatinkerer.data.Contract;
+import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.data.Milestone;
+import ch.hearc.p2.aatinkerer.listeners.ContractListener;
+import ch.hearc.p2.aatinkerer.listeners.MilestoneListener;
+import ch.hearc.p2.aatinkerer.listeners.MoneyListener;
 
 // singleton
 public class GameManager

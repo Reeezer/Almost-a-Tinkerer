@@ -1,4 +1,4 @@
-package ch.hearc.p2.aatinkerer.ui;
+package ch.hearc.p2.aatinkerer.ui.widgets;
 
 import java.util.Map;
 
@@ -13,8 +13,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
 
-import ch.hearc.p2.aatinkerer.Contract;
-import ch.hearc.p2.aatinkerer.ItemType;
+import ch.hearc.p2.aatinkerer.data.Contract;
+import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.ui.UIElement;
 
 public class ContractDisplay implements UIElement
 {

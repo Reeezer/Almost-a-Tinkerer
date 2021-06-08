@@ -1,12 +1,12 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.main;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -14,20 +14,24 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import com.badlogic.gdx.scenes.scene2d.ui.Window.WindowStyle;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
-import ch.hearc.p2.aatinkerer.buildings.FactoryType;
-import ch.hearc.p2.aatinkerer.ui.BuildingRecipeDisplay;
-import ch.hearc.p2.aatinkerer.ui.UIElement;
-import ch.hearc.p2.aatinkerer.ui.ContractDisplay;
-import ch.hearc.p2.aatinkerer.ui.ItemDropdownMenu;
-import ch.hearc.p2.aatinkerer.ui.NotificationManager;
+import ch.hearc.p2.aatinkerer.data.Contract;
+import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.data.Milestone;
+import ch.hearc.p2.aatinkerer.data.Ressource;
+import ch.hearc.p2.aatinkerer.listeners.ContractListener;
+import ch.hearc.p2.aatinkerer.listeners.MilestoneListener;
 import ch.hearc.p2.aatinkerer.ui.Notification;
-import ch.hearc.p2.aatinkerer.ui.Toolbar;
+import ch.hearc.p2.aatinkerer.ui.UIElement;
+import ch.hearc.p2.aatinkerer.ui.widgets.BuildingRecipeDisplay;
+import ch.hearc.p2.aatinkerer.ui.widgets.ContractDisplay;
+import ch.hearc.p2.aatinkerer.ui.widgets.ItemDropdownMenu;
+import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
+import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
+import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class GameScreen implements Screen
 {

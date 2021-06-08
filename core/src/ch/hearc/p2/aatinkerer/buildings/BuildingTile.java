@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import ch.hearc.p2.aatinkerer.data.FactoryType;
+
 public class BuildingTile
 {
 	protected String baseFramesPath;

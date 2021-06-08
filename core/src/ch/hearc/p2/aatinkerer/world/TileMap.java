@@ -1,4 +1,4 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.world;
 
 import java.util.HashSet;
 import java.util.Random;
@@ -11,7 +11,6 @@ import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
 import ch.hearc.p2.aatinkerer.buildings.Cutter;
 import ch.hearc.p2.aatinkerer.buildings.Extractor;
-import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 import ch.hearc.p2.aatinkerer.buildings.Hub;
 import ch.hearc.p2.aatinkerer.buildings.Furnace;
 import ch.hearc.p2.aatinkerer.buildings.Merger;
@@ -20,6 +19,8 @@ import ch.hearc.p2.aatinkerer.buildings.Press;
 import ch.hearc.p2.aatinkerer.buildings.Splitter;
 import ch.hearc.p2.aatinkerer.buildings.Trash;
 import ch.hearc.p2.aatinkerer.buildings.Tunnel;
+import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.data.Ressource;
 
 public class TileMap
 {

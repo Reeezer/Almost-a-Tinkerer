@@ -1,4 +1,4 @@
-package ch.hearc.p2.aatinkerer.buildings;
+package ch.hearc.p2.aatinkerer.data;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;

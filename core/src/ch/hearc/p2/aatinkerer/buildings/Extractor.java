@@ -1,8 +1,9 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
-import ch.hearc.p2.aatinkerer.ItemType;
-import ch.hearc.p2.aatinkerer.Ressource;
-import ch.hearc.p2.aatinkerer.TileMap;
+import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.data.Ressource;
+import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Extractor extends Building
 {

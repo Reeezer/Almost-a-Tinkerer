@@ -2,9 +2,10 @@ package ch.hearc.p2.aatinkerer.buildings;
 
 import java.util.ArrayList;
 
-import ch.hearc.p2.aatinkerer.ItemType;
-import ch.hearc.p2.aatinkerer.Recipe;
-import ch.hearc.p2.aatinkerer.TileMap;
+import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.data.Recipe;
+import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Assembler extends Building
 {

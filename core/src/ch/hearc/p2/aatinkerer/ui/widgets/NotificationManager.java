@@ -1,4 +1,4 @@
-package ch.hearc.p2.aatinkerer.ui;
+package ch.hearc.p2.aatinkerer.ui.widgets;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -11,6 +11,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
+
+import ch.hearc.p2.aatinkerer.ui.Notification;
+import ch.hearc.p2.aatinkerer.ui.UIElement;
 
 public class NotificationManager implements UIElement
 {

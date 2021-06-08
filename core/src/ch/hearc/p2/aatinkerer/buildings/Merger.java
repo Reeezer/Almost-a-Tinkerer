@@ -1,6 +1,7 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
-import ch.hearc.p2.aatinkerer.TileMap;
+import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Merger extends Building
 {

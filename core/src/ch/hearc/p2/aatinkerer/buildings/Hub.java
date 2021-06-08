@@ -2,8 +2,8 @@ package ch.hearc.p2.aatinkerer.buildings;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import ch.hearc.p2.aatinkerer.GameManager;
-import ch.hearc.p2.aatinkerer.TileMap;
+import ch.hearc.p2.aatinkerer.main.GameManager;
+import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Hub extends Building
 {

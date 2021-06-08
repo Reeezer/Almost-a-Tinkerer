@@ -1,4 +1,6 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.listeners;
+
+import ch.hearc.p2.aatinkerer.data.Contract;
 
 public interface ContractListener
 {

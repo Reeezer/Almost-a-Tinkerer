@@ -1,8 +1,10 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import ch.hearc.p2.aatinkerer.util.Input;
 
 public class AATinkererGame extends Game
 {

@@ -1,4 +1,4 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.data;
 
 import java.util.ArrayList;
 import java.util.HashMap;

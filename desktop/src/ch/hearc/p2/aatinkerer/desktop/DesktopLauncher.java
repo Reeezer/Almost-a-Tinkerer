@@ -2,7 +2,8 @@ package ch.hearc.p2.aatinkerer.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import ch.hearc.p2.aatinkerer.AATinkererGame;
+
+import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 
 public class DesktopLauncher
 {

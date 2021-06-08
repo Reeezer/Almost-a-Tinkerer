@@ -1,9 +1,7 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.data;
 
 import java.util.LinkedList;
 import java.util.List;
-
-import ch.hearc.p2.aatinkerer.buildings.FactoryType;
 
 public enum Milestone
 {

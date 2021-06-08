@@ -1,4 +1,4 @@
-package ch.hearc.p2.aatinkerer.ui;
+package ch.hearc.p2.aatinkerer.ui.widgets;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
-import ch.hearc.p2.aatinkerer.buildings.FactoryType;
+import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.ui.ToolbarItem;
+import ch.hearc.p2.aatinkerer.ui.UIElement;
 
 public class Toolbar implements UIElement
 {

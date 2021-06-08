@@ -1,4 +1,4 @@
-package ch.hearc.p2.aatinkerer;
+package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
