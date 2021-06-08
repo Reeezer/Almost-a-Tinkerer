@@ -155,12 +155,6 @@ public class GameScreen implements Screen
 
 		/* input */
 
-		// regen new map FIXME debug
-		if (Gdx.input.isKeyJustPressed(Keys.A)) {
-			map.dispose();
-			map = new TileMap(250, 250);
-		}
-
 		// zoom
 
 		// with the numpad
@@ -197,18 +191,6 @@ public class GameScreen implements Screen
 			x -= (int) (Gdx.input.getDeltaX() * zoom);
 			y += (int) (Gdx.input.getDeltaY() * zoom);
 		}
-
-		// with the mouse (border) FIXME fix border scrolling (which is temporarily
-		// disabled)
-		final int border = -1;
-		if (Gdx.input.getY() >= Gdx.graphics.getHeight() - border)
-			y -= 1 * dd;
-		if (Gdx.input.getY() <= border)
-			y += 1 * dd;
-		if (Gdx.input.getX() >= Gdx.graphics.getWidth() - border)
-			x += 1 * dd;
-		if (Gdx.input.getX() <= border)
-			x -= 1 * dd;
 
 		// buildings
 
