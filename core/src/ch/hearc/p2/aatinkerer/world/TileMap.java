@@ -60,7 +60,7 @@ public class TileMap
 		// - generate the map by generating seeds and growing them
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
 		// this due to collisions)
-		final int seeds = (width * height) / 500;
+		final int seeds = (width * height) / 100;
 		final int max_life = 10; // + 2
 		for (int i = 0; i < seeds; i++)
 		{
@@ -104,7 +104,7 @@ public class TileMap
 		map[x][y] = ressource;
 
 		// attempt to spawn more resources around
-		final float spawn_probability = 0.75f;
+		final float spawn_probability = 0.6f;
 		// north
 		if (random.nextFloat() < spawn_probability)
 			generate(ressource, life - 1, x, y - 1);

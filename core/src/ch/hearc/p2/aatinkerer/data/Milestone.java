@@ -13,6 +13,8 @@ public enum Milestone
 	UNLOCK_ASSEMBLERMERGER("The assembler and the merger are now unlocked", FactoryType.ASSEMBLER, FactoryType.MERGER),
 	UNLOCK_SPLITTER("The splitter is now unlocked", FactoryType.SPLITTER);
 
+	// FIXME ajouter une dernière milestone de félicitation
+	
 	private final List<FactoryType> factoryTypes;
 	private final String description;
 
