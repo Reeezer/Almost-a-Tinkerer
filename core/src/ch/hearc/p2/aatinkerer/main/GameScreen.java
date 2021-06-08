@@ -20,6 +20,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
+import ch.hearc.p2.aatinkerer.buildings.Splitter;
 import ch.hearc.p2.aatinkerer.data.Contract;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
@@ -33,6 +34,7 @@ import ch.hearc.p2.aatinkerer.ui.widgets.BuildingRecipeDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.ItemDropdownMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
+import ch.hearc.p2.aatinkerer.ui.widgets.SplitterMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
@@ -69,8 +71,11 @@ public class GameScreen implements Screen
 	private ContractListener contractListener;
 	private BuildingRecipeDisplay buildingRecipeDisplay;
 	private ItemDropdownMenu itemDropdownMenu;
+	private SplitterMenu splitterMenu;
 
 	private BitmapFont font;
+
+	private boolean justClicked;
 
 	public GameScreen(AATinkererGame game)
 	{
@@ -93,6 +98,8 @@ public class GameScreen implements Screen
 		mirrored = false;
 		isInputTunnel = false;
 
+		justClicked = true;
+
 		lastTime = TimeUtils.millis();
 		unprocessedTime = 0;
 
@@ -109,6 +116,9 @@ public class GameScreen implements Screen
 		buildingRecipeDisplay = new BuildingRecipeDisplay(itemDropdownMenu);
 		uiElements.add(buildingRecipeDisplay);
 		uiElements.add(itemDropdownMenu);
+
+		splitterMenu = new SplitterMenu();
+		uiElements.add(splitterMenu);
 
 		FreeTypeFontParameter titleFontParameter = new FreeTypeFontParameter();
 		titleFontParameter.size = 16;
@@ -251,13 +261,13 @@ public class GameScreen implements Screen
 			factoryToolbar.setActiveItem(-1);
 			buildingRecipeDisplay.setBuilding(null);
 			itemDropdownMenu.setItems(null);
+			splitterMenu.setSplitter(null);
 		}
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
 		// handle left mouse click
 		if (Gdx.input.isButtonPressed(Buttons.LEFT))
 		{
-
 			boolean mouseCaptured = false;
 
 			// check if we need to capture mouse input or let it through to the rest of the
@@ -285,8 +295,10 @@ public class GameScreen implements Screen
 					int ix = (int) (mx - bounds.x);
 					int iy = (int) (my - bounds.y);
 
-					clickable.passRelativeClick((int) ix, (int) iy);
+					if (this.justClicked)
+						clickable.passRelativeClick((int) ix, (int) iy);
 
+					this.justClicked = false;
 					break; // stop checking for clicks on clickables, only one should capture the click
 				}
 			}
@@ -308,6 +320,16 @@ public class GameScreen implements Screen
 				{
 					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
 
+					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding instanceof Splitter)
+					{
+						this.splitterMenu.setSplitter((Splitter) attemptContextualMenuBuilding);
+						this.justClicked = false;
+					}
+					else
+					{
+						this.splitterMenu.setSplitter(null);
+					}
+
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
 						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
 					else
@@ -317,6 +339,10 @@ public class GameScreen implements Screen
 					}
 				}
 			}
+		}
+		else
+		{
+			justClicked = true;
 		}
 
 		// delete building

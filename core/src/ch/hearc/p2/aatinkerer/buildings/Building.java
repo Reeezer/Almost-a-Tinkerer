@@ -75,7 +75,6 @@ public abstract class Building
 		this.currentIngredients = new HashMap<ItemType, Integer>();
 		this.recipes = null;
 		this.canSelectRecipe = false;
-
 	}
 
 	public boolean canSelectRecipe()

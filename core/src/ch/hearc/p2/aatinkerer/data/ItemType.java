@@ -37,8 +37,8 @@ public enum ItemType
 	BOX("Item/Crate.png", 90),
 	PLANT("Item/Plant.png", 200),
 	PENCIL("Item/Pencil.png", 100),
-	WALLPAPER("Item/None.png", 200),
-	CARPET("Item/None.png", 200);
+	WALLPAPER("Item/Wallpaper.png", 200),
+	CARPET("Item/Carpet.png", 200);
 
 	private Texture texture;
 	private int value; // how much does it sell for?
