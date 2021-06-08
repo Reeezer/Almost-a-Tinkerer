@@ -9,8 +9,7 @@ public class Conveyor extends Building
 {
 	public Conveyor(TileMap tilemap, int x, int y, int[][] inputOutputPosition)
 	{
-		super(tilemap, x, y, inputOutputPosition[1][2], 1,
-				getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]), 1, 8, FactoryType.CONVEYOR);
+		super(tilemap, x, y, inputOutputPosition[1][2], 1, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]), 1, 8, FactoryType.CONVEYOR);
 		this.inputPositions = new int[][] { inputOutputPosition[0] };
 		this.outputPosition = inputOutputPosition[1];
 	}
@@ -18,7 +17,8 @@ public class Conveyor extends Building
 	public void renderItems(SpriteBatch batch, int tileSize)
 	{
 		int index = -1;
-		for (Item item : items) {
+		for (Item item : items)
+		{
 			// move item on conveyor depends on time spent on it
 			index++;
 			int xOrientation = (direction == 2 || direction == 0) ? ((direction == 2) ? -1 : 1) : 0;

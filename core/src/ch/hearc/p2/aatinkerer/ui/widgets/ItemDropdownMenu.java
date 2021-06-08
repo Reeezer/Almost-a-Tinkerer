@@ -30,7 +30,7 @@ public class ItemDropdownMenu implements UIElement
 	private BitmapFont font;
 
 	private Rectangle bounds;
-	
+
 	private List<ItemDropdownListener> listeners;
 
 	public ItemDropdownMenu()
@@ -53,7 +53,7 @@ public class ItemDropdownMenu implements UIElement
 	public void setItems(List<ItemType> items)
 	{
 		this.items = items;
-		
+
 		// bounds height due to variable height
 		this.bounds.height = this.bottomBorderRegion.getRegionHeight() + this.topBorderRegion.getRegionHeight();
 		if (this.items != null)
@@ -68,8 +68,7 @@ public class ItemDropdownMenu implements UIElement
 			int xcorner = (int) this.bounds.x;
 			int ycorner = (int) this.bounds.y;
 
-			batch.draw(this.topBorderRegion, xcorner,
-					ycorner + 5 + (this.items.size() * this.itemRegion.getRegionHeight()));
+			batch.draw(this.topBorderRegion, xcorner, ycorner + 5 + (this.items.size() * this.itemRegion.getRegionHeight()));
 
 			int i = 0;
 			for (ItemType item : this.items)
@@ -89,7 +88,7 @@ public class ItemDropdownMenu implements UIElement
 		}
 
 	}
-	
+
 	public void addListener(ItemDropdownListener listener)
 	{
 		this.listeners.add(listener);
@@ -97,11 +96,10 @@ public class ItemDropdownMenu implements UIElement
 
 	public void selectItem(ItemType type)
 	{
-		System.out.println("Bonsoir " + type.name());
 		for (ItemDropdownListener listener : this.listeners)
 			listener.itemSelected(type);
 	}
-	
+
 	@Override
 	public void setScreenSize(int w, int h)
 	{
@@ -126,7 +124,7 @@ public class ItemDropdownMenu implements UIElement
 		{
 			int yInList = y - this.bottomBorderRegion.getRegionHeight();
 			int itemno = yInList / this.itemRegion.getRegionHeight();
-			
+
 			if (itemno < this.items.size())
 				selectItem(this.items.get(itemno));
 		}

@@ -53,7 +53,7 @@ public enum ItemType
 	{
 		batch.draw(texture, x, y);
 	}
-	
+
 	public int value()
 	{
 		return this.value;

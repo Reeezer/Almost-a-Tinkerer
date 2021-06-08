@@ -37,7 +37,8 @@ public class Splitter extends Building
 
 		// FIXME need an item to be selected
 		Item itemToTransfer = items.peek();
-		if (secondOutput != null && !secondOutput.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered) {
+		if (secondOutput != null && !secondOutput.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered)
+		{
 			Item item = items.poll();
 			contentSize--;
 			secondOutput.addItem(item);

@@ -29,7 +29,7 @@ public enum Ressource
 	{
 		batch.draw(texture, x, y);
 	}
-	
+
 	public ItemType getExtractedItem()
 	{
 		return itemType;

@@ -27,7 +27,7 @@ public class Notification
 	{
 		return title;
 	}
-	
+
 	public float duration()
 	{
 		return duration;

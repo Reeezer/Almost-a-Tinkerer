@@ -51,20 +51,17 @@ public class BuildingRecipeDisplay implements UIElement
 		FreeTypeFontParameter whiteDescriptionFontParameter = new FreeTypeFontParameter();
 		whiteDescriptionFontParameter.size = 16;
 		whiteDescriptionFontParameter.color = Color.WHITE;
-		whiteFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"))
-				.generateFont(whiteDescriptionFontParameter);
+		whiteFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(whiteDescriptionFontParameter);
 
 		FreeTypeFontParameter largeWhiteDescriptionFontParameter = new FreeTypeFontParameter();
 		largeWhiteDescriptionFontParameter.size = 32;
 		largeWhiteDescriptionFontParameter.color = Color.WHITE;
-		largeWhiteFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"))
-				.generateFont(largeWhiteDescriptionFontParameter);
+		largeWhiteFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(largeWhiteDescriptionFontParameter);
 
 		FreeTypeFontParameter blackDescriptionFontParameter = new FreeTypeFontParameter();
 		blackDescriptionFontParameter.size = 16;
 		blackDescriptionFontParameter.color = Color.BLACK;
-		blackFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"))
-				.generateFont(blackDescriptionFontParameter);
+		blackFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(blackDescriptionFontParameter);
 
 		this.bounds = new Rectangle();
 		this.bounds.width = this.popupRegion.getRegionWidth();
@@ -73,21 +70,21 @@ public class BuildingRecipeDisplay implements UIElement
 		this.selectedRecipeButtonBounds = new Rectangle(6, 50, 30, 30);
 
 		this.dropdownMenu = dropdownMenu;
-		
+
 		ItemDropdownListener listener = new ItemDropdownListener() {
-			
+
 			@Override
 			public void itemSelected(ItemType type)
 			{
 				if (BuildingRecipeDisplay.this.building != null)
 					BuildingRecipeDisplay.this.building.setRecipeTarget(type);
-				
+
 				setBuilding(building);
 			}
 		};
 		dropdownMenu.addListener(listener);
 	}
-	
+
 	@Override
 	public void render(SpriteBatch batch, float delta)
 	{
@@ -143,7 +140,7 @@ public class BuildingRecipeDisplay implements UIElement
 		}
 		else
 		{
-			//this.dropdownMenu.setItems(null);
+			// this.dropdownMenu.setItems(null);
 		}
 	}
 
@@ -184,9 +181,10 @@ public class BuildingRecipeDisplay implements UIElement
 					targetItems.add(recipe.getProduct());
 
 				this.dropdownMenu.setItems(targetItems);
-			} else
+			}
+			else
 			{
-				//this.dropdownMenu.setItems(null);
+				// this.dropdownMenu.setItems(null);
 			}
 		}
 	}

@@ -25,7 +25,7 @@ public class NotificationManager implements UIElement
 	private Notification currentlyDisplayedNotification = null;
 
 	private float timeDisplayed;
-	
+
 	private Rectangle bounds;
 
 	public NotificationManager()
@@ -38,7 +38,7 @@ public class NotificationManager implements UIElement
 		descriptionFontParameter.size = 16;
 		descriptionFontParameter.color = Color.BLACK;
 		descriptionFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
-		
+
 		FreeTypeFontParameter titleFontParameter = new FreeTypeFontParameter();
 		titleFontParameter.size = 16;
 		titleFontParameter.color = Color.BLACK;
@@ -47,7 +47,7 @@ public class NotificationManager implements UIElement
 		titleFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(titleFontParameter);
 
 		timeDisplayed = 0.f;
-		
+
 		this.bounds = new Rectangle();
 		this.bounds.width = this.notificationTexture.getWidth();
 		this.bounds.height = this.notificationTexture.getHeight();
@@ -63,35 +63,34 @@ public class NotificationManager implements UIElement
 	// FIXME taille de la font
 	@Override
 	public void render(SpriteBatch batch, float delta)
-	{		
+	{
 		if (queuedPopups.size() > 0 && currentlyDisplayedNotification == null)
 			currentlyDisplayedNotification = queuedPopups.poll();
 
 		if (currentlyDisplayedNotification != null)
 		{
 			int animationOffset = 0;
-			
+
 			// make the notification appear
 			if (this.timeDisplayed < 1.f)
 				animationOffset = 0 - 10 - 256 + (int) ((10 + 256) * ease_in_out(Math.min(this.timeDisplayed, 1.f)));
-			
+
 			// make it disappear
 			if (this.timeDisplayed >= this.currentlyDisplayedNotification.duration() - 1.f)
 				animationOffset = 0 - 10 - 256 + (int) ((10 + 256) * ease_in_out(Math.min(this.currentlyDisplayedNotification.duration() - this.timeDisplayed, 1.f)));
-			
+
 			int xCorner = 0 + 10 + animationOffset;
 			int yCorner = (int) this.bounds.y;
 			batch.draw(notificationTexture, xCorner, yCorner);
-			
+
 			// update the bounds position
 			this.bounds.x = xCorner;
-			
+
 			// render title
 			titleFont.draw(batch, currentlyDisplayedNotification.title(), xCorner + 13, yCorner + 92 - 7, 0, currentlyDisplayedNotification.title().length(), 239.f, -1, false);
-			
+
 			// render text
-			descriptionFont.draw(batch, currentlyDisplayedNotification.description(), xCorner + 8, yCorner + 92 - 22, 0,
-					currentlyDisplayedNotification.description().length(), 241.f, -1, true);
+			descriptionFont.draw(batch, currentlyDisplayedNotification.description(), xCorner + 8, yCorner + 92 - 22, 0, currentlyDisplayedNotification.description().length(), 241.f, -1, true);
 
 			this.timeDisplayed += delta;
 			if (this.timeDisplayed >= this.currentlyDisplayedNotification.duration())
@@ -115,7 +114,7 @@ public class NotificationManager implements UIElement
 	@Override
 	public void setScreenSize(int w, int h)
 	{
-		this.bounds.y = h - this.notificationTexture.getHeight() - 10;		
+		this.bounds.y = h - this.notificationTexture.getHeight() - 10;
 	}
 
 	@Override
@@ -127,7 +126,7 @@ public class NotificationManager implements UIElement
 	@Override
 	public void passRelativeClick(int x, int y)
 	{
-		// not used		
+		// not used
 	}
 
 	@Override

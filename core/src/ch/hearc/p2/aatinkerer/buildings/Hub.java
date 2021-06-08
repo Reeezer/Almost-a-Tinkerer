@@ -18,8 +18,10 @@ public class Hub extends Building
 	public void render(SpriteBatch batch, int tileSize)
 	{
 		int z = 0;
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
+		for (int i = -1; i <= 1; i++)
+		{
+			for (int j = -1; j <= 1; j++)
+			{
 				BuildingTile tile = tiles[z++];
 				int tx = x + i;
 				int ty = y + j;

@@ -36,7 +36,7 @@ public class Toolbar implements UIElement
 
 		backgroundTexture = new Texture(Gdx.files.internal("Ui/Icons/IconBackground.png"));
 		activeBackgroundTexture = new Texture(Gdx.files.internal("Ui/Icons/IconBackgroundSelected.png"));
-		
+
 		this.bounds = new Rectangle();
 	}
 
@@ -45,9 +45,10 @@ public class Toolbar implements UIElement
 	{
 		int x = (int) this.bounds.x;
 		int y = (int) this.bounds.y;
-		
+
 		// background
-		for (int i = 0; i < items.size(); i++) {
+		for (int i = 0; i < items.size(); i++)
+		{
 			if (i == activeItemIndex)
 				batch.draw(activeBackgroundTexture, x + i * TEXSIZE, y);
 			else
@@ -55,7 +56,8 @@ public class Toolbar implements UIElement
 		}
 
 		int offset = 0;
-		for (ToolbarItem item : items) {
+		for (ToolbarItem item : items)
+		{
 			Texture texture = item.getItemTexture();
 
 			if (texture != null && item.enabled())
@@ -75,11 +77,13 @@ public class Toolbar implements UIElement
 
 	public void setActiveItem(int itemno)
 	{
-		if (itemno < 0 || itemno >= items.size()) {
+		if (itemno < 0 || itemno >= items.size())
+		{
 			activeItemIndex = -1;
 			return;
 		}
-		if (!items.get(itemno).enabled()) {
+		if (!items.get(itemno).enabled())
+		{
 			activeItemIndex = -1;
 			return;
 		}
@@ -97,10 +101,10 @@ public class Toolbar implements UIElement
 	public void setScreenSize(int w, int h)
 	{
 		int toolbarWidth = FactoryType.values().length * Toolbar.TEXSIZE;
-		
+
 		int x = (w - toolbarWidth) / 2;
 		int y = 0;
-		
+
 		bounds = new Rectangle(x, y, toolbarWidth, Toolbar.TEXSIZE);
 	}
 
@@ -115,7 +119,7 @@ public class Toolbar implements UIElement
 	{
 		items.get(items.indexOf(item)).setEnabled(enabled);
 	}
-	
+
 	@Override
 	public boolean visible()
 	{

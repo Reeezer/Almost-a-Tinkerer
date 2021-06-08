@@ -12,15 +12,15 @@ public enum Milestone
 	UNLOCK_PRESS("The press is now unlocked", FactoryType.PRESS),
 	UNLOCK_ASSEMBLERMERGER("The assembler and the merger are now unlocked", FactoryType.ASSEMBLER, FactoryType.MERGER),
 	UNLOCK_SPLITTER("The splitter is now unlocked", FactoryType.SPLITTER);
-	
+
 	private final List<FactoryType> factoryTypes;
 	private final String description;
 
-	private Milestone(String description, FactoryType ...types)
+	private Milestone(String description, FactoryType... types)
 	{
 		this.description = description;
 		factoryTypes = new LinkedList<FactoryType>();
-		
+
 		for (FactoryType factoryType : types)
 			factoryTypes.add(factoryType);
 	}
@@ -29,7 +29,7 @@ public enum Milestone
 	{
 		return factoryTypes;
 	}
-	
+
 	public String description()
 	{
 		return description;

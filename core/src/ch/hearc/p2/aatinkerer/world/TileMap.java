@@ -53,18 +53,17 @@ public class TileMap
 		factories = new Building[width][height];
 		buildings = new HashSet<Building>();
 
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
+		for (int i = 0; i < width; i++)
+			for (int j = 0; j < height; j++)
 				map[i][j] = Ressource.NONE;
-			}
-		}
 
 		// - generate the map by generating seeds and growing them
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
 		// this due to collisions)
 		final int seeds = (width * height) / 500;
 		final int max_life = 10; // + 2
-		for (int i = 0; i < seeds; i++) {
+		for (int i = 0; i < seeds; i++)
+		{
 			int x = random.nextInt(width);
 			int y = random.nextInt(height);
 			int life = random.nextInt(max_life) + 2;
@@ -175,7 +174,8 @@ public class TileMap
 		int dx = 0;
 		int dy = 0;
 
-		switch (outputPosition[2]) {
+		switch (outputPosition[2])
+		{
 			case 0:
 				dx = 1;
 				break;
@@ -196,17 +196,23 @@ public class TileMap
 		if (!tileExists(x + dx, y + dy))
 			return null;
 
-		if (conveyors[x + dx][y + dy] != null) {
-			for (int[] input : conveyors[x + dx][y + dy].getInputs()) {
-				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4) {
+		if (conveyors[x + dx][y + dy] != null)
+		{
+			for (int[] input : conveyors[x + dx][y + dy].getInputs())
+			{
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4)
+				{
 					return conveyors[x + dx][y + dy];
 				}
 			}
 		}
 
-		if (factories[x + dx][y + dy] != null && factories[x + dx][y + dy].getInputs() != null) {
-			for (int[] input : factories[x + dx][y + dy].getInputs()) {
-				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4) {
+		if (factories[x + dx][y + dy] != null && factories[x + dx][y + dy].getInputs() != null)
+		{
+			for (int[] input : factories[x + dx][y + dy].getInputs())
+			{
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4)
+				{
 					return factories[x + dx][y + dy];
 				}
 			}
@@ -217,17 +223,23 @@ public class TileMap
 
 	private void checkSurroundings(Building[][] buildings, int x, int dx, int y, int dy, int direction, int addToDirection, boolean isInput, int[][] inputOutputPosition)
 	{
-		if (!isInput) {
-			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getInputs() != null) {
-				for (int[] input : buildings[x + dx][y + dy].getInputs()) {
-					if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 1 + addToDirection) % 4) {
+		if (!isInput)
+		{
+			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getInputs() != null)
+			{
+				for (int[] input : buildings[x + dx][y + dy].getInputs())
+				{
+					if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 1 + addToDirection) % 4)
+					{
 						inputOutputPosition[1] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
 					}
 				}
 			}
 		}
-		else {
-			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getOutput() != null) {
+		else
+		{
+			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getOutput() != null)
+			{
 				int[] output = buildings[x + dx][y + dy].getOutput();
 				if (output[0] == x + dx && output[1] == y + dy && output[2] == (direction + 1 + addToDirection) % 4)
 					inputOutputPosition[0] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
@@ -241,7 +253,8 @@ public class TileMap
 		int dx = 0;
 		int dy = 0;
 
-		switch (direction) {
+		switch (direction)
+		{
 			case 0:
 				dy = (isLeft) ? 1 : -1;
 				break;
@@ -288,7 +301,8 @@ public class TileMap
 		int dx = 0;
 		int dy = 0;
 
-		switch (direction) {
+		switch (direction)
+		{
 			case 0:
 				dx = 1;
 				break;
@@ -306,7 +320,8 @@ public class TileMap
 				break;
 		}
 
-		for (int i = 1; i <= distance; i++) {
+		for (int i = 1; i <= distance; i++)
+		{
 			int posX = x + dx * i;
 			int posY = y + dy * i;
 
@@ -333,14 +348,16 @@ public class TileMap
 	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
 		int ret = 0;
-		if (isEmpty(x, y)) {
+		if (isEmpty(x, y))
+		{
 			// For multi-tiles (2 or 3 tiles in a row)
 			int x2 = (direction % 2 == 0) ? ((direction == 0) ? x + 1 : x - 1) : x;
 			int y2 = (direction % 2 != 0) ? ((direction == 1) ? y + 1 : y - 1) : y;
 			int x3 = (direction % 2 == 0) ? ((direction == 0) ? x + 2 : x - 2) : x;
 			int y3 = (direction % 2 != 0) ? ((direction == 1) ? y + 2 : y - 2) : y;
 
-			switch (factoryType) {
+			switch (factoryType)
+			{
 				case EXTRACTOR:
 					Extractor extractor = new Extractor(this, x, y, direction, map[x][y]);
 					factories[x][y] = extractor;
@@ -441,14 +458,16 @@ public class TileMap
 		Building deleted = null;
 
 		// conveyors layer
-		if (conveyors[x][y] != null) {
+		if (conveyors[x][y] != null)
+		{
 			deleted = conveyors[x][y];
 			buildings.remove(conveyors[x][y]);
 			conveyors[x][y] = null;
 		}
 
 		// factories layer
-		if (factories[x][y] != null) {
+		if (factories[x][y] != null)
+		{
 			deleted = factories[x][y];
 			buildings.remove(factories[x][y]);
 			factories[x][y] = null;
@@ -472,14 +491,16 @@ public class TileMap
 		Building deleted = null;
 
 		// conveyors layer
-		if (conveyors[x][y] != null && conveyors[x][y] == building) {
+		if (conveyors[x][y] != null && conveyors[x][y] == building)
+		{
 			deleted = conveyors[x][y];
 			buildings.remove(conveyors[x][y]);
 			conveyors[x][y] = null;
 		}
 
 		// factories layer
-		if (factories[x][y] != null && factories[x][y] == building) {
+		if (factories[x][y] != null && factories[x][y] == building)
+		{
 			deleted = factories[x][y];
 			buildings.remove(factories[x][y]);
 			factories[x][y] = null;
@@ -498,34 +519,45 @@ public class TileMap
 	public void render(SpriteBatch batch)
 	{
 		// map
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++)
+			{
 				map[i][j].render(batch, i * TileMap.TILESIZE, j * TileMap.TILESIZE);
 			}
 		}
 
 		// conveyors
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (conveyors[i][j] != null) {
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++)
+			{
+				if (conveyors[i][j] != null)
+				{
 					conveyors[i][j].render(batch, TileMap.TILESIZE);
 				}
 			}
 		}
 
 		// items
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (conveyors[i][j] != null) {
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++)
+			{
+				if (conveyors[i][j] != null)
+				{
 					((Conveyor) conveyors[i][j]).renderItems(batch, TileMap.TILESIZE);
 				}
 			}
 		}
 
 		// factories
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (factories[i][j] != null) {
+		for (int i = 0; i < width; i++)
+		{
+			for (int j = 0; j < height; j++)
+			{
+				if (factories[i][j] != null)
+				{
 					factories[i][j].render(batch, TileMap.TILESIZE);
 				}
 			}
@@ -535,28 +567,33 @@ public class TileMap
 	public void update()
 	{
 		// update transfer ticks
-		for (FactoryType type : FactoryType.values()) {
+		for (FactoryType type : FactoryType.values())
+		{
 			type.transferTicksIncrease();
-			if (type.getTransferTicks() > type.getTransferTimeout()) {
+			if (type.getTransferTicks() > type.getTransferTimeout())
+			{
 				type.resetTransferTicks();
 			}
 		}
 
 		// update animation ticks
-		for (FactoryType type : FactoryType.values()) {
+		for (FactoryType type : FactoryType.values())
+		{
 			type.animationTicksIncrease();
-			if (type.getAnimationTicks() > type.getAnimationTimeout()) {
+			if (type.getAnimationTicks() > type.getAnimationTimeout())
+			{
 				type.resetAnimationTicks();
 				type.frameIncrease();
 			}
 		}
 
 		// update buildings
-		for (Building building : buildings) {
+		for (Building building : buildings)
+		{
 			building.update();
 		}
 	}
-	
+
 	public Building factoryAt(int x, int y)
 	{
 		if (tileExists(x, y))

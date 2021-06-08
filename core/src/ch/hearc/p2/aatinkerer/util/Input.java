@@ -5,24 +5,24 @@ import com.badlogic.gdx.InputProcessor;
 public class Input implements InputProcessor
 {
 	private int scrollY;
-	
+
 	public Input()
-	{		
+	{
 		scrollY = 0;
 	}
-	
+
 	public int getScrollY()
 	{
 		return scrollY;
 	}
-	
+
 	public void reset()
 	{
 		scrollY = 0;
 	}
-	
+
 	/* callbacks down there */
-	
+
 	@Override
 	public boolean keyDown(int keycode)
 	{

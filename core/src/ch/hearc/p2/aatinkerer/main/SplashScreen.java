@@ -43,7 +43,8 @@ public class SplashScreen implements Screen
 	{
 		long firstTime = TimeUtils.millis();
 
-		if (firstTime - lastTime >= 1000) {
+		if (firstTime - lastTime >= 1000)
+		{
 			frame = (frame + 1) % background.length;
 			lastTime = firstTime;
 		}

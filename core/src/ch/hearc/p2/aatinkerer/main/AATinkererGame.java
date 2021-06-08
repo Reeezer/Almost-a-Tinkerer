@@ -10,7 +10,7 @@ public class AATinkererGame extends Game
 {
 	public SpriteBatch batch;
 	public Input input;
-	
+
 	private GameScreen gameScreen;
 	private SplashScreen splashScreen;
 
@@ -21,13 +21,13 @@ public class AATinkererGame extends Game
 
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
-		
+
 		gameScreen = new GameScreen(this);
 		splashScreen = new SplashScreen(this);
-		
+
 		setScreen(splashScreen);
 	}
-	
+
 	public void toGameScreen()
 	{
 		setScreen(gameScreen);

@@ -111,7 +111,8 @@ public class GameManager
 
 		receiveMoney(type.value());
 
-		if (contractMilestoneIndex < storyMilestones.size()) {
+		if (contractMilestoneIndex < storyMilestones.size())
+		{
 			Contract ongoingStoryContract = storyContracts.get(contractMilestoneIndex);
 			ongoingStoryContract.addProducedItem(type);
 		}
@@ -160,11 +161,13 @@ public class GameManager
 	public void tick()
 	{
 		// 1 - advance story contracts and unlock factories
-		if (contractMilestoneIndex < storyMilestones.size()) {
+		if (contractMilestoneIndex < storyMilestones.size())
+		{
 			Milestone currentAttemptedMilestone = storyMilestones.get(contractMilestoneIndex);
 			Contract ongoingStoryContract = storyContracts.get(contractMilestoneIndex);
 
-			if (ongoingStoryContract.isFulfilled()) {
+			if (ongoingStoryContract.isFulfilled())
+			{
 				// important : d'abord unlock la milestone, comme ça on a le texte des contrats
 				// dans les popups après
 				unlockMilestone(currentAttemptedMilestone);

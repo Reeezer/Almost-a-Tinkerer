@@ -47,7 +47,7 @@ public class ContractDisplay implements UIElement
 		descriptionFontParameter.size = 16;
 		descriptionFontParameter.color = Color.WHITE;
 		descriptionFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
-		
+
 		this.bounds = new Rectangle();
 		this.bounds.width = this.titlebarArea.getRegionWidth();
 		// recompute height
@@ -58,10 +58,10 @@ public class ContractDisplay implements UIElement
 	{
 		this.currentContract = contract;
 		int height = this.titlebarArea.getRegionHeight() + this.bottomBorderArea.getRegionHeight();
-		
+
 		if (contract != null)
 			height += this.contractRowArea.getRegionHeight() * contract.getRequestedItems().size();
-		
+
 		this.bounds.height = height;
 		this.bounds.y = this.screenHeight - this.bounds.height - 10;
 	}
@@ -81,7 +81,7 @@ public class ContractDisplay implements UIElement
 			{
 				int xcorner = (int) this.bounds.x;
 				int ycorner = (int) y - this.titlebarArea.getRegionHeight() - (i * this.contractRowArea.getRegionHeight());
-				
+
 				batch.draw(this.contractRowArea, xcorner, ycorner);
 
 				ItemType itemType = entry.getKey();
@@ -93,8 +93,7 @@ public class ContractDisplay implements UIElement
 
 				String displayedString = String.format("%3dx : %s", itemCount, itemName);
 
-				descriptionFont.draw(batch, displayedString, xcorner + 42, ycorner + 19, 0, displayedString.length(),
-						239.f, -1, false);
+				descriptionFont.draw(batch, displayedString, xcorner + 42, ycorner + 19, 0, displayedString.length(), 239.f, -1, false);
 
 				itemType.render(batch, xcorner + 5, ycorner + 3);
 
@@ -120,7 +119,7 @@ public class ContractDisplay implements UIElement
 	{
 		this.bounds.x = w - 256 - 10;
 		this.screenHeight = h;
-		
+
 		// mettre à jour la position à l'écran
 		setContract(currentContract);
 	}
@@ -136,6 +135,5 @@ public class ContractDisplay implements UIElement
 	{
 		return true;
 	}
-
 
 }

@@ -7,11 +7,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -48,7 +51,6 @@ public class GameScreen implements Screen
 	private int zoomLevel;
 	private int direction;
 	private float zoom;
-	private int fpsDisplayTicks;
 	private boolean mirrored;
 	private boolean isInputTunnel;
 
@@ -67,6 +69,8 @@ public class GameScreen implements Screen
 	private ContractListener contractListener;
 	private BuildingRecipeDisplay buildingRecipeDisplay;
 	private ItemDropdownMenu itemDropdownMenu;
+
+	private BitmapFont font;
 
 	public GameScreen(AATinkererGame game)
 	{
@@ -88,7 +92,6 @@ public class GameScreen implements Screen
 		direction = 0;
 		mirrored = false;
 		isInputTunnel = false;
-		fpsDisplayTicks = 0;
 
 		lastTime = TimeUtils.millis();
 		unprocessedTime = 0;
@@ -107,6 +110,13 @@ public class GameScreen implements Screen
 		uiElements.add(buildingRecipeDisplay);
 		uiElements.add(itemDropdownMenu);
 
+		FreeTypeFontParameter titleFontParameter = new FreeTypeFontParameter();
+		titleFontParameter.size = 16;
+		titleFontParameter.color = Color.WHITE;
+		titleFontParameter.borderColor = Color.BLACK;
+		titleFontParameter.borderWidth = 1;
+		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(titleFontParameter);
+
 		milestoneListener = new MilestoneListener() {
 			@Override
 			public void unlockMilestone(Milestone milestone)
@@ -114,7 +124,8 @@ public class GameScreen implements Screen
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
 					factoryToolbar.setItemEnabled(factoryType, true);
 
-				if (milestone != Milestone.START) {
+				if (milestone != Milestone.START)
+				{
 					Notification popup = new Notification("Milestone Unlocked", milestone.description(), 8.f);
 					notificationManager.displayPopup(popup);
 				}
@@ -191,7 +202,8 @@ public class GameScreen implements Screen
 			x -= 1 * dd;
 
 		// with the mouse (drag and drop)
-		if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+		if (Gdx.input.isButtonPressed(Buttons.RIGHT))
+		{
 			x -= (int) (Gdx.input.getDeltaX() * zoom);
 			y += (int) (Gdx.input.getDeltaY() * zoom);
 		}
@@ -199,7 +211,8 @@ public class GameScreen implements Screen
 		// buildings
 
 		// rotation of buildings you are about to place
-		if (Gdx.input.isKeyJustPressed(Keys.R)) {
+		if (Gdx.input.isKeyJustPressed(Keys.R))
+		{
 			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 				direction = (direction + 3) % 4;
 			else
@@ -233,7 +246,8 @@ public class GameScreen implements Screen
 			factoryToolbar.setActiveItem(10);
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_1))
 			factoryToolbar.setActiveItem(11);
-		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+		{
 			factoryToolbar.setActiveItem(-1);
 			buildingRecipeDisplay.setBuilding(null);
 			itemDropdownMenu.setItems(null);
@@ -241,13 +255,15 @@ public class GameScreen implements Screen
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
 		// handle left mouse click
-		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
+		if (Gdx.input.isButtonPressed(Buttons.LEFT))
+		{
 
 			boolean mouseCaptured = false;
 
 			// check if we need to capture mouse input or let it through to the rest of the
 			// UI to place buildings
-			for (UIElement clickable : uiElements) {
+			for (UIElement clickable : uiElements)
+			{
 				// si l'élement est pas visible on ne le considère pas
 				if (!clickable.visible())
 					continue;
@@ -259,7 +275,8 @@ public class GameScreen implements Screen
 
 				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n", clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
 
-				if (bounds.contains(new Vector2(mx, my))) {
+				if (bounds.contains(new Vector2(mx, my)))
+				{
 					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
 
 					mouseCaptured = true;
@@ -274,23 +291,27 @@ public class GameScreen implements Screen
 				}
 			}
 
-			if (!mouseCaptured) {
+			if (!mouseCaptured)
+			{
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
-				// System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
+				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
-				if (factoryType != null) {
+				if (factoryType != null)
+				{
 					int inputTunnel = map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 					if (inputTunnel == 1 || inputTunnel == 2)
 						isInputTunnel = (inputTunnel == 1) ? true : false;
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 				}
-				else {
+				else
+				{
 					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
 						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
-					else {
+					else
+					{
 						buildingRecipeDisplay.setBuilding(null);
 						itemDropdownMenu.setItems(null);
 					}
@@ -312,16 +333,12 @@ public class GameScreen implements Screen
 		/* update */
 
 		// cap on fixed TPS
-		while (unprocessedTime >= processingTimeCap) {
+		while (unprocessedTime >= processingTimeCap)
+		{
 			unprocessedTime -= processingTimeCap;
 			map.update();
-			
-			GameManager.getInstance().tick();
-		}
 
-		if (fpsDisplayTicks++ > 60) {
-			fpsDisplayTicks = 0;
-			// System.out.println(Gdx.graphics.getFramesPerSecond());
+			GameManager.getInstance().tick();
 		}
 
 		/* render */
@@ -353,7 +370,8 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
-		if (factoryType != null) {
+		if (factoryType != null)
+		{
 			if (factoryType == FactoryType.TUNNEL)
 				factoryType.setMirrored(isInputTunnel);
 			else
@@ -376,9 +394,9 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
-		BitmapFont font = new BitmapFont();
 		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
-		if (ctrlPressed) {
+		if (ctrlPressed)
+		{
 			int toolbarHeight = 50;
 			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
 			float deltaa = Toolbar.TEXSIZE;
@@ -430,7 +448,8 @@ public class GameScreen implements Screen
 		uiCamera.setToOrtho(false, width, height);
 		hoverCamera.setToOrtho(false, width, height);
 
-		// changer l'écran pour les élements de l'interface afin qu'ils puissent se repositionner
+		// changer l'écran pour les élements de l'interface afin qu'ils puissent se
+		// repositionner
 		for (UIElement clickable : this.uiElements)
 			clickable.setScreenSize(width, height);
 	}
@@ -458,7 +477,7 @@ public class GameScreen implements Screen
 	{
 		// dipose of instance elements
 		map.dispose();
-		
+
 		// dispose of static elements
 		ItemType.dispose();
 		Ressource.dispose();

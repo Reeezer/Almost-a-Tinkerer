@@ -70,7 +70,6 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	@Override
 	public Texture getHoverTexture()
 	{
-		System.out.println(hoverIndex);
 		return hoverTexture[hoverIndex];
 	}
 

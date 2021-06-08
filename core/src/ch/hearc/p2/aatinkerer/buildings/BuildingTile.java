@@ -18,9 +18,8 @@ public class BuildingTile
 		baseFramesPath = framesPath;
 		frames = new Texture[framecount];
 
-		for (int i = 0; i < framecount; i++) {
+		for (int i = 0; i < framecount; i++)
 			frames[i] = new Texture(baseFramesPath + String.format("%02d.png", i));
-		}
 
 		this.type = type;
 	}
