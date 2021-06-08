@@ -85,6 +85,7 @@ public class BuildingRecipeDisplay implements UIElement
 		dropdownMenu.addListener(listener);
 	}
 
+	// FIXME si il y a plus de contrats, ne plus afficher le widget
 	@Override
 	public void render(SpriteBatch batch, float delta)
 	{
