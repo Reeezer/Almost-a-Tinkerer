@@ -135,16 +135,17 @@ public class GameScreen implements Screen
 			{
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
 					factoryToolbar.setItemEnabled(factoryType, true);
+				
+				String title;
+				
+				if (milestone == Milestone.START)
+					title = "Welcome";
+				else if (milestone == Milestone.END_STORY)
+					title = "Good job!";
+				else
+					title = "Milestone Achieved";
 
-				// So we can have a different title
-				if (milestone != Milestone.START) {
-					Notification popup = new Notification("Milestone Unlocked", milestone.description(), 8.f);
-					notificationManager.displayPopup(popup);
-				} else
-				{
-					Notification popup = new Notification("Welcome", milestone.description(), 8.f);
-					notificationManager.displayPopup(popup);
-				}
+				notificationManager.displayPopup(new Notification(title, milestone.description(), 10.f));
 			}
 		};
 
@@ -152,7 +153,6 @@ public class GameScreen implements Screen
 			@Override
 			public void contractAdded(Contract contract, boolean isStoryContract)
 			{
-				notificationManager.displayPopup(new Notification("New contract", contract.description(), 10.f));
 				contractDisplay.setContract(contract);
 			}
 		};

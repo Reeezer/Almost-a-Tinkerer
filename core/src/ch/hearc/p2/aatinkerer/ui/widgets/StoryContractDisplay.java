@@ -27,6 +27,7 @@ public class StoryContractDisplay implements UIElement
 	private TextureRegion checkmarkArea;
 
 	private BitmapFont descriptionFont;
+	private BitmapFont itemNameFont;
 
 	private Rectangle bounds;
 
@@ -37,17 +38,22 @@ public class StoryContractDisplay implements UIElement
 	{
 		this.spritesheet = new Texture("Ui/contracts_ui.png");
 
-		this.titlebarArea = new TextureRegion(this.spritesheet, 0, 0, 256, 34);
-		this.contractRowArea = new TextureRegion(this.spritesheet, 0, 35, 256, 36);
-		this.bottomBorderArea = new TextureRegion(this.spritesheet, 0, 72, 256, 5);
-		this.checkmarkArea = new TextureRegion(this.spritesheet, 7, 81, 26, 21);
+		this.titlebarArea = new TextureRegion(this.spritesheet, 0, 0, 256, 104);
+		this.contractRowArea = new TextureRegion(this.spritesheet, 0, 105, 256, 36);
+		this.bottomBorderArea = new TextureRegion(this.spritesheet, 0, 142, 256, 5);
+		this.checkmarkArea = new TextureRegion(this.spritesheet, 6, 151, 26, 21);
 
 		// public domain font https://grafxkid.itch.io/at01
 		FreeTypeFontParameter descriptionFontParameter = new FreeTypeFontParameter();
 		descriptionFontParameter.size = 16;
-		descriptionFontParameter.color = Color.WHITE;
+		descriptionFontParameter.color = Color.BLACK;
 		descriptionFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
 
+		FreeTypeFontParameter itemNameFontParameter = new FreeTypeFontParameter();
+		itemNameFontParameter.size = 16;
+		itemNameFontParameter.color = Color.WHITE;
+		itemNameFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(itemNameFontParameter);
+		
 		this.bounds = new Rectangle();
 		this.bounds.width = this.titlebarArea.getRegionWidth();
 		// recompute height
@@ -71,8 +77,14 @@ public class StoryContractDisplay implements UIElement
 
 		if (currentContract != null && !currentContract.isFulfilled())
 		{
+			
+			
 			int y = (int) this.bounds.y + (int) this.bounds.height;
 			batch.draw(this.titlebarArea, this.bounds.x, y - this.titlebarArea.getRegionHeight());
+			
+			// contract description
+			
+			descriptionFont.draw(batch, currentContract.description(), this.bounds.x + 8, ((int) y - this.titlebarArea.getRegionHeight()) + 92 - 26, 0, currentContract.description().length(), 241.f, -1, true);
 
 			int linecount = 0;
 			linecount = currentContract.getRequestedItems().size();
@@ -94,9 +106,9 @@ public class StoryContractDisplay implements UIElement
 
 				String displayedString = String.format("%3dx : %s", itemCount, itemName);
 
-				descriptionFont.draw(batch, displayedString, xcorner + 42, ycorner + 19, 0, displayedString.length(), 239.f, -1, false);
+				itemNameFont.draw(batch, displayedString, xcorner + 42, ycorner + 19, 0, displayedString.length(), 239.f, -1, false);
 
-				itemType.render(batch, xcorner + 5, ycorner + 3);
+				itemType.render(batch, xcorner + 3, ycorner + 2);
 
 				if (currentContract.isItemFulfilled(itemType))
 				{

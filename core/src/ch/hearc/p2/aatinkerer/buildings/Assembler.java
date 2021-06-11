@@ -25,6 +25,11 @@ public class Assembler extends Building
 	{
 		this.recipes = new ArrayList<Recipe>();
 
+		// since we cannot obtain the NONE item, we can use it so the assembler does not produce anything
+		Recipe recipe0 = new Recipe(ItemType.NONE);
+		recipe0.addIngredient(ItemType.NONE);
+		recipes.add(recipe0);
+		
 		Recipe recipe1 = new Recipe(ItemType.FABRIC);
 		recipe1.addIngredient(ItemType.COTTON, 4);
 		recipes.add(recipe1);

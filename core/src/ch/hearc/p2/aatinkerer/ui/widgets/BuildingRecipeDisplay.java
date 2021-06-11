@@ -113,12 +113,15 @@ public class BuildingRecipeDisplay implements UIElement
 				ItemType item = recipe.getKey();
 				int amount = recipe.getValue();
 
-				batch.draw(this.itemFrameRegion, x, y);
-				item.render(batch, x, y);
-
-				this.blackFont.draw(batch, Integer.toString(amount), x + 21, y + 9);
-				this.whiteFont.draw(batch, Integer.toString(amount), x + 20, y + 10);
-
+				// don't render the ingredients for the NONE recipe
+				if (item != ItemType.NONE)
+				{
+					batch.draw(this.itemFrameRegion, x, y);
+					item.render(batch, x, y);
+					
+					this.blackFont.draw(batch, Integer.toString(amount), x + 21, y + 9);
+					this.whiteFont.draw(batch, Integer.toString(amount), x + 20, y + 10);
+				}
 				i++;
 			}
 		}

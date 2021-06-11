@@ -61,40 +61,44 @@ public class GameManager
 		storyContracts.add(new Contract()); // empty contract for the start
 		storyMilestones.add(Milestone.START);
 
-		Contract cutterContract = new Contract("We need some wood! Please cut some trees");
+		Contract cutterContract = new Contract("We need some wood! Please cut some trees. Place an extractor where there's wood and transport it all the way to the hub at the center of the map using conveyors.");
 		cutterContract.addRequestedItem(ItemType.WOODLOG, 10);
 		storyContracts.add(cutterContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
 
-		Contract furnaceTrashContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs");
+		Contract furnaceTrashContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs, use a cutter to cut the logs into planks, and planks into sticks.");
 		furnaceTrashContract.addRequestedItem(ItemType.PLANK, 10);
 		furnaceTrashContract.addRequestedItem(ItemType.STICK, 10);
 		storyContracts.add(furnaceTrashContract);
 		storyMilestones.add(Milestone.UNLOCK_FURNACETRASH);
 
-		Contract mixerContract = new Contract("I can finally sit! Now please make some iron");
+		Contract mixerContract = new Contract("I can finally sit! Now please make some iron and copper plates by smelting their ores using coal in a furnace. Once you're done, use a cutter to make iron rods and copper wire.");
 		mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
+		mixerContract.addRequestedItem(ItemType.IRONROD, 30);
+		mixerContract.addRequestedItem(ItemType.COPPERPLATE, 10);
+		mixerContract.addRequestedItem(ItemType.COPPERWIRE, 30);
 		storyContracts.add(mixerContract);
 		storyMilestones.add(Milestone.UNLOCK_MIXER);
 
-		Contract pressContract = new Contract("Our company is starting to take off! Nice! We need a runway for planes, so please make concrete");
+		Contract pressContract = new Contract("Our company is starting to take off! Nice! We need a runway for planes, so please make concrete. You can use the mixer to mix stones and water, which will produce concrete.");
 		pressContract.addRequestedItem(ItemType.CONCRETE, 10);
 		storyContracts.add(pressContract);
 		storyMilestones.add(Milestone.UNLOCK_PRESS);
 
-		Contract assemblerMergerContract = new Contract("We have a lot of materials, but the problem is that we cannot assemble them, we need glue. Please compress some petroleum. Yes, exactly.");
+		Contract assemblerMergerContract = new Contract("We have a lot of materials now, but the problem is that we cannot assemble them, we need glue. Please use a press to compress some petroleum into glue. Yes, exactly.");
 		assemblerMergerContract.addRequestedItem(ItemType.GLUE, 10);
 		storyContracts.add(assemblerMergerContract);
 		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
 
-		Contract splitterContract = new Contract("Now we can finally glue everything together! Please make furniture");
-		splitterContract.addRequestedItem(ItemType.FABRIC, 20);
+		Contract splitterContract = new Contract("Now we can finally glue everything together to make furniture! Place an assembler to select what you want to make, click on it, select a recipe you want to make and it will display the required ingredients.");
 		splitterContract.addRequestedItem(ItemType.DESK, 10);
 		splitterContract.addRequestedItem(ItemType.TABLE, 10);
 		splitterContract.addRequestedItem(ItemType.BED, 2);
 		splitterContract.addRequestedItem(ItemType.SHELF, 8);
 		splitterContract.addRequestedItem(ItemType.PLANT, 20);
 		splitterContract.addRequestedItem(ItemType.CHAIR, 30);
+		splitterContract.addRequestedItem(ItemType.LAMP, 10);
+		splitterContract.addRequestedItem(ItemType.CARPET, 20);
 		storyContracts.add(splitterContract);
 		storyMilestones.add(Milestone.UNLOCK_SPLITTER);
 		
