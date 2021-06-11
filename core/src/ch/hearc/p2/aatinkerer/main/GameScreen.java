@@ -79,6 +79,8 @@ public class GameScreen implements Screen
 	private BitmapFont font;
 
 	private boolean justClicked;
+	private int initialx;
+	private int initialy;
 
 	public GameScreen(AATinkererGame game)
 	{
@@ -104,6 +106,8 @@ public class GameScreen implements Screen
 		isInputTunnel = false;
 
 		justClicked = true;
+		initialx = -1;
+		initialy = -1;
 
 		lastTime = TimeUtils.millis();
 		unprocessedTime = 0;
@@ -263,7 +267,7 @@ public class GameScreen implements Screen
 			splitterMenu.setSplitter(null);
 		}
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
-
+		
 		// handle left mouse click
 		if (Gdx.input.isButtonPressed(Buttons.LEFT))
 		{
@@ -303,13 +307,32 @@ public class GameScreen implements Screen
 			if (!mouseCaptured) {
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
+				
 				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
-				if (factoryType != null) {
+				if (factoryType != null && factoryType != FactoryType.CONVEYOR) {
 					int inputTunnel = map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 					if (inputTunnel == 1 || inputTunnel == 2)
 						isInputTunnel = (inputTunnel == 1) ? true : false;
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
+				}
+				else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a line
+				{
+					if ((direction == 0 || direction == 2) && initialy == -1)
+					{
+						initialy = tileY;
+						initialx = -1;
+					}
+					if ((direction == 1 || direction == 3) && initialx == -1)
+					{
+						initialx = tileX;
+						initialy = -1;
+					}					
+
+					if (direction == 0 || direction == 2)
+						map.placeBuilding(tileX, initialy, direction, factoryType, mirrored);
+					if (direction == 1 || direction == 3)
+						map.placeBuilding(initialx, tileY, direction, factoryType, mirrored);
 				}
 				else {
 					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
@@ -336,6 +359,8 @@ public class GameScreen implements Screen
 		else
 		{
 			justClicked = true;
+			initialx = -1;
+			initialy = -1;
 		}
 
 		// delete building
