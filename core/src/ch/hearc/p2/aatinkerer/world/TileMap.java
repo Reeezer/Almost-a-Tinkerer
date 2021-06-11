@@ -70,7 +70,10 @@ public class TileMap
 			// choose a random resource to spawn excluding the first value which is NONE
 			Ressource ressource = Ressource.values()[(random.nextInt(Ressource.values().length) - 1) + 1];
 
-			generate(ressource, life, x, y);
+			// make it so seeds cannot spawn in a way that will make them reach the center (= the hub) so it stays clear
+			if (Math.abs(x - (width / 2)) > (life + 3) || Math.abs(y - (height / 2)) > (life + 3))
+				generate(ressource, life, x, y);
+
 		}
 
 		Hub hub = new Hub(this, width / 2, height / 2);
