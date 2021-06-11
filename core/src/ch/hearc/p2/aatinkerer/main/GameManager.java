@@ -61,7 +61,7 @@ public class GameManager
 		storyContracts.add(new Contract()); // empty contract for the start
 		storyMilestones.add(Milestone.START);
 
-		Contract cutterContract = new Contract("We need some wood! Please cut some trees. Place an extractor where there's wood and transport it all the way to the hub at the center of the map using conveyors.");
+		Contract cutterContract = new Contract("We need some wood! Place an extractor where there's wood and transport it all the way to the hub at the center of the map using conveyors. Hover the ressources on the map to know their names.");
 		cutterContract.addRequestedItem(ItemType.WOODLOG, 10);
 		storyContracts.add(cutterContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);

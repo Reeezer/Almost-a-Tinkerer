@@ -33,6 +33,7 @@ import ch.hearc.p2.aatinkerer.ui.UIElement;
 import ch.hearc.p2.aatinkerer.ui.widgets.BuildingRecipeDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.ItemDropdownMenu;
+import ch.hearc.p2.aatinkerer.ui.widgets.MiniHoverPopup;
 import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
 import ch.hearc.p2.aatinkerer.ui.widgets.SplitterMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
@@ -72,6 +73,8 @@ public class GameScreen implements Screen
 	private BuildingRecipeDisplay buildingRecipeDisplay;
 	private ItemDropdownMenu itemDropdownMenu;
 	private SplitterMenu splitterMenu;
+	
+	private MiniHoverPopup miniHoverPopup;
 
 	private BitmapFont font;
 
@@ -121,6 +124,8 @@ public class GameScreen implements Screen
 
 		splitterMenu = new SplitterMenu();
 		uiElements.add(splitterMenu);
+		
+		miniHoverPopup = new MiniHoverPopup();
 
 		FreeTypeFontParameter titleFontParameter = new FreeTypeFontParameter();
 		titleFontParameter.size = 16;
@@ -341,6 +346,32 @@ public class GameScreen implements Screen
 		boolean ctrlPressed = false;
 		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT))
 			ctrlPressed = true;
+		
+		// hover tooltip if no building is selected to be placed
+		boolean renderTooltip = false;
+		String tooltipText = "";
+		int tooltipx = 0;
+		int tooltipy = 0;
+		if (factoryType == null)
+		{
+			int x = screenToTileX(Gdx.input.getX());
+			int y = screenToTileY(Gdx.input.getY());
+			
+			tooltipx = Gdx.input.getX() + 3;
+			tooltipy = (height - Gdx.input.getY()) + 3;
+			
+			ItemType item = map.itemAt(x, y);
+			Building building = map.factoryAt(x, y);
+			Building conveyor = map.conveyorAt(x, y);
+			
+			// FIXME maybe still display the ressources if the hovered building is an extractor?
+			// only display on ressources tiles that don't have a building on top
+			if (building == null && conveyor == null && item != null && item != ItemType.NONE)
+			{
+				tooltipText = item.fullname();
+				renderTooltip = true;
+			}
+		}
 
 		game.input.reset();
 
@@ -439,6 +470,9 @@ public class GameScreen implements Screen
 		for (UIElement uiElement : this.uiElements)
 			uiElement.render(game.batch, delta);
 
+		if (renderTooltip)
+			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
+		
 		game.batch.end();
 	}
 

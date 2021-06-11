@@ -20,6 +20,7 @@ import ch.hearc.p2.aatinkerer.buildings.Splitter;
 import ch.hearc.p2.aatinkerer.buildings.Trash;
 import ch.hearc.p2.aatinkerer.buildings.Tunnel;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.data.Ressource;
 
 public class TileMap
@@ -604,7 +605,24 @@ public class TileMap
 		else
 			return null;
 	}
+	
+	public ItemType itemAt(int x, int y)
+	{
+		if (tileExists(x, y))
+			return map[x][y].getExtractedItem();
+		else
+			return null;
+	}
 
+	public Building conveyorAt(int x, int y)
+	{
+		if (tileExists(x, y))
+			return conveyors[x][y];
+		else
+			return null;
+	}
+
+	
 	public void dispose()
 	{
 
