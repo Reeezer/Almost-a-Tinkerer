@@ -37,12 +37,12 @@ public class Assembler extends Building
 
 		Recipe recipe3 = new Recipe(ItemType.CHAIR);
 		recipe3.addIngredient(ItemType.STICK, 4);
-		recipe3.addIngredient(ItemType.PLANK, 1);
+		recipe3.addIngredient(ItemType.PLANK);
 		recipe3.addIngredient(ItemType.GLUE);
 		recipes.add(recipe3);
 
 		Recipe recipe4 = new Recipe(ItemType.DESK);
-		recipe4.addIngredient(ItemType.STICK, 4);
+		recipe4.addIngredient(ItemType.PLANK, 4);
 		recipe4.addIngredient(ItemType.IRONROD, 2);
 		recipe4.addIngredient(ItemType.GLUE, 2);
 		recipes.add(recipe4);
