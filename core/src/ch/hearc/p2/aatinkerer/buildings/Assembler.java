@@ -58,7 +58,6 @@ public class Assembler extends Building
 		recipes.add(recipe6);
 
 		Recipe recipe7 = new Recipe(ItemType.BED);
-		recipe7.addIngredient(ItemType.STICK, 4);
 		recipe7.addIngredient(ItemType.PLANK, 5);
 		recipe7.addIngredient(ItemType.PILLOW, 2);
 		recipe7.addIngredient(ItemType.FABRIC, 3);
@@ -68,7 +67,6 @@ public class Assembler extends Building
 		recipe8.addIngredient(ItemType.CONCRETE, 3);
 		recipe8.addIngredient(ItemType.GLUE, 3);
 		recipe8.addIngredient(ItemType.IRONROD, 2);
-		recipe8.addIngredient(ItemType.GRAPHITE, 2);
 		recipes.add(recipe8);
 
 		Recipe recipe9 = new Recipe(ItemType.COUCH);
