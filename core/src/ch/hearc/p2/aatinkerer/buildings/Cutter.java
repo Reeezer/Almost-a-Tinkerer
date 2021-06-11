@@ -22,19 +22,19 @@ public class Cutter extends Building
 	{
 		this.recipes = new ArrayList<Recipe>();
 
-		Recipe recipe1 = new Recipe(ItemType.IRONROD, 2);
+		Recipe recipe1 = new Recipe(ItemType.IRONROD);
 		recipe1.addIngredient(ItemType.IRONPLATE);
 		recipes.add(recipe1);
 
-		Recipe recipe2 = new Recipe(ItemType.COPPERWIRE, 2);
+		Recipe recipe2 = new Recipe(ItemType.COPPERWIRE);
 		recipe2.addIngredient(ItemType.COPPERPLATE);
 		recipes.add(recipe2);
 
-		Recipe recipe3 = new Recipe(ItemType.PLANK, 2);
+		Recipe recipe3 = new Recipe(ItemType.PLANK);
 		recipe3.addIngredient(ItemType.WOODLOG);
 		recipes.add(recipe3);
 
-		Recipe recipe4 = new Recipe(ItemType.STICK, 2);
+		Recipe recipe4 = new Recipe(ItemType.STICK);
 		recipe4.addIngredient(ItemType.PLANK);
 		recipes.add(recipe4);
 	}
