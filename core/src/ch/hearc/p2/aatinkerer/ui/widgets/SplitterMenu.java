@@ -112,7 +112,7 @@ public class SplitterMenu implements UIElement
 				System.out.println("splitter item selected: " + entry.getKey().name());
 				
 				if (this.splitter != null)
-					this.splitter.setSplitType(entry.getKey()); // FIXME faire l'affichage de l'item sélectionné
+					this.splitter.setSplitType(entry.getKey());
 			}
 		}
 	}

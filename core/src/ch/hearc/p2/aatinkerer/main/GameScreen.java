@@ -86,8 +86,7 @@ public class GameScreen implements Screen
 		hoverCamera = new OrthographicCamera();
 
 		uiElements = new ArrayList<UIElement>();
-
-		// FIXME use proper values instead of magic numbers
+		
 		final int MAPWIDTH = 160;
 		final int MAPHEIGHT = 160;
 		map = new TileMap(MAPWIDTH, MAPHEIGHT);
@@ -137,8 +136,13 @@ public class GameScreen implements Screen
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
 					factoryToolbar.setItemEnabled(factoryType, true);
 
+				// So we can have a different title
 				if (milestone != Milestone.START) {
 					Notification popup = new Notification("Milestone Unlocked", milestone.description(), 8.f);
+					notificationManager.displayPopup(popup);
+				} else
+				{
+					Notification popup = new Notification("Welcome", milestone.description(), 8.f);
 					notificationManager.displayPopup(popup);
 				}
 			}

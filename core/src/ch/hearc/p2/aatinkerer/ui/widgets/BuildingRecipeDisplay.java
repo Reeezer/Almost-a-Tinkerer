@@ -45,7 +45,7 @@ public class BuildingRecipeDisplay implements UIElement
 	{
 		this.spritesheet = new Texture(Gdx.files.internal("Ui/recipes_menu.png"));
 
-		this.popupRegion = new TextureRegion(this.spritesheet, 0, 0, 256, 117);
+		this.popupRegion = new TextureRegion(this.spritesheet, 0, 0, 320, 117);
 		this.itemFrameRegion = new TextureRegion(this.spritesheet, 3, 122, 32, 32);
 
 		FreeTypeFontParameter whiteDescriptionFontParameter = new FreeTypeFontParameter();
@@ -85,7 +85,6 @@ public class BuildingRecipeDisplay implements UIElement
 		dropdownMenu.addListener(listener);
 	}
 
-	// FIXME si il y a plus de contrats, ne plus afficher le widget
 	@Override
 	public void render(SpriteBatch batch, float delta)
 	{
@@ -100,7 +99,7 @@ public class BuildingRecipeDisplay implements UIElement
 
 			ItemType product = this.selectedRecipe.getProduct();
 			product.render(batch, cornerx + 4, cornery + 48);
-			this.largeWhiteFont.draw(batch, product.name(), cornerx + 48, cornery + 72);
+			this.largeWhiteFont.draw(batch, product.fullname(), cornerx + 48, cornery + 72);
 
 			// draw each required item next to each other
 

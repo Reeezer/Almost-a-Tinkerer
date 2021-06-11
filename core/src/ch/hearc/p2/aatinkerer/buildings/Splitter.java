@@ -39,7 +39,6 @@ public class Splitter extends Building
 	@Override
 	public void transferItem()
 	{
-		// FIXME need an item to be selected
 		Item itemToTransfer = items.peek();
 		
 		if (itemToTransfer != null && this.splitType == itemToTransfer.type && secondOutput != null && !secondOutput.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered)

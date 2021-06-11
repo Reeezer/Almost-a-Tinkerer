@@ -68,12 +68,13 @@ public class StoryContractDisplay implements UIElement
 
 	public void render(SpriteBatch batch, float delta)
 	{
-		int y = (int) this.bounds.y + (int) this.bounds.height;
-		batch.draw(this.titlebarArea, this.bounds.x, y - this.titlebarArea.getRegionHeight());
 
-		int linecount = 0;
-		if (currentContract != null)
+		if (currentContract != null && !currentContract.isFulfilled())
 		{
+			int y = (int) this.bounds.y + (int) this.bounds.height;
+			batch.draw(this.titlebarArea, this.bounds.x, y - this.titlebarArea.getRegionHeight());
+
+			int linecount = 0;
 			linecount = currentContract.getRequestedItems().size();
 			int i = 1;
 
@@ -85,7 +86,7 @@ public class StoryContractDisplay implements UIElement
 				batch.draw(this.contractRowArea, xcorner, ycorner);
 
 				ItemType itemType = entry.getKey();
-				String itemName = itemType.name();
+				String itemName = itemType.fullname();
 				int itemCount = entry.getValue() - currentContract.producedItems(itemType);
 
 				if (itemCount < 0)
@@ -104,8 +105,8 @@ public class StoryContractDisplay implements UIElement
 
 				i++;
 			}
+			batch.draw(this.bottomBorderArea, this.bounds.x, y - this.titlebarArea.getRegionHeight() - (linecount * this.contractRowArea.getRegionHeight()) - 5);
 		}
-		batch.draw(this.bottomBorderArea, this.bounds.x, y - this.titlebarArea.getRegionHeight() - (linecount * this.contractRowArea.getRegionHeight()) - 5);
 	}
 
 	@Override

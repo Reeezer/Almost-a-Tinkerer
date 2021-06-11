@@ -37,9 +37,9 @@ public class ItemDropdownMenu implements UIElement
 	{
 		this.spritesheet = new Texture(Gdx.files.internal("Ui/item_dropdown.png"));
 
-		this.topBorderRegion = new TextureRegion(this.spritesheet, 0, 0, 128, 5);
-		this.itemRegion = new TextureRegion(this.spritesheet, 0, 6, 128, 32);
-		this.bottomBorderRegion = new TextureRegion(this.spritesheet, 0, 39, 128, 5);
+		this.topBorderRegion = new TextureRegion(this.spritesheet, 0, 0, 256, 5);
+		this.itemRegion = new TextureRegion(this.spritesheet, 0, 6, 256, 32);
+		this.bottomBorderRegion = new TextureRegion(this.spritesheet, 0, 39, 256, 5);
 
 		FreeTypeFontParameter descriptionFontParameter = new FreeTypeFontParameter();
 		descriptionFontParameter.size = 16;
@@ -78,7 +78,7 @@ public class ItemDropdownMenu implements UIElement
 
 				batch.draw(this.itemRegion, cx, cy);
 
-				font.draw(batch, item.name(), cx + 42, cy + 19, 0, item.name().length(), 86.f, -1, false);
+				font.draw(batch, item.fullname(), cx + 42, cy + 19, 0, item.fullname().length(), 86.f, -1, false);
 				item.render(batch, cx + 3, cy);
 
 				i++;
