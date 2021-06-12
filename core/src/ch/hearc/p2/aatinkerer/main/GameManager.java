@@ -85,12 +85,14 @@ public class GameManager
 		storyContracts.add(pressContract);
 		storyMilestones.add(Milestone.UNLOCK_PRESS);
 
-		Contract assemblerMergerContract = new Contract("We have a lot of materials now, but the problem is that we cannot assemble them, we need glue. Please use a press to compress some petroleum into glue. Yes, exactly.");
+		Contract assemblerMergerContract = new Contract("We want to make pencils, but also glue furniture together. That means we need graphite and glue, both can be made with the press, glue needs petroleum, graphite needs coal.");
 		assemblerMergerContract.addRequestedItem(ItemType.GLUE, 10);
+		assemblerMergerContract.addRequestedItem(ItemType.GRAPHITE, 10);
 		storyContracts.add(assemblerMergerContract);
 		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
 
 		Contract splitterContract = new Contract("Now we can finally glue everything together to make furniture! Place an assembler to select what you want to make, click on it, select a recipe you want to make and it will display the required ingredients.");
+		splitterContract.addRequestedItem(ItemType.PENCIL, 500);
 		splitterContract.addRequestedItem(ItemType.DESK, 10);
 		splitterContract.addRequestedItem(ItemType.TABLE, 10);
 		splitterContract.addRequestedItem(ItemType.BED, 2);
