@@ -163,6 +163,7 @@ public abstract class Building
 			}
 			else
 			{
+				System.out.println(output.type + " - " + output.currentIngredients.get(itemToTransfer.type));
 				if (!output.isFull(itemToTransfer) && !itemToTransfer.justTransfered)
 				{
 					Item item = items.poll();
@@ -190,6 +191,11 @@ public abstract class Building
 		// if we have enough ingredients to make the recipe
 		if (makeIt)
 		{
+			Item product = new Item();
+			product.type = recipe.getProduct();
+			if (output.isFull(product))
+				return;
+			
 			// Make the recipe by decreasing the amount of all the ingredients
 			for (ItemType item : ingredients.keySet())
 			{
