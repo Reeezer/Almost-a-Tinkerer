@@ -195,7 +195,7 @@ public abstract class Building
 			product.type = recipe.getProduct();
 			if (output.isFull(product))
 				return;
-			
+
 			// Make the recipe by decreasing the amount of all the ingredients
 			for (ItemType item : ingredients.keySet())
 			{

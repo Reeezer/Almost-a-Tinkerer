@@ -29,7 +29,7 @@ public class Assembler extends Building
 		Recipe recipe0 = new Recipe(ItemType.NONE);
 		recipe0.addIngredient(ItemType.NONE);
 		recipes.add(recipe0);
-		
+
 		Recipe recipe1 = new Recipe(ItemType.FABRIC);
 		recipe1.addIngredient(ItemType.COTTON, 4);
 		recipes.add(recipe1);

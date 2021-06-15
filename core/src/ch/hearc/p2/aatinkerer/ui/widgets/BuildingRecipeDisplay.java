@@ -118,7 +118,7 @@ public class BuildingRecipeDisplay implements UIElement
 				{
 					batch.draw(this.itemFrameRegion, x, y);
 					item.render(batch, x, y);
-					
+
 					this.blackFont.draw(batch, Integer.toString(amount), x + 21, y + 9);
 					this.whiteFont.draw(batch, Integer.toString(amount), x + 20, y + 10);
 				}

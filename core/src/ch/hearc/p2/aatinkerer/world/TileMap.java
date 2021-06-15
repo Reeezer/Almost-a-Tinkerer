@@ -605,7 +605,7 @@ public class TileMap
 		else
 			return null;
 	}
-	
+
 	public ItemType itemAt(int x, int y)
 	{
 		if (tileExists(x, y))
@@ -622,7 +622,6 @@ public class TileMap
 			return null;
 	}
 
-	
 	public void dispose()
 	{
 

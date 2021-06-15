@@ -12,7 +12,7 @@ public class Splitter extends Building
 	protected int[] secondOutputPosition;
 
 	private ItemType splitType;
-	
+
 	public Splitter(TileMap tilemap, int x, int y, int direction, boolean mirrored)
 	{
 		super(tilemap, x, y, direction, 1, (mirrored ? "Tile/SplitterMirror/" : "Tile/Splitter/"), 1, 1, FactoryType.SPLITTER);
@@ -40,22 +40,22 @@ public class Splitter extends Building
 	public void transferItem()
 	{
 		Item itemToTransfer = items.peek();
-		
+
 		if (itemToTransfer != null && this.splitType == itemToTransfer.type && secondOutput != null && !secondOutput.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered)
 		{
 			Item item = items.poll();
 			contentSize--;
 			secondOutput.addItem(item);
 		}
-		
+
 		super.transferItem();
 	}
-	
+
 	public void setSplitType(ItemType type)
 	{
 		this.splitType = type;
 	}
-	
+
 	public ItemType splitType()
 	{
 		return this.splitType;

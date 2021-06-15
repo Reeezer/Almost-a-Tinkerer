@@ -53,7 +53,7 @@ public class StoryContractDisplay implements UIElement
 		itemNameFontParameter.size = 16;
 		itemNameFontParameter.color = Color.WHITE;
 		itemNameFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(itemNameFontParameter);
-		
+
 		this.bounds = new Rectangle();
 		this.bounds.width = this.titlebarArea.getRegionWidth();
 		// recompute height
@@ -77,13 +77,12 @@ public class StoryContractDisplay implements UIElement
 
 		if (currentContract != null && !currentContract.isFulfilled())
 		{
-			
-			
+
 			int y = (int) this.bounds.y + (int) this.bounds.height;
 			batch.draw(this.titlebarArea, this.bounds.x, y - this.titlebarArea.getRegionHeight());
-			
+
 			// contract description
-			
+
 			descriptionFont.draw(batch, currentContract.description(), this.bounds.x + 8, ((int) y - this.titlebarArea.getRegionHeight()) + 92 - 26, 0, currentContract.description().length(), 241.f, -1, true);
 
 			int linecount = 0;

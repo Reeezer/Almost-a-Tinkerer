@@ -99,7 +99,7 @@ public class SplashScreen implements Screen
 
 		// background
 		game.batch.draw(background, (width - newWidth) / 2, (height - newHeight) / 2, (float) newWidth, (float) newHeight);
-		
+
 		// logo
 		GlyphLayout logoTextLayout = new GlyphLayout();
 		logoTextLayout.setText(veryLargeFont, "Almost a Tinkerer");
@@ -110,14 +110,14 @@ public class SplashScreen implements Screen
 		startTextLayout.setText(largeFont, "Press space to start");
 		if (passedTime <= (SplashScreen.MAX_TIME / 2.f))
 			largeFont.draw(game.batch, "Press space to start", (width - startTextLayout.width) / 2.f, ((2.f * height / 3.f) + startTextLayout.height) / 2.f);
-		
+
 		// hearc logo
 		largeFont.draw(game.batch, "haute ecole", 10, 90);
 		smallFont.draw(game.batch, "neuchatel berne jura", 10, 50);
 		game.batch.draw(hearcLogo, 210, 0, hearcLogo.getWidth() * 2, hearcLogo.getHeight() * 2);
 		largeFont.draw(game.batch, "ingenierie", 470, 90);
 		smallFont.draw(game.batch, "www.he-arc.ch", 470, 50);
-		
+
 		// tout droits reservés
 		smallFont.draw(game.batch, "Tous droits reserves - Muller Leon, Meyer Luca - HE-Arc Ingenierie", 10, height - 10);
 

@@ -36,7 +36,7 @@ public class SplitterMenu implements UIElement
 		this.widgetRegion = new TextureRegion(this.spritesheet, 0, 0, 256, 224);
 		this.itemUnselectedBorderRegion = new TextureRegion(this.spritesheet, 0, 224, 32, 32);
 		this.itemSelectedBorderRegion = new TextureRegion(this.spritesheet, 32, 224, 32, 32);
-		
+
 		this.bounds = new Rectangle();
 		this.bounds.width = this.widgetRegion.getRegionWidth();
 		this.bounds.height = this.widgetRegion.getRegionHeight();
@@ -76,12 +76,12 @@ public class SplitterMenu implements UIElement
 			{
 				int ix = x + (int) entry.getValue().x;
 				int iy = y + (int) entry.getValue().y;
-				
+
 				if (entry.getKey() == this.splitter.splitType())
 					batch.draw(this.itemSelectedBorderRegion, ix, iy);
 				else
 					batch.draw(this.itemUnselectedBorderRegion, ix, iy);
-				
+
 				entry.getKey().render(batch, ix, iy);
 			}
 		}
@@ -110,7 +110,7 @@ public class SplitterMenu implements UIElement
 			if (bounds.contains(new Vector2(x, y)))
 			{
 				System.out.println("splitter item selected: " + entry.getKey().name());
-				
+
 				if (this.splitter != null)
 					this.splitter.setSplitType(entry.getKey());
 			}

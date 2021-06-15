@@ -103,7 +103,7 @@ public class GameManager
 		splitterContract.addRequestedItem(ItemType.CARPET, 20);
 		storyContracts.add(splitterContract);
 		storyMilestones.add(Milestone.UNLOCK_SPLITTER);
-		
+
 		Contract finalContract = new Contract("Thank you for making all the nice furniture! We actually don't have anything else for you to make, just do what you want now.");
 		storyContracts.add(finalContract);
 		storyMilestones.add(Milestone.END_STORY);
@@ -179,12 +179,11 @@ public class GameManager
 				// dans les popups après
 				unlockMilestone(currentAttemptedMilestone);
 				contractMilestoneIndex++;
-				
+
 				// si il existe, définir le prochain contrat
 				if (contractMilestoneIndex < storyMilestones.size())
 					unlockContract(storyContracts.get(contractMilestoneIndex), true);
-				
-				
+
 			}
 		}
 

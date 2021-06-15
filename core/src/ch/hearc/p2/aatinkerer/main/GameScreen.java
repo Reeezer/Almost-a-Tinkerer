@@ -73,7 +73,7 @@ public class GameScreen implements Screen
 	private BuildingRecipeDisplay buildingRecipeDisplay;
 	private ItemDropdownMenu itemDropdownMenu;
 	private SplitterMenu splitterMenu;
-	
+
 	private MiniHoverPopup miniHoverPopup;
 
 	private BitmapFont font;
@@ -91,7 +91,7 @@ public class GameScreen implements Screen
 		hoverCamera = new OrthographicCamera();
 
 		uiElements = new ArrayList<UIElement>();
-		
+
 		final int MAPWIDTH = 160;
 		final int MAPHEIGHT = 160;
 		map = new TileMap(MAPWIDTH, MAPHEIGHT);
@@ -128,7 +128,7 @@ public class GameScreen implements Screen
 
 		splitterMenu = new SplitterMenu();
 		uiElements.add(splitterMenu);
-		
+
 		miniHoverPopup = new MiniHoverPopup();
 
 		FreeTypeFontParameter titleFontParameter = new FreeTypeFontParameter();
@@ -144,9 +144,9 @@ public class GameScreen implements Screen
 			{
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
 					factoryToolbar.setItemEnabled(factoryType, true);
-				
+
 				String title;
-				
+
 				if (milestone == Milestone.START)
 					title = "Welcome";
 				else if (milestone == Milestone.END_STORY)
@@ -173,7 +173,7 @@ public class GameScreen implements Screen
 	@Override
 	public void show()
 	{
-		
+
 	}
 
 	@Override
@@ -218,7 +218,8 @@ public class GameScreen implements Screen
 			x -= 1 * dd;
 
 		// with the mouse (drag and drop)
-		if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
+		if (Gdx.input.isButtonPressed(Buttons.RIGHT))
+		{
 			x -= (int) (Gdx.input.getDeltaX() * zoom);
 			y += (int) (Gdx.input.getDeltaY() * zoom);
 		}
@@ -226,7 +227,8 @@ public class GameScreen implements Screen
 		// buildings
 
 		// rotation of buildings you are about to place
-		if (Gdx.input.isKeyJustPressed(Keys.R)) {
+		if (Gdx.input.isKeyJustPressed(Keys.R))
+		{
 			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 				direction = (direction + 3) % 4;
 			else
@@ -260,14 +262,15 @@ public class GameScreen implements Screen
 			factoryToolbar.setActiveItem(10);
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_1))
 			factoryToolbar.setActiveItem(11);
-		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+		{
 			factoryToolbar.setActiveItem(-1);
 			buildingRecipeDisplay.setBuilding(null);
 			itemDropdownMenu.setItems(null);
 			splitterMenu.setSplitter(null);
 		}
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
-		
+
 		// handle left mouse click
 		if (Gdx.input.isButtonPressed(Buttons.LEFT))
 		{
@@ -275,7 +278,8 @@ public class GameScreen implements Screen
 
 			// check if we need to capture mouse input or let it through to the rest of the
 			// UI to place buildings
-			for (UIElement clickable : uiElements) {
+			for (UIElement clickable : uiElements)
+			{
 				// si l'élement est pas visible on ne le considère pas
 				if (!clickable.visible())
 					continue;
@@ -287,7 +291,8 @@ public class GameScreen implements Screen
 
 				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n", clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
 
-				if (bounds.contains(new Vector2(mx, my))) {
+				if (bounds.contains(new Vector2(mx, my)))
+				{
 					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
 
 					mouseCaptured = true;
@@ -304,13 +309,15 @@ public class GameScreen implements Screen
 				}
 			}
 
-			if (!mouseCaptured) {
+			if (!mouseCaptured)
+			{
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
-				
+
 				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
-				if (factoryType != null && factoryType != FactoryType.CONVEYOR) {
+				if (factoryType != null && factoryType != FactoryType.CONVEYOR)
+				{
 					int inputTunnel = map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 					if (inputTunnel == 1 || inputTunnel == 2)
 						isInputTunnel = (inputTunnel == 1) ? true : false;
@@ -327,14 +334,15 @@ public class GameScreen implements Screen
 					{
 						initialx = tileX;
 						initialy = -1;
-					}					
+					}
 
 					if (direction == 0 || direction == 2)
 						map.placeBuilding(tileX, initialy, direction, factoryType, mirrored);
 					if (direction == 1 || direction == 3)
 						map.placeBuilding(initialx, tileY, direction, factoryType, mirrored);
 				}
-				else {
+				else
+				{
 					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding instanceof Splitter)
@@ -349,7 +357,8 @@ public class GameScreen implements Screen
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
 						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
-					else {
+					else
+					{
 						buildingRecipeDisplay.setBuilding(null);
 						itemDropdownMenu.setItems(null);
 					}
@@ -371,7 +380,7 @@ public class GameScreen implements Screen
 		boolean ctrlPressed = false;
 		if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT))
 			ctrlPressed = true;
-		
+
 		// hover tooltip if no building is selected to be placed
 		boolean renderTooltip = false;
 		String tooltipText = "";
@@ -381,14 +390,14 @@ public class GameScreen implements Screen
 		{
 			int x = screenToTileX(Gdx.input.getX());
 			int y = screenToTileY(Gdx.input.getY());
-			
+
 			tooltipx = Gdx.input.getX() + 3;
 			tooltipy = (height - Gdx.input.getY()) + 3;
-			
+
 			ItemType item = map.itemAt(x, y);
 			Building building = map.factoryAt(x, y);
 			Building conveyor = map.conveyorAt(x, y);
-			
+
 			// FIXME maybe still display the ressources if the hovered building is an extractor?
 			// only display on ressources tiles that don't have a building on top
 			if (building == null && conveyor == null && item != null && item != ItemType.NONE)
@@ -403,7 +412,8 @@ public class GameScreen implements Screen
 		/* update */
 
 		// cap on fixed TPS
-		while (unprocessedTime >= processingTimeCap) {
+		while (unprocessedTime >= processingTimeCap)
+		{
 			unprocessedTime -= processingTimeCap;
 			map.update();
 
@@ -439,7 +449,8 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
-		if (factoryType != null) {
+		if (factoryType != null)
+		{
 			if (factoryType == FactoryType.TUNNEL)
 				factoryType.setMirrored(isInputTunnel);
 			else
@@ -463,7 +474,8 @@ public class GameScreen implements Screen
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
 		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
-		if (ctrlPressed) {
+		if (ctrlPressed)
+		{
 			int toolbarHeight = 50;
 			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
 			float deltaa = Toolbar.TEXSIZE;
@@ -497,7 +509,7 @@ public class GameScreen implements Screen
 
 		if (renderTooltip)
 			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
-		
+
 		game.batch.end();
 	}
 

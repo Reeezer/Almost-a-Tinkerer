@@ -66,7 +66,7 @@ public enum ItemType
 		for (ItemType type : ItemType.values())
 			type.texture.dispose();
 	}
-	
+
 	public String fullname()
 	{
 		return this.fullname;
