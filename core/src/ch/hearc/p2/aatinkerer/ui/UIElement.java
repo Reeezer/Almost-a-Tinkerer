@@ -10,7 +10,7 @@ public interface UIElement
 
 	public void setScreenSize(int w, int h);
 
-	// allows us to iterate through a list of clickable items to detect if they are under the mouse cursor and as such capture the click
+	// allows us to iterate through a list of UIElement items to detect if they are under the mouse cursor and as such capture the click
 	public Rectangle getBounds();
 
 	public void passRelativeClick(int x, int y);
