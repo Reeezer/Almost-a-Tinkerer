@@ -37,6 +37,7 @@ import ch.hearc.p2.aatinkerer.ui.widgets.MiniHoverPopup;
 import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
 import ch.hearc.p2.aatinkerer.ui.widgets.SplitterMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
+import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class GameScreen implements Screen
@@ -96,8 +97,8 @@ public class GameScreen implements Screen
 		final int MAPHEIGHT = 160;
 		map = new TileMap(MAPWIDTH, MAPHEIGHT);
 
-		x = MAPWIDTH / 2 * TileMap.TILESIZE;
-		y = MAPHEIGHT / 2 * TileMap.TILESIZE;
+		x = MAPWIDTH / 2 * Chunk.TILESIZE;
+		y = MAPHEIGHT / 2 * Chunk.TILESIZE;
 		width = 0;
 		height = 0;
 		zoomLevel = 0;
@@ -515,12 +516,12 @@ public class GameScreen implements Screen
 
 	public int screenToTileX(int screenX)
 	{
-		return (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / TileMap.TILESIZE);
+		return (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / Chunk.TILESIZE);
 	}
 
 	public int screenToTileY(int screenY)
 	{
-		return (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / TileMap.TILESIZE);
+		return (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / Chunk.TILESIZE);
 	}
 
 	@Override

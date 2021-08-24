@@ -1,10 +1,13 @@
 package ch.hearc.p2.aatinkerer.world;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 
 import ch.hearc.p2.aatinkerer.buildings.Assembler;
 import ch.hearc.p2.aatinkerer.buildings.Building;
@@ -25,111 +28,53 @@ import ch.hearc.p2.aatinkerer.data.Ressource;
 
 public class TileMap
 {
-	public static final int TILESIZE = 32;
-
-	private int width, height;
-	private Ressource[][] map;
-	private Building[][] conveyors;
-	private Building[][] factories;
-
+	private Map<Long, Chunk> chunks;
 	private Set<Building> buildings;
 
 	private boolean isInputTunnel;
 
 	Random random;
 
-	public TileMap(int w, int h)
+	public TileMap(int w, int h) // FIXME remove the coords from args
 	{
 		random = new Random();
 
-		width = w;
-		height = h;
-
 		isInputTunnel = false;
-
-		// - initialise the map to have no resources
-		// - create an empty table of conveyors
-		map = new Ressource[width][height];
-		conveyors = new Building[width][height];
-		factories = new Building[width][height];
 		buildings = new HashSet<Building>();
 
-		for (int i = 0; i < width; i++)
-			for (int j = 0; j < height; j++)
-				map[i][j] = Ressource.NONE;
-
-		// - generate the map by generating seeds and growing them
-		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
-		// this due to collisions)
-		final int seeds = (width * height) / 100;
-		final int max_life = 10; // + 2
-		for (int i = 0; i < seeds; i++)
+		chunks = new HashMap<Long, Chunk>();
+		
+		for (int x = -3; x <= 3; x++) // FIXME debug
 		{
-			int x = random.nextInt(width);
-			int y = random.nextInt(height);
-			int life = random.nextInt(max_life) + 2;
-			// choose a random resource to spawn excluding the first value which is NONE
-			Ressource ressource = Ressource.values()[(random.nextInt(Ressource.values().length) - 1) + 1];
-
-			// make it so seeds cannot spawn in a way that will make them reach the center (= the hub) so it stays clear
-			if (Math.abs(x - (width / 2)) > (life + 3) || Math.abs(y - (height / 2)) > (life + 3))
-				generate(ressource, life, x, y);
-
+			for (int y = -1; y <= 1; y++)
+			{
+				long key = (((long)x) << 32) | (y & 0xffffffffL);
+				chunks.put(key, new Chunk(random));
+			}
 		}
-
-		Hub hub = new Hub(this, width / 2, height / 2);
-		factories[width / 2 + 1][height / 2] = hub;
-		factories[width / 2 + 1][height / 2 - 1] = hub;
-		factories[width / 2 + 1][height / 2 + 1] = hub;
-		factories[width / 2][height / 2] = hub;
-		factories[width / 2][height / 2 - 1] = hub;
-		factories[width / 2][height / 2 + 1] = hub;
-		factories[width / 2 - 1][height / 2] = hub;
-		factories[width / 2 - 1][height / 2 - 1] = hub;
-		factories[width / 2 - 1][height / 2 + 1] = hub;
-		buildings.add(factories[width / 2][height / 2]);
-	}
-
-	// recursively generate a resource patch from the specified coordinates
-	public void generate(Ressource ressource, int life, int x, int y)
-	{
-		// don't spawn if life below 0
-		if (life < 0)
-			return;
-
-		// check bounds
-		if (!tileExists(x, y))
-			return;
-
-		// only spawn if there's nothing
-		if (map[x][y] != Ressource.NONE)
-			return;
-
-		map[x][y] = ressource;
-
-		// attempt to spawn more resources around
-		final float spawn_probability = 0.6f;
-		// north
-		if (random.nextFloat() < spawn_probability)
-			generate(ressource, life - 1, x, y - 1);
-		// south
-		if (random.nextFloat() < spawn_probability)
-			generate(ressource, life - 1, x, y + 1);
-		// east
-		if (random.nextFloat() < spawn_probability)
-			generate(ressource, life - 1, x + 1, y);
-		// west
-		if (random.nextFloat() < spawn_probability)
-			generate(ressource, life - 1, x - 1, y);
-	}
-
-	private boolean tileExists(int x, int y)
-	{
-		return x >= 0 && y >= 0 && x < width && y < height;
+		
+		int x = 6;
+		int y = 6;
+		long key = (((long)x) << 32) | (y & 0xffffffffL);
+		chunks.put(key, new Chunk(random));
+		
+			
+//		Hub hub = new Hub(this, width / 2, height / 2);
+//		factories[width / 2 + 1][height / 2] = hub;
+//		factories[width / 2 + 1][height / 2 - 1] = hub;
+//		factories[width / 2 + 1][height / 2 + 1] = hub;
+//		factories[width / 2][height / 2] = hub;
+//		factories[width / 2][height / 2 - 1] = hub;
+//		factories[width / 2][height / 2 + 1] = hub;
+//		factories[width / 2 - 1][height / 2] = hub;
+//		factories[width / 2 - 1][height / 2 - 1] = hub;
+//		factories[width / 2 - 1][height / 2 + 1] = hub;
+//		buildings.add(factories[width / 2][height / 2]);
 	}
 
 	private boolean isEmpty(int x, int y)
 	{
+		/*
 		if (!tileExists(x, y))
 			return false;
 
@@ -141,11 +86,12 @@ public class TileMap
 		if (factories[x][y] != null)
 			return false;
 
-		return true;
+		return true;*/
+		return false;
 	}
 
 	private void updateOutput(int x, int y, Building[][] tabBuilding)
-	{
+	{/*
 		// Update all the outputs of the surrounding buildings
 		if (tabBuilding[x][y] != null)
 			tabBuilding[x][y].updateOutputs();
@@ -159,17 +105,17 @@ public class TileMap
 			tabBuilding[x][y + 1].updateOutputs();
 		if (tileExists(x, y - 1) && tabBuilding[x][y - 1] != null)
 			tabBuilding[x][y - 1].updateOutputs();
-	}
+	*/}
 
 	public void updateOutputs(int x, int y)
-	{
+	{/*
 		// update buildings on both table
 		updateOutput(x, y, conveyors);
 		updateOutput(x, y, factories);
-	}
+	*/}
 
 	public Building getNeighbourBuilding(int[] outputPosition)
-	{
+	{/*
 		// Check the surroundings to find a building that might be the output to the building who calls this method
 
 		int x = outputPosition[0];
@@ -223,10 +169,13 @@ public class TileMap
 		}
 
 		return null;
+	*/
+		
+		return null;
 	}
 
 	private void checkSurroundings(Building[][] buildings, int x, int dx, int y, int dy, int direction, int addToDirection, boolean isInput, int[][] inputOutputPosition)
-	{
+	{/*
 		if (!isInput)
 		{
 			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getInputs() != null)
@@ -249,10 +198,10 @@ public class TileMap
 					inputOutputPosition[0] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
 			}
 		}
-	}
+	*/}
 
 	private void connect(int x, int y, int direction, int[][] inputOutputPosition, boolean isInput, boolean isLeft)
-	{
+	{/*
 		int addToDirection = (isLeft) ? 2 : 0;
 		int dx = 0;
 		int dy = 0;
@@ -282,10 +231,10 @@ public class TileMap
 		// Search for a building to connect with (in factories and conveyors)
 		checkSurroundings(conveyors, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 		checkSurroundings(factories, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
-	}
+	*/}
 
 	private int[][] connexion(int x, int y, int direction)
-	{
+	{/*
 		// Default behavior
 		int[][] inputOutputPosition = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, direction } };
 
@@ -296,10 +245,12 @@ public class TileMap
 		connect(x, y, (direction + 2) % 4, inputOutputPosition, true, true); // input left-side
 
 		return inputOutputPosition;
-	}
+	*/
+		return null;
+		}
 
 	public void findInputTunnel(Tunnel outputTunnel, int x, int y, int direction, int distance)
-	{
+	{/*
 		// Method called by an the outputTunnel to connect himself with an input one
 
 		int dx = 0;
@@ -347,10 +298,10 @@ public class TileMap
 			tunnel.setOutputTunnel(outputTunnel);
 			return;
 		}
-	}
+	*/}
 
 	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
-	{
+	{/*
 		int ret = 0;
 		if (isEmpty(x, y))
 		{
@@ -448,10 +399,12 @@ public class TileMap
 			updateOutputs(x, y);
 		}
 		return ret;
+	*/
+		return 0;
 	}
 
 	public void deleteBuilding(int x, int y)
-	{
+	{/*
 		if (!tileExists(x, y))
 			return;
 
@@ -485,10 +438,10 @@ public class TileMap
 			for (int i = -1; i <= 1; i++)
 				for (int j = -1; j <= 1; j++)
 					delete(x + i, y + j, deleted);
-	}
+	*/}
 
 	public void delete(int x, int y, Building building)
-	{
+	{/*
 		if (!tileExists(x, y))
 			return;
 
@@ -518,10 +471,28 @@ public class TileMap
 			for (int i = -1; i <= 1; i++)
 				for (int j = -1; j <= 1; j++)
 					delete(x + i, y + j, building);
-	}
+	*/}
 
 	public void render(SpriteBatch batch)
 	{
+		for (Map.Entry<Long, Chunk> chunkEntry : chunks.entrySet())
+		{
+			long key = chunkEntry.getKey();
+			Chunk chunk = chunkEntry.getValue();
+			
+			int x = (int)(key >> 32);
+			int y = (int)key;
+			
+			Matrix4 transformBackup = batch.getTransformMatrix();
+			Matrix4 transform = new Matrix4();
+			
+			transform.translate((float) x * Chunk.CHUNKSIZE * Chunk.TILESIZE, (float) y * Chunk.CHUNKSIZE * Chunk.TILESIZE, 0.f); 			
+			batch.setTransformMatrix(transform);
+			chunk.render(batch);
+			
+			batch.setTransformMatrix(transformBackup);
+		}
+		/*
 		// map
 		for (int i = 0; i < width; i++)
 		{
@@ -566,10 +537,10 @@ public class TileMap
 				}
 			}
 		}
-	}
+	*/}
 
 	public void update()
-	{
+	{/*
 		// update transfer ticks
 		for (FactoryType type : FactoryType.values())
 		{
@@ -596,31 +567,38 @@ public class TileMap
 		{
 			building.update();
 		}
-	}
+	*/}
 
 	public Building factoryAt(int x, int y)
-	{
+	{/*
 		if (tileExists(x, y))
 			return factories[x][y];
 		else
 			return null;
+	*/
+		return null;	
 	}
 
 	public ItemType itemAt(int x, int y)
-	{
+	{/*
 		if (tileExists(x, y))
 			return map[x][y].getExtractedItem();
 		else
 			return null;
+	*/
+		return null;
 	}
 
 	public Building conveyorAt(int x, int y)
-	{
+	{/*
 		if (tileExists(x, y))
 			return conveyors[x][y];
 		else
 			return null;
+	*/
+		return null;
 	}
+	
 
 	public void dispose()
 	{
