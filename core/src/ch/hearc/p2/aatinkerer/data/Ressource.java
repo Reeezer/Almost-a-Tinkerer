@@ -1,6 +1,7 @@
 package ch.hearc.p2.aatinkerer.data;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -16,18 +17,18 @@ public enum Ressource
 	WATER("Tile/WaterTile.png", ItemType.WATER),
 	COTTON("Tile/CottonTile.png", ItemType.COTTON);
 
-	private Texture texture;
+	private Pixmap pixmap;
 	private ItemType itemType;
 
 	private Ressource(String texturePath, ItemType item)
 	{
-		texture = new Texture(Gdx.files.internal(texturePath));
-		itemType = item;
+		pixmap = new Pixmap(Gdx.files.internal(texturePath));
+		itemType = item;		
 	}
 
-	public void render(SpriteBatch batch, int x, int y)
+	public Pixmap pixmap()
 	{
-		batch.draw(texture, x, y);
+		return pixmap;
 	}
 
 	public ItemType getExtractedItem()
@@ -38,6 +39,6 @@ public enum Ressource
 	public static void dispose()
 	{
 		for (Ressource ressource : Ressource.values())
-			ressource.texture.dispose();
+			ressource.pixmap.dispose();
 	}
 }

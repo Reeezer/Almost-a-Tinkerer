@@ -86,9 +86,9 @@ public class TileMap
 		int chunkX = cameraX / Chunk.CHUNKSIZE;
 		int chunkY = cameraY / Chunk.CHUNKSIZE;
 		
-		for (int x = chunkX - 2; x <= chunkX + 2; x++)
+		for (int x = chunkX - 1; x <= chunkX + 1; x++)
 		{
-			for (int y = chunkY - 2; y <= chunkY + 2; y++)
+			for (int y = chunkY - 1; y <= chunkY + 1; y++)
 			{
 				long key = chunkCoordsToKey(x, y);
 				
@@ -509,14 +509,7 @@ public class TileMap
 			int x = chunkKeyToX(key);
 			int y = chunkKeyToY(key);
 			
-			Matrix4 transformBackup = batch.getTransformMatrix();
-			Matrix4 transform = new Matrix4();
-			
-			transform.translate((float) x * Chunk.CHUNKSIZE * Chunk.TILESIZE, (float) y * Chunk.CHUNKSIZE * Chunk.TILESIZE, 0.f); 			
-			batch.setTransformMatrix(transform);
-			chunk.render(batch);
-			
-			batch.setTransformMatrix(transformBackup);
+			chunk.render(batch, x * Chunk.CHUNKSIZE * Chunk.TILESIZE, y * Chunk.CHUNKSIZE * Chunk.TILESIZE);
 		}
 		/*
 		// map
@@ -628,6 +621,6 @@ public class TileMap
 
 	public void dispose()
 	{
-
+		// FIXME dispose of chunk's pixmaps
 	}
 }

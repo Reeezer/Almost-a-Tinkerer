@@ -21,6 +21,8 @@ public class Chunk
 	
 	Random random;
 	
+	Texture texture;
+	
 	public Chunk(Random random)
 	{
 		this.random = random;
@@ -54,6 +56,15 @@ public class Chunk
 				generate(ressource, life, x, y);
 
 		}
+		
+		// - prerender the map
+		Pixmap pixmap = new Pixmap(CHUNKSIZE * TILESIZE, CHUNKSIZE * TILESIZE, Format.RGBA8888);
+
+		for (int i = 0; i < CHUNKSIZE; i++)
+			for (int j = 0; j < CHUNKSIZE; j++)
+				pixmap.drawPixmap(map[i][j].pixmap(), i * TILESIZE, j * TILESIZE);
+
+		texture = new Texture(pixmap);
 	}
 	
 	// recursively generate a resource patch from the specified coordinates
@@ -94,15 +105,8 @@ public class Chunk
 		return x >= 0 && y >= 0 && x < CHUNKSIZE && y < CHUNKSIZE;
 	}
 	
-	public void render(SpriteBatch batch)
+	public void render(SpriteBatch batch, int x, int y)
 	{
-		// map
-		for (int i = 0; i < CHUNKSIZE; i++)
-		{
-			for (int j = 0; j < CHUNKSIZE; j++)
-			{
-				map[i][j].render(batch, i * TILESIZE, j * TILESIZE);
-			}
-		}
+		batch.draw(texture, x, y);
 	}
 }
