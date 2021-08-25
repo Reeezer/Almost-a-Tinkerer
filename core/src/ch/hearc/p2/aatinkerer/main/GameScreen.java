@@ -179,6 +179,8 @@ public class GameScreen implements Screen
 	@Override
 	public void render(float delta)
 	{
+		game.music.setVolume(0.8f);
+		
 		long firstTime = TimeUtils.millis();
 		long passedTime = firstTime - lastTime;
 		lastTime = firstTime;

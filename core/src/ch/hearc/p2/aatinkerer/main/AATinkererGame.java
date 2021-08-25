@@ -2,6 +2,7 @@ package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.util.Input;
@@ -13,6 +14,8 @@ public class AATinkererGame extends Game
 
 	private GameScreen gameScreen;
 	private SplashScreen splashScreen;
+	
+	public Music music;
 
 	@Override
 	public void create()
@@ -22,6 +25,10 @@ public class AATinkererGame extends Game
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
 
+		music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
+		music.setVolume(0.1f);
+		music.play();
+		
 		gameScreen = new GameScreen(this);
 		splashScreen = new SplashScreen(this);
 
