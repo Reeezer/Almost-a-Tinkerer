@@ -86,7 +86,7 @@ public class TileMap
 		int chunkX = cameraX / Chunk.CHUNKSIZE;
 		int chunkY = cameraY / Chunk.CHUNKSIZE;
 		
-		final int radius = 0;
+		final int radius = 2;
 		
 		for (int x = chunkX - radius; x <= chunkX + radius; x++)
 		{

@@ -2,6 +2,9 @@ package ch.hearc.p2.aatinkerer.world;
 
 import java.util.Random;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
@@ -62,11 +65,12 @@ public class Chunk
 		
 		// - prerender the map
 		
-		Matrix4 projection = new Matrix4();
-		projection.setToOrtho2D(0, 0, CHUNKSIZE * TILESIZE, CHUNKSIZE * TILESIZE);
+		OrthographicCamera camera = new OrthographicCamera();
+		camera.setToOrtho(true, TILESIZE * CHUNKSIZE, TILESIZE * CHUNKSIZE);
+		camera.update();
 		
 		SpriteBatch batch = new SpriteBatch();
-		batch.setProjectionMatrix(projection);
+		batch.setProjectionMatrix(camera.combined);
 		
 		FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, CHUNKSIZE * TILESIZE, CHUNKSIZE * TILESIZE, false);
 		
@@ -124,6 +128,8 @@ public class Chunk
 	
 	public void render(SpriteBatch batch, int x, int y)
 	{
+		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MIN_FILTER, GL20.GL_NEAREST);
+		Gdx.gl20.glTexParameteri(GL20.GL_TEXTURE_2D, GL20.GL_TEXTURE_MAG_FILTER, GL20.GL_NEAREST);
 		batch.draw(textureRegion, x, y);
 	}
 }
