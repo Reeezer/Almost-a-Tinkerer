@@ -43,21 +43,6 @@ public class TileMap
 		buildings = new HashSet<Building>();
 
 		chunks = new HashMap<Long, Chunk>();
-		
-		for (int x = -3; x <= 3; x++) // FIXME debug
-		{
-			for (int y = -1; y <= 1; y++)
-			{
-				long key = (((long)x) << 32) | (y & 0xffffffffL);
-				chunks.put(key, new Chunk(random));
-			}
-		}
-		
-		int x = 6;
-		int y = 6;
-		long key = (((long)x) << 32) | (y & 0xffffffffL);
-		chunks.put(key, new Chunk(random));
-		
 			
 //		Hub hub = new Hub(this, width / 2, height / 2);
 //		factories[width / 2 + 1][height / 2] = hub;
@@ -72,6 +57,47 @@ public class TileMap
 //		buildings.add(factories[width / 2][height / 2]);
 	}
 
+	private long chunkCoordsToKey(int x, int y)
+	{
+		return (((long)x) << 32) | (y & 0xffffffffL);
+	}
+	
+	private int chunkKeyToX(long key)
+	{
+		return (int)(key >> 32);	
+	}
+	
+	private int chunkKeyToY(long key)
+	{
+		return (int)key;
+	}
+	
+	// generate the 5x5 chunks around the camera
+	public void cameraMovedToCoords(int cameraX, int cameraY)
+	{
+		System.out.format("x,y = %d,%d%n", cameraX, cameraY);
+		// if values are below 0, remove the chunk size so it properly rounds ( => world coords (-42;34) -> chunk coords (-1; 0) and not (0,0))
+		if (cameraX < 0)
+			cameraX -= Chunk.CHUNKSIZE;
+		if (cameraY < 0)
+			cameraY -= Chunk.CHUNKSIZE;
+		
+		// world coordinates to chunk's coordinates (not coordinates in chunk)
+		int chunkX = cameraX / Chunk.CHUNKSIZE;
+		int chunkY = cameraY / Chunk.CHUNKSIZE;
+		
+		for (int x = chunkX - 2; x <= chunkX + 2; x++)
+		{
+			for (int y = chunkY - 2; y <= chunkY + 2; y++)
+			{
+				long key = chunkCoordsToKey(x, y);
+				
+				if (!chunks.containsKey(key))
+					chunks.put(chunkCoordsToKey(x, y), new Chunk(random));
+			}
+		}
+	}
+	
 	private boolean isEmpty(int x, int y)
 	{
 		/*
@@ -480,8 +506,8 @@ public class TileMap
 			long key = chunkEntry.getKey();
 			Chunk chunk = chunkEntry.getValue();
 			
-			int x = (int)(key >> 32);
-			int y = (int)key;
+			int x = chunkKeyToX(key);
+			int y = chunkKeyToY(key);
 			
 			Matrix4 transformBackup = batch.getTransformMatrix();
 			Matrix4 transform = new Matrix4();

@@ -93,12 +93,10 @@ public class GameScreen implements Screen
 
 		uiElements = new ArrayList<UIElement>();
 
-		final int MAPWIDTH = 160;
-		final int MAPHEIGHT = 160;
-		map = new TileMap(MAPWIDTH, MAPHEIGHT);
+		map = new TileMap(0,0);
 
-		x = MAPWIDTH / 2 * Chunk.TILESIZE;
-		y = MAPHEIGHT / 2 * Chunk.TILESIZE;
+		x = 0;
+		y = 0;
 		width = 0;
 		height = 0;
 		zoomLevel = 0;
@@ -420,6 +418,8 @@ public class GameScreen implements Screen
 
 			GameManager.getInstance().tick();
 		}
+		
+		map.cameraMovedToCoords(x / Chunk.TILESIZE, y / Chunk.TILESIZE);
 
 		/* render */
 
