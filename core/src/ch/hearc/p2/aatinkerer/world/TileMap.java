@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -75,7 +76,6 @@ public class TileMap
 	// generate the 5x5 chunks around the camera
 	public void cameraMovedToCoords(int cameraX, int cameraY)
 	{
-		System.out.format("x,y = %d,%d%n", cameraX, cameraY);
 		// if values are below 0, remove the chunk size so it properly rounds ( => world coords (-42;34) -> chunk coords (-1; 0) and not (0,0))
 		if (cameraX < 0)
 			cameraX -= Chunk.CHUNKSIZE;
@@ -86,9 +86,11 @@ public class TileMap
 		int chunkX = cameraX / Chunk.CHUNKSIZE;
 		int chunkY = cameraY / Chunk.CHUNKSIZE;
 		
-		for (int x = chunkX - 1; x <= chunkX + 1; x++)
+		final int radius = 0;
+		
+		for (int x = chunkX - radius; x <= chunkX + radius; x++)
 		{
-			for (int y = chunkY - 1; y <= chunkY + 1; y++)
+			for (int y = chunkY - radius; y <= chunkY + radius; y++)
 			{
 				long key = chunkCoordsToKey(x, y);
 				

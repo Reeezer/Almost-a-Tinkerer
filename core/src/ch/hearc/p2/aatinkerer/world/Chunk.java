@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Matrix4;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.data.Ressource;
@@ -21,7 +24,7 @@ public class Chunk
 	
 	Random random;
 	
-	Texture texture;
+	TextureRegion textureRegion;
 	
 	public Chunk(Random random)
 	{
@@ -58,13 +61,27 @@ public class Chunk
 		}
 		
 		// - prerender the map
-		Pixmap pixmap = new Pixmap(CHUNKSIZE * TILESIZE, CHUNKSIZE * TILESIZE, Format.RGBA8888);
-
-		for (int i = 0; i < CHUNKSIZE; i++)
-			for (int j = 0; j < CHUNKSIZE; j++)
-				pixmap.drawPixmap(map[i][j].pixmap(), i * TILESIZE, j * TILESIZE);
-
-		texture = new Texture(pixmap);
+		
+		Matrix4 projection = new Matrix4();
+		projection.setToOrtho2D(0, 0, CHUNKSIZE * TILESIZE, CHUNKSIZE * TILESIZE);
+		
+		SpriteBatch batch = new SpriteBatch();
+		batch.setProjectionMatrix(projection);
+		
+		FrameBuffer frameBuffer = new FrameBuffer(Format.RGBA8888, CHUNKSIZE * TILESIZE, CHUNKSIZE * TILESIZE, false);
+		
+		textureRegion = new TextureRegion(frameBuffer.getColorBufferTexture());
+		
+		
+		frameBuffer.begin();
+		batch.begin();
+		
+		for (int x = 0; x < CHUNKSIZE; x++)
+			for (int y = 0; y < CHUNKSIZE; y++)
+				batch.draw(map[x][y].texture(), x * TILESIZE, y * TILESIZE);
+		
+		batch.end();
+		frameBuffer.end();
 	}
 	
 	// recursively generate a resource patch from the specified coordinates
@@ -107,6 +124,6 @@ public class Chunk
 	
 	public void render(SpriteBatch batch, int x, int y)
 	{
-		batch.draw(texture, x, y);
+		batch.draw(textureRegion, x, y);
 	}
 }

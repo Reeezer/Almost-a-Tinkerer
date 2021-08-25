@@ -17,18 +17,18 @@ public enum Ressource
 	WATER("Tile/WaterTile.png", ItemType.WATER),
 	COTTON("Tile/CottonTile.png", ItemType.COTTON);
 
-	private Pixmap pixmap;
+	private Texture texture;
 	private ItemType itemType;
 
 	private Ressource(String texturePath, ItemType item)
 	{
-		pixmap = new Pixmap(Gdx.files.internal(texturePath));
+		texture = new Texture(Gdx.files.internal(texturePath));
 		itemType = item;		
 	}
 
-	public Pixmap pixmap()
+	public Texture texture()
 	{
-		return pixmap;
+		return texture;
 	}
 
 	public ItemType getExtractedItem()
@@ -39,6 +39,6 @@ public enum Ressource
 	public static void dispose()
 	{
 		for (Ressource ressource : Ressource.values())
-			ressource.pixmap.dispose();
+			ressource.texture.dispose();
 	}
 }
