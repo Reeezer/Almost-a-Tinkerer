@@ -15,8 +15,11 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
@@ -46,6 +49,8 @@ public class GameScreen implements Screen
 	private OrthographicCamera mapCamera;
 	private OrthographicCamera uiCamera;
 	private OrthographicCamera hoverCamera;
+
+	private ShapeRenderer shapeRenderer;
 
 	private List<UIElement> uiElements;
 
@@ -82,13 +87,19 @@ public class GameScreen implements Screen
 	private int initialx;
 	private int initialy;
 
+	private boolean kldsmqfj;
+
 	public GameScreen(AATinkererGame game)
 	{
+
+		kldsmqfj = true;
 		this.game = game;
 
 		mapCamera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
 		hoverCamera = new OrthographicCamera();
+
+		shapeRenderer = new ShapeRenderer();
 
 		uiElements = new ArrayList<UIElement>();
 
@@ -218,8 +229,7 @@ public class GameScreen implements Screen
 			x -= 1 * dd;
 
 		// with the mouse (drag and drop)
-		if (Gdx.input.isButtonPressed(Buttons.RIGHT))
-		{
+		if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
 			x -= (int) (Gdx.input.getDeltaX() * zoom);
 			y += (int) (Gdx.input.getDeltaY() * zoom);
 		}
@@ -227,8 +237,7 @@ public class GameScreen implements Screen
 		// buildings
 
 		// rotation of buildings you are about to place
-		if (Gdx.input.isKeyJustPressed(Keys.R))
-		{
+		if (Gdx.input.isKeyJustPressed(Keys.R)) {
 			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT))
 				direction = (direction + 3) % 4;
 			else
@@ -262,8 +271,7 @@ public class GameScreen implements Screen
 			factoryToolbar.setActiveItem(10);
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_1))
 			factoryToolbar.setActiveItem(11);
-		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
-		{
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
 			factoryToolbar.setActiveItem(-1);
 			buildingRecipeDisplay.setBuilding(null);
 			itemDropdownMenu.setItems(null);
@@ -272,14 +280,12 @@ public class GameScreen implements Screen
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
 		// handle left mouse click
-		if (Gdx.input.isButtonPressed(Buttons.LEFT))
-		{
+		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			boolean mouseCaptured = false;
 
 			// check if we need to capture mouse input or let it through to the rest of the
 			// UI to place buildings
-			for (UIElement clickable : uiElements)
-			{
+			for (UIElement clickable : uiElements) {
 				// si l'élement est pas visible on ne le considère pas
 				if (!clickable.visible())
 					continue;
@@ -291,8 +297,7 @@ public class GameScreen implements Screen
 
 				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n", clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
 
-				if (bounds.contains(new Vector2(mx, my)))
-				{
+				if (bounds.contains(new Vector2(mx, my))) {
 					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
 
 					mouseCaptured = true;
@@ -309,29 +314,26 @@ public class GameScreen implements Screen
 				}
 			}
 
-			if (!mouseCaptured)
-			{
+			if (!mouseCaptured) {
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
 
 				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
-				if (factoryType != null && factoryType != FactoryType.CONVEYOR)
-				{
+				if (factoryType != null && factoryType != FactoryType.CONVEYOR) {
 					int inputTunnel = map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 					if (inputTunnel == 1 || inputTunnel == 2)
 						isInputTunnel = (inputTunnel == 1) ? true : false;
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 				}
-				else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a line
+				else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a
+																// line
 				{
-					if ((direction == 0 || direction == 2) && initialy == -1)
-					{
+					if ((direction == 0 || direction == 2) && initialy == -1) {
 						initialy = tileY;
 						initialx = -1;
 					}
-					if ((direction == 1 || direction == 3) && initialx == -1)
-					{
+					if ((direction == 1 || direction == 3) && initialx == -1) {
 						initialx = tileX;
 						initialy = -1;
 					}
@@ -341,32 +343,27 @@ public class GameScreen implements Screen
 					if (direction == 1 || direction == 3)
 						map.placeBuilding(initialx, tileY, direction, factoryType, mirrored);
 				}
-				else
-				{
+				else {
 					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
 
-					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding instanceof Splitter)
-					{
+					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding instanceof Splitter) {
 						this.splitterMenu.setSplitter((Splitter) attemptContextualMenuBuilding);
 						this.justClicked = false;
 					}
-					else
-					{
+					else {
 						this.splitterMenu.setSplitter(null);
 					}
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
 						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
-					else
-					{
+					else {
 						buildingRecipeDisplay.setBuilding(null);
 						itemDropdownMenu.setItems(null);
 					}
 				}
 			}
 		}
-		else
-		{
+		else {
 			justClicked = true;
 			initialx = -1;
 			initialy = -1;
@@ -386,8 +383,7 @@ public class GameScreen implements Screen
 		String tooltipText = "";
 		int tooltipx = 0;
 		int tooltipy = 0;
-		if (factoryType == null)
-		{
+		if (factoryType == null) {
 			int x = screenToTileX(Gdx.input.getX());
 			int y = screenToTileY(Gdx.input.getY());
 
@@ -398,10 +394,10 @@ public class GameScreen implements Screen
 			Building building = map.factoryAt(x, y);
 			Building conveyor = map.conveyorAt(x, y);
 
-			// FIXME maybe still display the ressources if the hovered building is an extractor?
+			// FIXME maybe still display the ressources if the hovered building is an
+			// extractor?
 			// only display on ressources tiles that don't have a building on top
-			if (building == null && conveyor == null && item != null && item != ItemType.NONE)
-			{
+			if (building == null && conveyor == null && item != null && item != ItemType.NONE) {
 				tooltipText = item.fullname();
 				renderTooltip = true;
 			}
@@ -412,8 +408,7 @@ public class GameScreen implements Screen
 		/* update */
 
 		// cap on fixed TPS
-		while (unprocessedTime >= processingTimeCap)
-		{
+		while (unprocessedTime >= processingTimeCap) {
 			unprocessedTime -= processingTimeCap;
 			map.update();
 
@@ -449,8 +444,7 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
-		if (factoryType != null)
-		{
+		if (factoryType != null) {
 			if (factoryType == FactoryType.TUNNEL)
 				factoryType.setMirrored(isInputTunnel);
 			else
@@ -474,8 +468,7 @@ public class GameScreen implements Screen
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
 		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
-		if (ctrlPressed)
-		{
+		if (ctrlPressed) {
 			int toolbarHeight = 50;
 			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
 			float deltaa = Toolbar.TEXSIZE;
@@ -510,9 +503,16 @@ public class GameScreen implements Screen
 		if (renderTooltip)
 			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
 
+		font.draw(game.batch, "Hub", width - 40, 60);
+		
+		float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI);
+		Texture texture = new Texture("Ui/Arrow.png");
+		TextureRegion textureRegion = new TextureRegion(texture);
+		game.batch.draw(textureRegion, width - 40, 20, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, (float) texture.getWidth(), (float) texture.getHeight(), 1.f, 1.f, angle + 90);
+
 		game.batch.end();
 	}
-
+	
 	public int screenToTileX(int screenX)
 	{
 		return (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / TileMap.TILESIZE);
