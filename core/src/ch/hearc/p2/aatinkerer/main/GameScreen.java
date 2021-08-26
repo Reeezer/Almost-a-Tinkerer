@@ -197,7 +197,7 @@ public class GameScreen implements Screen
 		zoomLevel += game.input.getScrollY();
 
 		zoomLevel = (zoomLevel < -1) ? -1 : zoomLevel;
-		zoomLevel = (zoomLevel > 4) ? 4 : zoomLevel;
+		zoomLevel = (zoomLevel > 2) ? 2 : zoomLevel;
 
 		zoom = (float) Math.pow(2.f, (float) zoomLevel);
 
@@ -419,7 +419,7 @@ public class GameScreen implements Screen
 			GameManager.getInstance().tick();
 		}
 		
-		map.cameraMovedToCoords(x / Chunk.TILESIZE, y / Chunk.TILESIZE);
+		map.cameraMovedToPosition(mapCamera.position, width, height);
 
 		/* render */
 
@@ -446,7 +446,7 @@ public class GameScreen implements Screen
 		game.batch.begin();
 
 		game.batch.setProjectionMatrix(mapCamera.combined);
-		map.render(game.batch);
+		map.render(game.batch, mapCamera.position, width, height);
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed

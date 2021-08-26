@@ -5,10 +5,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 
 import ch.hearc.p2.aatinkerer.buildings.Assembler;
 import ch.hearc.p2.aatinkerer.buildings.Building;
@@ -56,48 +58,6 @@ public class TileMap
 //		factories[width / 2 - 1][height / 2 - 1] = hub;
 //		factories[width / 2 - 1][height / 2 + 1] = hub;
 //		buildings.add(factories[width / 2][height / 2]);
-	}
-
-	private long chunkCoordsToKey(int x, int y)
-	{
-		return (((long)x) << 32) | (y & 0xffffffffL);
-	}
-	
-	private int chunkKeyToX(long key)
-	{
-		return (int)(key >> 32);	
-	}
-	
-	private int chunkKeyToY(long key)
-	{
-		return (int)key;
-	}
-	
-	// generate the 5x5 chunks around the camera
-	public void cameraMovedToCoords(int cameraX, int cameraY)
-	{
-		// if values are below 0, remove the chunk size so it properly rounds ( => world coords (-42;34) -> chunk coords (-1; 0) and not (0,0))
-		if (cameraX < 0)
-			cameraX -= Chunk.CHUNKSIZE;
-		if (cameraY < 0)
-			cameraY -= Chunk.CHUNKSIZE;
-		
-		// world coordinates to chunk's coordinates (not coordinates in chunk)
-		int chunkX = cameraX / Chunk.CHUNKSIZE;
-		int chunkY = cameraY / Chunk.CHUNKSIZE;
-		
-		final int radius = 2;
-		
-		for (int x = chunkX - radius; x <= chunkX + radius; x++)
-		{
-			for (int y = chunkY - radius; y <= chunkY + radius; y++)
-			{
-				long key = chunkCoordsToKey(x, y);
-				
-				if (!chunks.containsKey(key))
-					chunks.put(chunkCoordsToKey(x, y), new Chunk(random));
-			}
-		}
 	}
 	
 	private boolean isEmpty(int x, int y)
@@ -501,8 +461,17 @@ public class TileMap
 					delete(x + i, y + j, building);
 	*/}
 
-	public void render(SpriteBatch batch)
+	public void render(SpriteBatch batch, Vector3 position, int screenWidth, int screenHeight)
 	{
+		int cameraX = (int) (position.x / Chunk.TILESIZE);
+		int cameraY = (int) (position.y / Chunk.TILESIZE);
+		
+		// if values are below 0, remove the chunk size so it properly rounds ( => world coords (-42;34) -> chunk coords (-1; 0) and not (0,0))
+		if (cameraX < 0)
+			cameraX -= Chunk.CHUNKSIZE;
+		if (cameraY < 0)
+			cameraY -= Chunk.CHUNKSIZE;
+		
 		for (Map.Entry<Long, Chunk> chunkEntry : chunks.entrySet())
 		{
 			long key = chunkEntry.getKey();
@@ -511,7 +480,16 @@ public class TileMap
 			int x = chunkKeyToX(key);
 			int y = chunkKeyToY(key);
 			
-			chunk.render(batch, x * Chunk.CHUNKSIZE * Chunk.TILESIZE, y * Chunk.CHUNKSIZE * Chunk.TILESIZE);
+			int maxDeltaX = (screenWidth / (Chunk.CHUNKSIZE * Chunk.TILESIZE)) + 2;
+			int maxDeltaY = (screenHeight / (Chunk.CHUNKSIZE * Chunk.TILESIZE)) + 2;
+			
+			//System.out.format("render map, max dx : %d, max dy : %d%n", maxDeltaX, maxDeltaY);
+			
+			int cameraChunkX = cameraX / Chunk.CHUNKSIZE;
+			int cameraChunkY = cameraY / Chunk.CHUNKSIZE;
+			
+			if (Math.abs(x - cameraChunkX) <= maxDeltaX && Math.abs(y - cameraChunkY) <= maxDeltaY)
+				chunk.render(batch, x * Chunk.CHUNKSIZE * Chunk.TILESIZE, y * Chunk.CHUNKSIZE * Chunk.TILESIZE);
 		}
 		/*
 		// map
@@ -559,6 +537,53 @@ public class TileMap
 			}
 		}
 	*/}
+	
+	private long chunkCoordsToKey(int x, int y)
+	{
+		return (((long)x) << 32) | (y & 0xffffffffL);
+	}
+	
+	private int chunkKeyToX(long key)
+	{
+		return (int)(key >> 32);	
+	}
+	
+	private int chunkKeyToY(long key)
+	{
+		return (int)key;
+	}
+	
+	// generate chunks around the camera depending on the screen size
+	public void cameraMovedToPosition(Vector3 position, int screenWidth, int screenHeight)
+	{
+		
+		int cameraX = (int) (position.x / Chunk.TILESIZE);
+		int cameraY = (int) (position.y / Chunk.TILESIZE);
+		
+		// if values are below 0, remove the chunk size so it properly rounds ( => world coords (-42;34) -> chunk coords (-1; 0) and not (0,0))
+		if (cameraX < 0)
+			cameraX -= Chunk.CHUNKSIZE;
+		if (cameraY < 0)
+			cameraY -= Chunk.CHUNKSIZE;
+		
+		int maxDeltaX = (screenWidth / (Chunk.CHUNKSIZE * Chunk.TILESIZE)) + 2;
+		int maxDeltaY = (screenHeight / (Chunk.CHUNKSIZE * Chunk.TILESIZE)) + 2;
+		
+		// world coordinates to chunk's coordinates (not coordinates in chunk)
+		int chunkX = cameraX / Chunk.CHUNKSIZE;
+		int chunkY = cameraY / Chunk.CHUNKSIZE;
+		
+		for (int x = chunkX - maxDeltaX; x <= chunkX + maxDeltaX; x++)
+		{
+			for (int y = chunkY - maxDeltaY; y <= chunkY + maxDeltaY; y++)
+			{
+				long key = chunkCoordsToKey(x, y);
+				
+				if (!chunks.containsKey(key))
+					chunks.put(chunkCoordsToKey(x, y), new Chunk(random));
+			}
+		}
+	}
 
 	public void update()
 	{/*
