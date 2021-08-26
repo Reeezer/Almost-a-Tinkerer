@@ -446,7 +446,7 @@ public class GameScreen implements Screen
 		game.batch.begin();
 
 		game.batch.setProjectionMatrix(mapCamera.combined);
-		map.render(game.batch, mapCamera.position, width, height);
+		map.render(game.batch, mapCamera.position, width, height, zoom);
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
