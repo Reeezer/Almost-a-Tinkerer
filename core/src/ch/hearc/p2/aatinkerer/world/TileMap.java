@@ -1,7 +1,10 @@
 package ch.hearc.p2.aatinkerer.world;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -538,19 +541,29 @@ public class TileMap
 		}
 	*/}
 	
-	private long chunkCoordsToKey(int x, int y)
+	public static long chunkCoordsToKey(int x, int y)
 	{
 		return (((long)x) << 32) | (y & 0xffffffffL);
 	}
 	
-	private int chunkKeyToX(long key)
+	public static int chunkKeyToX(long key)
 	{
 		return (int)(key >> 32);	
 	}
 	
-	private int chunkKeyToY(long key)
+	public static int chunkKeyToY(long key)
 	{
 		return (int)key;
+	}
+	
+	public boolean chunkExists(long key)
+	{
+		return chunks.containsKey(key);
+	}
+	
+	public Chunk getChunk(long key)
+	{
+		return chunks.get(key);
 	}
 	
 	// generate chunks around the camera depending on the screen size
@@ -580,11 +593,30 @@ public class TileMap
 				long key = chunkCoordsToKey(x, y);
 				
 				if (!chunks.containsKey(key))
-					chunks.put(chunkCoordsToKey(x, y), new Chunk(random, this));
+					chunks.put(chunkCoordsToKey(x, y), new Chunk(random, this, key));
 			}
 		}
 	}
 
+	public List<Chunk> getNeighbours(long key)
+	{
+		int chunkX = chunkKeyToX(key);
+		int chunkY = chunkKeyToY(key);
+		
+		LinkedList<Chunk> neighbours = new LinkedList<Chunk>();
+		
+		if (chunks.containsKey(chunkCoordsToKey(chunkX + 1, chunkY)))
+			neighbours.add(chunks.get(chunkCoordsToKey(chunkX + 1, chunkY)));
+		if (chunks.containsKey(chunkCoordsToKey(chunkX - 1, chunkY)))
+			neighbours.add(chunks.get(chunkCoordsToKey(chunkX - 1, chunkY)));
+		if (chunks.containsKey(chunkCoordsToKey(chunkX, chunkY + 1)))
+			neighbours.add(chunks.get(chunkCoordsToKey(chunkX, chunkY + 1)));
+		if (chunks.containsKey(chunkCoordsToKey(chunkX, chunkY - 1)))
+			neighbours.add(chunks.get(chunkCoordsToKey(chunkX, chunkY - 1)));
+
+		return neighbours;
+	}
+	
 	public void update()
 	{/*
 		// update transfer ticks
