@@ -19,7 +19,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
@@ -34,11 +33,11 @@ import ch.hearc.p2.aatinkerer.listeners.MilestoneListener;
 import ch.hearc.p2.aatinkerer.ui.Notification;
 import ch.hearc.p2.aatinkerer.ui.UIElement;
 import ch.hearc.p2.aatinkerer.ui.widgets.BuildingRecipeDisplay;
-import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.ItemDropdownMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.MiniHoverPopup;
 import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
 import ch.hearc.p2.aatinkerer.ui.widgets.SplitterMenu;
+import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
@@ -87,19 +86,15 @@ public class GameScreen implements Screen
 	private int initialx;
 	private int initialy;
 
-	private boolean kldsmqfj;
-
 	public GameScreen(AATinkererGame game)
 	{
-
-		kldsmqfj = true;
 		this.game = game;
+
+		shapeRenderer = new ShapeRenderer();
 
 		mapCamera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
 		hoverCamera = new OrthographicCamera();
-
-		shapeRenderer = new ShapeRenderer();
 
 		uiElements = new ArrayList<UIElement>();
 
@@ -467,6 +462,7 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
+		// Display the different controls
 		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
 		if (ctrlPressed) {
 			int toolbarHeight = 50;
@@ -503,16 +499,23 @@ public class GameScreen implements Screen
 		if (renderTooltip)
 			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
 
-		font.draw(game.batch, "Hub", width - 40, 60);
-		
-		float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI);
-		Texture texture = new Texture("Ui/Arrow.png");
-		TextureRegion textureRegion = new TextureRegion(texture);
-		game.batch.draw(textureRegion, width - 40, 20, (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, (float) texture.getWidth(), (float) texture.getHeight(), 1.f, 1.f, angle + 90);
+		// Drawing an arrow pointing towards the hub
+		if (x > 300 || x < -300 || y < -300 || y > 300) {
+			Texture texture = new Texture("Ui/Arrow.png");
+			TextureRegion textureRegion = new TextureRegion(texture);
+
+			float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI) + 180;
+
+			float rad = (float) (angle * (Math.PI / 180));
+			float cosX = (float) Math.cos(rad);
+			float cosY = (float) Math.sin(rad);
+
+			game.batch.draw(textureRegion, width / 2 + cosX * (width / 2 - 100), height / 2 + cosY * (height / 2 - 100), (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, (float) texture.getWidth(), (float) texture.getHeight(), 1.f, 1.f, angle - 90);
+		}
 
 		game.batch.end();
 	}
-	
+
 	public int screenToTileX(int screenX)
 	{
 		return (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / TileMap.TILESIZE);
