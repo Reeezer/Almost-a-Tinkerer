@@ -93,7 +93,7 @@ public class GameScreen implements Screen
 
 		uiElements = new ArrayList<UIElement>();
 
-		map = new TileMap(0,0);
+		map = new TileMap();
 
 		x = 0;
 		y = 0;
@@ -516,12 +516,22 @@ public class GameScreen implements Screen
 
 	public int screenToTileX(int screenX)
 	{
-		return (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / Chunk.TILESIZE);
+		int result = (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / Chunk.TILESIZE);
+		
+		if (mapCamera.position.x < 0)
+			result -= 1;
+		
+		return result;
 	}
 
 	public int screenToTileY(int screenY)
 	{
-		return (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / Chunk.TILESIZE);
+		int result = (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / Chunk.TILESIZE);
+		
+		if (mapCamera.position.y < 0)
+			result -= 1;
+		
+		return result;
 	}
 
 	@Override

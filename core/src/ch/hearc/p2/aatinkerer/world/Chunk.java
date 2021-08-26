@@ -19,6 +19,8 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Matrix4;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
+import ch.hearc.p2.aatinkerer.buildings.Conveyor;
+import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.Ressource;
 
 public class Chunk
@@ -35,7 +37,7 @@ public class Chunk
 	private Random random;
 
 	private TileMap tilemap; // the tilemap that contains the chunk for easy access to surrounding chunks
-	
+
 	private long key;
 
 	public Chunk(Random random, TileMap tilemap, long key)
@@ -59,49 +61,49 @@ public class Chunk
 		for (int i = 0; i < CHUNKSIZE; i++)
 			for (int j = 0; j < CHUNKSIZE; j++)
 				Chunk.this.map[i][j] = Ressource.NONE;
-		
+
 		List<Chunk> neighbours = tilemap.getNeighbours(key);
-		
+
 		for (Chunk neighbour : neighbours)
 		{
 			int chunkX = TileMap.chunkKeyToX(this.key);
 			int chunkY = TileMap.chunkKeyToY(this.key);
-			
+
 			int neighbourX = TileMap.chunkKeyToX(neighbour.key);
 			int neighbourY = TileMap.chunkKeyToY(neighbour.key);
-			
+
 			System.out.format("chunk at (%d, %d) is reading cached ressources from its neighbour (%d, %d)%n", chunkX, chunkY, neighbourX, neighbourY);
-			
+
 			int coordsOffsetX = (neighbourX - chunkX) * CHUNKSIZE;
 			int coordsOffsetY = (neighbourY - chunkY) * CHUNKSIZE;
-			
+
 			// since we shouldn't modify a map while it's being iterated, store all consumed ressources to be deleted later
 			List<Long> toDeleteRessourceKeys = new LinkedList<Long>();
-			
+
 			for (Map.Entry<Long, Ressource> cachedRessource : neighbour.cachedGenerationRessources.entrySet())
 			{
 				long ressourceKey = cachedRessource.getKey();
 				Ressource ressource = cachedRessource.getValue();
-				
+
 				int neighbourRessourceX = keyToX(ressourceKey);
 				int neighbourRessourceY = keyToY(ressourceKey);
-				
+
 				int ressourceX = coordsOffsetX + neighbourRessourceX;
 				int ressourceY = coordsOffsetY + neighbourRessourceY;
-			
+
 				if (ressourceX >= 0 && ressourceX < CHUNKSIZE && ressourceY >= 0 && ressourceY < CHUNKSIZE)
 				{
 					System.out.format(" - read new cached ressource %s neighbour's local coords (%d, %d) converted to chunk local (%d,%d)%n", ressource.toString(), neighbourRessourceX, neighbourRessourceY, ressourceX, ressourceY);
-					
+
 					this.map[ressourceX][ressourceY] = ressource;
 					toDeleteRessourceKeys.add(ressourceKey);
 				}
 			}
-			
+
 			for (Long toDeleteKey : toDeleteRessourceKeys)
 				neighbour.cachedGenerationRessources.remove(toDeleteKey);
 		}
-		
+
 		final int seeds = (CHUNKSIZE * CHUNKSIZE) / 100;
 		final int max_life = 10; // + 2
 
@@ -141,7 +143,7 @@ public class Chunk
 		// don't spawn if life below 0
 		if (life < 0)
 			return;
-		
+
 		// if the tile doesn't exist first try to set it in the neighbouring chunk, if the chunk doesn't exist, store it for later
 		if (!tileExists(x, y))
 		{
@@ -150,29 +152,28 @@ public class Chunk
 
 			int targetChunkX = chunkX + ((x + CHUNKSIZE) / CHUNKSIZE) - 1;
 			int targetChunkY = chunkY + ((y + CHUNKSIZE) / CHUNKSIZE) - 1;
-			
+
 			long targetChunkKey = TileMap.chunkCoordsToKey(targetChunkX, targetChunkY);
-			
+
 			// if neighbouring chunk already exists
 			if (tilemap.chunkExists(targetChunkKey))
 			{
 				Chunk targetChunk = tilemap.getChunk(targetChunkKey);
-				
+
 				int targetChunkTileX = (x + CHUNKSIZE) % CHUNKSIZE;
 				int targetChunkTileY = (y + CHUNKSIZE) % CHUNKSIZE;
-				
+
 				if (targetChunk.map[targetChunkTileX][targetChunkTileY] == Ressource.NONE)
 				{
 					System.out.format("adding outbound ressource %s at (%d, %d) from chunk (%d, %d) to already existing chunk at (%d, %d) at local coordinates (%d, %d)%n", ressource, x, y, chunkX, chunkY, targetChunkX, targetChunkY, targetChunkTileX, targetChunkTileY);
-					targetChunk.map[targetChunkTileX][targetChunkTileY] = ressource;	
+					targetChunk.map[targetChunkTileX][targetChunkTileY] = ressource;
 				}
 			}
-			
+
 			// if the tile is outside of the chunk and that location doesn't contain anything already cached
-			else if(!cachedGenerationRessources.containsKey(coordsToKey(x, y)))
+			else if (!cachedGenerationRessources.containsKey(coordsToKey(x, y)))
 				cachedGenerationRessources.put(coordsToKey(x, y), ressource);
 		}
-		
 
 		// only spawn if there's nothing
 		if (tileExists(x, y) && map[x][y] != Ressource.NONE)
@@ -204,8 +205,69 @@ public class Chunk
 
 	public void render(SpriteBatch batch, int x, int y)
 	{
+		// ressources
 		for (int i = 0; i < CHUNKSIZE; i++)
 			for (int j = 0; j < CHUNKSIZE; j++)
 				batch.draw(map[i][j].texture(), x + i * TILESIZE, y + j * TILESIZE);
+
+		// conveyors
+		for (int i = 0; i < CHUNKSIZE; i++)
+			for (int j = 0; j < CHUNKSIZE; j++)
+				if (conveyors[i][j] != null)
+					conveyors[i][j].render(batch, TILESIZE);
+
+		// items
+		for (int i = 0; i < CHUNKSIZE; i++)
+			for (int j = 0; j < CHUNKSIZE; j++)
+				if (conveyors[i][j] != null)
+					((Conveyor) conveyors[i][j]).renderItems(batch, TILESIZE);
+
+		// factories
+		for (int i = 0; i < CHUNKSIZE; i++)
+			for (int j = 0; j < CHUNKSIZE; j++)
+				if (factories[i][j] != null)
+					factories[i][j].render(batch, TILESIZE);
+
+	}
+
+	public void update()
+	{
+
+		// update transfer ticks
+		for (FactoryType type : FactoryType.values())
+		{
+			type.transferTicksIncrease();
+			if (type.getTransferTicks() > type.getTransferTimeout())
+			{
+				type.resetTransferTicks();
+			}
+		}
+
+		// update animation ticks
+		for (FactoryType type : FactoryType.values())
+		{
+			type.animationTicksIncrease();
+			if (type.getAnimationTicks() > type.getAnimationTimeout())
+			{
+				type.resetAnimationTicks();
+				type.frameIncrease();
+			}
+		}
+
+	}
+
+	public Building factoryAt(int x, int y)
+	{
+		return factories[x][y];
+	}
+
+	public Ressource itemAt(int x, int y)
+	{
+		return map[x][y];
+	}
+
+	public long key()
+	{
+		return key;
 	}
 }

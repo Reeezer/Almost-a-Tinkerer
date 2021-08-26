@@ -41,7 +41,7 @@ public class TileMap
 
 	Random random;
 
-	public TileMap(int w, int h) // FIXME remove the coords from args
+	public TileMap()
 	{
 		random = new Random();
 
@@ -284,19 +284,7 @@ public class TileMap
 			if (Math.abs(x - cameraChunkX) <= maxDeltaX && Math.abs(y - cameraChunkY) <= maxDeltaY)
 				chunk.render(batch, x * Chunk.CHUNKSIZE * Chunk.TILESIZE, y * Chunk.CHUNKSIZE * Chunk.TILESIZE);
 		}
-		/*
-		 * // map for (int i = 0; i < width; i++) { for (int j = 0; j < height; j++) { map[i][j].render(batch, i * TileMap.TILESIZE, j * TileMap.TILESIZE); }
-		 * }
-		 * 
-		 * // conveyors for (int i = 0; i < width; i++) { for (int j = 0; j < height; j++) { if (conveyors[i][j] != null) { conveyors[i][j].render(batch,
-		 * TileMap.TILESIZE); } } }
-		 * 
-		 * // items for (int i = 0; i < width; i++) { for (int j = 0; j < height; j++) { if (conveyors[i][j] != null) { ((Conveyor)
-		 * conveyors[i][j]).renderItems(batch, TileMap.TILESIZE); } } }
-		 * 
-		 * // factories for (int i = 0; i < width; i++) { for (int j = 0; j < height; j++) { if (factories[i][j] != null) { factories[i][j].render(batch,
-		 * TileMap.TILESIZE); } } }
-		 */}
+	}
 
 	public static long chunkCoordsToKey(int x, int y)
 	{
@@ -376,28 +364,88 @@ public class TileMap
 
 	public void update()
 	{
-		/*
-		 * // update transfer ticks for (FactoryType type : FactoryType.values()) { type.transferTicksIncrease(); if (type.getTransferTicks() >
-		 * type.getTransferTimeout()) { type.resetTransferTicks(); } }
-		 * 
-		 * // update animation ticks for (FactoryType type : FactoryType.values()) { type.animationTicksIncrease(); if (type.getAnimationTicks() >
-		 * type.getAnimationTimeout()) { type.resetAnimationTicks(); type.frameIncrease(); } }
-		 * 
-		 * // update buildings for (Building building : buildings) { building.update(); }
-		 */}
+		// update buildings
+		for (Building building : buildings)
+		{
+			building.update();
+		}
+	}
+
+	public Chunk chunkAtTile(int x, int y)
+	{
+		// - determine what chunk the tile is in
+		int chunkX = x / Chunk.CHUNKSIZE;
+		int chunkY = y / Chunk.CHUNKSIZE;
+
+		if (x < 0)
+			chunkX--;
+		if (y < 0)
+			chunkY--;
+
+		// - determine if the chunk exists
+		long key = chunkCoordsToKey(chunkX, chunkY);
+
+		if (!chunks.containsKey(key))
+			return null;
+
+		// - the chunk exists, determine the tile position within the chunk
+		int tileX = x % Chunk.CHUNKSIZE;
+		int tileY = y % Chunk.CHUNKSIZE;
+
+		if (tileX < 0)
+			tileX += Chunk.CHUNKSIZE;
+		if (tileY < 0)
+			tileY += Chunk.CHUNKSIZE;
+
+		return chunks.get(key);
+	}
 
 	public Building factoryAt(int x, int y)
-	{/*
-		 * if (tileExists(x, y)) return factories[x][y]; else return null;
-		 */
-		return null;
+	{
+		Chunk chunk = chunkAtTile(x, y);
+
+		if (chunk == null)
+		{
+			return null;
+		}
+		else
+		{
+			int tileX = x % Chunk.CHUNKSIZE;
+			int tileY = y % Chunk.CHUNKSIZE;
+
+			if (tileX < 0)
+				tileX += Chunk.CHUNKSIZE;
+			if (tileY < 0)
+				tileY += Chunk.CHUNKSIZE;
+			
+			return chunk.factoryAt(tileX, tileY);
+		}
 	}
 
 	public ItemType itemAt(int x, int y)
-	{/*
-		 * if (tileExists(x, y)) return map[x][y].getExtractedItem(); else return null;
-		 */
-		return null;
+	{
+		Chunk chunk = chunkAtTile(x, y);
+
+		if (chunk == null)
+		{
+			return null;
+		}
+		else
+		{
+			int tileX = x % Chunk.CHUNKSIZE;
+			int tileY = y % Chunk.CHUNKSIZE;
+
+			if (tileX < 0)
+				tileX += Chunk.CHUNKSIZE;
+			if (tileY < 0)
+				tileY += Chunk.CHUNKSIZE;
+			
+			int chunkX = chunkKeyToX(chunk.key());
+			int chunkY = chunkKeyToY(chunk.key());
+			//System.out.format("checking item at (%d, %d) with chunk local coords (%d, %d), chunk is at (%d, %d)%n", x, y, tileX, tileY, chunkX, chunkY);
+			
+			return chunk.itemAt(tileX, tileY).getExtractedItem();
+		}
 	}
 
 	public Building conveyorAt(int x, int y)
@@ -409,6 +457,6 @@ public class TileMap
 
 	public void dispose()
 	{
-		// FIXME dispose of chunk's pixmaps
+		// FIXME
 	}
 }
