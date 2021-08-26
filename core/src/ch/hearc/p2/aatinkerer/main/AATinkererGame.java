@@ -13,6 +13,7 @@ public class AATinkererGame extends Game
 
 	private GameScreen gameScreen;
 	private SplashScreen splashScreen;
+	private PauseScreen pauseScreen;
 
 	@Override
 	public void create()
@@ -24,13 +25,25 @@ public class AATinkererGame extends Game
 
 		gameScreen = new GameScreen(this);
 		splashScreen = new SplashScreen(this);
+		pauseScreen = new PauseScreen(this);
 
-		setScreen(splashScreen);
+		setScreen(gameScreen);
 	}
 
 	public void toGameScreen()
 	{
+		gameScreen = new GameScreen(this); // FIXME no need to always do an initialisation
 		setScreen(gameScreen);
+	}
+
+	public void toPauseScreen()
+	{
+		setScreen(pauseScreen);
+	}
+
+	public void toMainScreen()
+	{
+		setScreen(splashScreen); // FIXME to save menu
 	}
 
 	@Override
