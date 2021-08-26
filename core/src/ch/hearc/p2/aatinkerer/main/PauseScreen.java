@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -23,7 +25,7 @@ public class PauseScreen implements Screen
 	private Stage stage;
 	private Table table;
 
-	public PauseScreen(AATinkererGame game)
+	public PauseScreen(final AATinkererGame game)
 	{
 		this.game = game;
 
@@ -60,7 +62,13 @@ public class PauseScreen implements Screen
 		resumeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/play.png"))));
 		resumeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/playhover.png"))));
 		ImageButton resumeButton = new ImageButton(resumeButtonStyle);
-		table.add(resumeButton);
+		resumeButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				game.toGameScreen();
+			};
+		});
+		table.add(resumeButton).pad(100);
 
 		ImageButtonStyle muteButtonStyle = new ImageButtonStyle();
 		muteButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundon.png"))));
@@ -68,13 +76,25 @@ public class PauseScreen implements Screen
 		muteButtonStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundoff.png"))));
 		muteButtonStyle.imageCheckedOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundoffhover.png"))));
 		ImageButton muteButton = new ImageButton(muteButtonStyle);
-		table.add(muteButton);
+		muteButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				// FIXME couper musique
+			};
+		});
+		table.add(muteButton).pad(100);
 
 		ImageButtonStyle homeButtonStyle = new ImageButtonStyle();
 		homeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/home.png"))));
 		homeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/homehover.png"))));
 		ImageButton homeButton = new ImageButton(homeButtonStyle);
-		table.add(homeButton);
+		homeButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				game.toMainScreen();
+			};
+		});
+		table.add(homeButton).pad(100);
 	}
 
 	@Override

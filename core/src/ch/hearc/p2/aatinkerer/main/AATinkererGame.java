@@ -32,12 +32,15 @@ public class AATinkererGame extends Game
 
 	public void toGameScreen()
 	{
-		gameScreen = new GameScreen(this); // FIXME no need to always do an initialisation
+		System.out.println("RESUME");
+		gameScreen.resume();
 		setScreen(gameScreen);
 	}
 
 	public void toPauseScreen()
 	{
+		System.out.println("PAUSED");
+		gameScreen.pause();
 		setScreen(pauseScreen);
 	}
 
