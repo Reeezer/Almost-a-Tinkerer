@@ -580,7 +580,7 @@ public class TileMap
 				long key = chunkCoordsToKey(x, y);
 				
 				if (!chunks.containsKey(key))
-					chunks.put(chunkCoordsToKey(x, y), new Chunk(random));
+					chunks.put(chunkCoordsToKey(x, y), new Chunk(random, this));
 			}
 		}
 	}
