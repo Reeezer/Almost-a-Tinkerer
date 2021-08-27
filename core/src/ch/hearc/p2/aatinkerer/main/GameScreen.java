@@ -401,7 +401,7 @@ public class GameScreen implements Screen
 			// only display on ressources tiles that don't have a building on top
 			if (building == null && conveyor == null && item != null && item != ItemType.NONE)
 			{
-				tooltipText = item.fullname();
+				tooltipText = item.fullname(); // FIXME parfois ça donne n'importe quoi comme nom
 				renderTooltip = true;
 			}
 		}
@@ -505,6 +505,8 @@ public class GameScreen implements Screen
 			font.draw(game.batch, "[Num -]\nZoom out", width * 7 / 12, 100);
 		}
 
+		font.draw(game.batch, String.format("camera coordinates (%d, %d)", x / Chunk.TILESIZE, y / Chunk.TILESIZE), width - 200, 30);
+		font.draw(game.batch, String.format("mouse coordinates (%d, %d)", screenToTileX(Gdx.input.getX()), screenToTileY(Gdx.input.getY())), width - 200, 40);
 		for (UIElement uiElement : this.uiElements)
 			uiElement.render(game.batch, delta);
 
