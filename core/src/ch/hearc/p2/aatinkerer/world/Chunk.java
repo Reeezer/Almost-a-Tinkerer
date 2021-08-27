@@ -266,6 +266,11 @@ public class Chunk
 		return map[x][y];
 	}
 
+	public Conveyor conveyorAt(int x, int y)
+	{
+		return (Conveyor) conveyors[x][y];
+	}
+	
 	public long key()
 	{
 		return key;

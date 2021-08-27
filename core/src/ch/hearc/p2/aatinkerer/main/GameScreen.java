@@ -518,20 +518,30 @@ public class GameScreen implements Screen
 
 	public int screenToTileX(int screenX)
 	{
-		int result = (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / Chunk.TILESIZE);
+		// - original (likely buggy) formula
+		//int result = (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / Chunk.TILESIZE);
 		
-		if (mapCamera.position.x < 0)
-			result -= 1;
+		float screenCenter = width / 2.f;
+		float positionRelativeToCenter = screenX - screenCenter;
+		float positionRelativeToCamera = (positionRelativeToCenter * mapCamera.zoom) + mapCamera.position.x;
+		float actualTilePosition = positionRelativeToCamera / Chunk.TILESIZE;
+		
+		int result = (int) Math.floor(actualTilePosition);
 		
 		return result;
 	}
 
 	public int screenToTileY(int screenY)
 	{
-		int result = (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / Chunk.TILESIZE);
+		// - original (likely buggy) formula
+		//int result = (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / Chunk.TILESIZE);
 		
-		if (mapCamera.position.y < 0)
-			result -= 1;
+		float screenCenter = height / 2.f;
+		float positionRelativeToCenter = (height - screenY) - screenCenter; // height - y => vertical screen coordinates are flipped compared to camera coordinates
+		float positionRelativeToCamera = (positionRelativeToCenter * mapCamera.zoom) + mapCamera.position.y;
+		float actualTilePosition = positionRelativeToCamera / Chunk.TILESIZE;
+		
+		int result = (int) Math.floor(actualTilePosition);
 		
 		return result;
 	}
