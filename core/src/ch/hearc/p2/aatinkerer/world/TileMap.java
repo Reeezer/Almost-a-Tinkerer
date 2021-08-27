@@ -33,6 +33,8 @@ import ch.hearc.p2.aatinkerer.buildings.Tunnel;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.data.Ressource;
+import ch.hearc.p2.aatinkerer.data.Tile;
+import ch.hearc.p2.aatinkerer.data.TileType;
 import ch.hearc.p2.aatinkerer.util.Util;
 
 public class TileMap
@@ -53,19 +55,146 @@ public class TileMap
 
 		chunks = new HashMap<Long, Chunk>();
 
-//		Hub hub = new Hub(this, width / 2, height / 2);
-//		factories[width / 2 + 1][height / 2] = hub;
-//		factories[width / 2 + 1][height / 2 - 1] = hub;
-//		factories[width / 2 + 1][height / 2 + 1] = hub;
-//		factories[width / 2][height / 2] = hub;
-//		factories[width / 2][height / 2 - 1] = hub;
-//		factories[width / 2][height / 2 + 1] = hub;
-//		factories[width / 2 - 1][height / 2] = hub;
-//		factories[width / 2 - 1][height / 2 - 1] = hub;
-//		factories[width / 2 - 1][height / 2 + 1] = hub;
-//		buildings.add(factories[width / 2][height / 2]);
+		// FIXME add the hub back
+	}
+	
+	public Chunk chunkAtTile(int x, int y)
+	{
+		// - determine what chunk the tile is in
+		int chunkX = (int) Math.floor(x / (float) Chunk.CHUNKSIZE);
+		int chunkY = (int) Math.floor(y / (float) Chunk.CHUNKSIZE);
+
+		// - determine if the chunk exists
+		long key = chunkCoordsToKey(chunkX, chunkY);
+		
+		if (!chunks.containsKey(key))
+			return null;
+
+		return chunks.get(key);
 	}
 
+	public Tile tileAt(TileType type, int x, int y)
+	{
+		Chunk chunk = chunkAtTile(x, y);
+
+		if (chunk == null)
+		{
+			return null;
+		}
+		else
+		{
+			int tileX = Util.negmod(x, Chunk.CHUNKSIZE);
+			int tileY = Util.negmod(y, Chunk.CHUNKSIZE);
+
+			return chunk.getLocalTile(type, tileX, tileY);
+		}
+	}
+
+	public static long chunkCoordsToKey(int x, int y)
+	{
+		return (((long) x) << 32) | (y & 0xffffffffL);
+	}
+
+	public static int chunkKeyToX(long key)
+	{
+		return (int) (key >> 32);
+	}
+
+	public static int chunkKeyToY(long key)
+	{
+		return (int) key;
+	}
+
+	public boolean chunkExists(long key)
+	{
+		return chunks.containsKey(key);
+	}
+
+	public Chunk getChunk(long key)
+	{
+		return chunks.get(key);
+	}
+	
+	public List<Chunk> getNeighbours(long key)
+	{
+		int chunkX = chunkKeyToX(key);
+		int chunkY = chunkKeyToY(key);
+
+		LinkedList<Chunk> neighbours = new LinkedList<Chunk>();
+
+		if (chunks.containsKey(chunkCoordsToKey(chunkX + 1, chunkY)))
+			neighbours.add(chunks.get(chunkCoordsToKey(chunkX + 1, chunkY)));
+		if (chunks.containsKey(chunkCoordsToKey(chunkX - 1, chunkY)))
+			neighbours.add(chunks.get(chunkCoordsToKey(chunkX - 1, chunkY)));
+		if (chunks.containsKey(chunkCoordsToKey(chunkX, chunkY + 1)))
+			neighbours.add(chunks.get(chunkCoordsToKey(chunkX, chunkY + 1)));
+		if (chunks.containsKey(chunkCoordsToKey(chunkX, chunkY - 1)))
+			neighbours.add(chunks.get(chunkCoordsToKey(chunkX, chunkY - 1)));
+
+		return neighbours;
+	}
+
+	
+	/* --- TODO refactor what is below this line --- */
+	
+	public void render(SpriteBatch batch, Vector3 position, int screenWidth, int screenHeight, float zoom)
+	{
+		// box representing what the screen covers on the map in real coordinates (= tile coordinates * TILESIZE)
+		Rectangle screenbox = new Rectangle(position.x - (zoom * screenWidth / 2.f), position.y - (zoom * screenHeight / 2.f), (float) screenWidth * zoom, (float) screenHeight * zoom);
+
+		// FIXME improvement : compute the keys for the chunks that must be displayed based on the screenbox instead of iterating through them all,
+		// that way the amount of already generated chunks won't even have any importance since they will never be accessed unless strictly necessary
+		for (Map.Entry<Long, Chunk> chunkEntry : chunks.entrySet())
+		{
+			long key = chunkEntry.getKey();
+			Chunk chunk = chunkEntry.getValue();
+
+			int x = chunkKeyToX(key);
+			int y = chunkKeyToY(key);
+
+			float realx = x * Chunk.CHUNKSIZE * Chunk.TILESIZE;
+			float realy = y * Chunk.CHUNKSIZE * Chunk.TILESIZE;
+
+			// box representing what the chunk covers on the map in real coordinates
+			Rectangle chunkbox = new Rectangle(realx, realy, Chunk.CHUNKSIZE * Chunk.TILESIZE, Chunk.CHUNKSIZE * Chunk.TILESIZE);
+
+			// only render the chunk if it is visible on the screen
+			if (screenbox.overlaps(chunkbox))
+				chunk.render(batch, x * Chunk.CHUNKSIZE * Chunk.TILESIZE, y * Chunk.CHUNKSIZE * Chunk.TILESIZE);
+		}
+	}
+
+	
+
+	// FIXME generate only the strictly required chunks
+	// generate chunks around the camera depending on the screen size
+	public void cameraMovedToPosition(Vector3 position, int screenWidth, int screenHeight)
+	{
+
+		int cameraX = (int) Math.floor(position.x / Chunk.TILESIZE);
+		int cameraY = (int) Math.floor(position.y / Chunk.TILESIZE);
+
+		int maxDeltaX = (screenWidth / (Chunk.CHUNKSIZE * Chunk.TILESIZE)) + 3;
+		int maxDeltaY = (screenHeight / (Chunk.CHUNKSIZE * Chunk.TILESIZE)) + 3;
+
+		// world coordinates to chunk's coordinates (not coordinates in chunk)
+		int chunkX = cameraX / Chunk.CHUNKSIZE;
+		int chunkY = cameraY / Chunk.CHUNKSIZE;
+
+		for (int x = chunkX - maxDeltaX; x <= chunkX + maxDeltaX; x++)
+		{
+			for (int y = chunkY - maxDeltaY; y <= chunkY + maxDeltaY; y++)
+			{
+				long key = chunkCoordsToKey(x, y);
+
+				if (!chunks.containsKey(key))
+					chunks.put(chunkCoordsToKey(x, y), new Chunk(random, this, key));
+			}
+		}
+	}
+	
+	
+	
 	private boolean isEmpty(int x, int y)
 	{
 
@@ -74,11 +203,11 @@ public class TileMap
 			return false;
 
 		// conveyors layer
-		if (conveyorAt(x, y) != null)
+		if (tileAt(TileType.CONVEYOR, x, y) != null)
 			return false;
 
 		// factories layer
-		if (factoryAt(x, y) != null)
+		if (tileAt(TileType.FACTORY, x, y) != null)
 			return false;
 
 		return true;
@@ -108,27 +237,61 @@ public class TileMap
 	}
 
 	public Building getNeighbourBuilding(int[] outputPosition)
-	{/*
-		 * // Check the surroundings to find a building that might be the output to the building who calls this method
-		 * 
-		 * int x = outputPosition[0]; int y = outputPosition[1];
-		 * 
-		 * int dx = 0; int dy = 0;
-		 * 
-		 * switch (outputPosition[2]) { case 0: dx = 1; break; case 1: dy = 1; break; case 2: dx = -1; break; case 3: dy = -1; break; default:
-		 * System.out.println("Wrong direction : " + outputPosition[2]); break; }
-		 * 
-		 * if (!tileExists(x + dx, y + dy)) return null;
-		 * 
-		 * if (conveyors[x + dx][y + dy] != null) { for (int[] input : conveyors[x + dx][y + dy].getInputs()) { if (input[0] == x + dx && input[1] == y + dy
-		 * && input[2] == (outputPosition[2] + 2) % 4) { return conveyors[x + dx][y + dy]; } } }
-		 * 
-		 * if (factories[x + dx][y + dy] != null && factories[x + dx][y + dy].getInputs() != null) { for (int[] input : factories[x + dx][y + dy].getInputs())
-		 * { if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4) { return factories[x + dx][y + dy]; } } }
-		 * 
-		 * return null;
-		 */
+	{
+		// Check the surroundings to find a building that might be the output to the building who calls this method
+/*
+		int x = outputPosition[0];
+		int y = outputPosition[1];
 
+		int dx = 0;
+		int dy = 0;
+
+		switch (outputPosition[2])
+		{
+			case 0:
+				dx = 1;
+				break;
+			case 1:
+				dy = 1;
+				break;
+			case 2:
+				dx = -1;
+				break;
+			case 3:
+				dy = -1;
+				break;
+			default:
+				System.out.println("Wrong direction : " + outputPosition[2]);
+				break;
+		}
+		
+		if (!chunkExists(x + dx, y + dy))
+			return null;
+
+		if (conveyors[x + dx][y + dy] != null)
+		{
+			for (int[] input : conveyors[x + dx][y + dy].getInputs())
+			{
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4)
+				{
+					return conveyors[x + dx][y + dy];
+				}
+			}
+		}
+
+		if (factories[x + dx][y + dy] != null && factories[x + dx][y + dy].getInputs() != null)
+		{
+			for (int[] input : factories[x + dx][y + dy].getInputs())
+			{
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4)
+				{
+					return factories[x + dx][y + dy];
+				}
+			}
+		}
+
+		return null;
+*/
 		return null;
 	}
 
@@ -266,103 +429,8 @@ public class TileMap
 		 * delete(x + i, y + j, building);
 		 */}
 
-	public void render(SpriteBatch batch, Vector3 position, int screenWidth, int screenHeight, float zoom)
-	{
-		// box representing what the screen covers on the map in real coordinates (= tile coordinates * TILESIZE)
-		Rectangle screenbox = new Rectangle(position.x - (zoom * screenWidth / 2.f), position.y - (zoom * screenHeight / 2.f), (float) screenWidth * zoom, (float) screenHeight * zoom);
 
-		// FIXME improvement : compute the keys for the chunks that must be displayed based on the screenbox instead of iterating through them all,
-		//       that way the amount of already generated chunks won't even have any importance since they will never be accessed unless strictly necessary
-		for (Map.Entry<Long, Chunk> chunkEntry : chunks.entrySet())
-		{
-			long key = chunkEntry.getKey();
-			Chunk chunk = chunkEntry.getValue();
 
-			int x = chunkKeyToX(key);
-			int y = chunkKeyToY(key);
-			
-			float realx = x * Chunk.CHUNKSIZE * Chunk.TILESIZE;
-			float realy = y * Chunk.CHUNKSIZE * Chunk.TILESIZE;
-			
-			// box representing what the chunk covers on the map in real coordinates
-			Rectangle chunkbox = new Rectangle(realx, realy, Chunk.CHUNKSIZE * Chunk.TILESIZE, Chunk.CHUNKSIZE * Chunk.TILESIZE);
-			
-			// only render the chunk if it is visible on the screen
-			if (screenbox.overlaps(chunkbox))
-				chunk.render(batch, x * Chunk.CHUNKSIZE * Chunk.TILESIZE, y * Chunk.CHUNKSIZE * Chunk.TILESIZE);
-		}
-	}
-
-	public static long chunkCoordsToKey(int x, int y)
-	{
-		return (((long) x) << 32) | (y & 0xffffffffL);
-	}
-
-	public static int chunkKeyToX(long key)
-	{
-		return (int) (key >> 32);
-	}
-
-	public static int chunkKeyToY(long key)
-	{
-		return (int) key;
-	}
-
-	public boolean chunkExists(long key)
-	{
-		return chunks.containsKey(key);
-	}
-
-	public Chunk getChunk(long key)
-	{
-		return chunks.get(key);
-	}
-
-	// FIXME generate only the strictly required chunks
-	// generate chunks around the camera depending on the screen size
-	public void cameraMovedToPosition(Vector3 position, int screenWidth, int screenHeight)
-	{
-
-		int cameraX = (int) Math.floor(position.x / Chunk.TILESIZE);
-		int cameraY = (int) Math.floor(position.y / Chunk.TILESIZE);
-
-		int maxDeltaX = (screenWidth / (Chunk.CHUNKSIZE * Chunk.TILESIZE)) + 2;
-		int maxDeltaY = (screenHeight / (Chunk.CHUNKSIZE * Chunk.TILESIZE)) + 2;
-
-		// world coordinates to chunk's coordinates (not coordinates in chunk)
-		int chunkX = cameraX / Chunk.CHUNKSIZE;
-		int chunkY = cameraY / Chunk.CHUNKSIZE;
-
-		for (int x = chunkX - maxDeltaX; x <= chunkX + maxDeltaX; x++)
-		{
-			for (int y = chunkY - maxDeltaY; y <= chunkY + maxDeltaY; y++)
-			{
-				long key = chunkCoordsToKey(x, y);
-
-				if (!chunks.containsKey(key))
-					chunks.put(chunkCoordsToKey(x, y), new Chunk(random, this, key));
-			}
-		}
-	}
-
-	public List<Chunk> getNeighbours(long key)
-	{
-		int chunkX = chunkKeyToX(key);
-		int chunkY = chunkKeyToY(key);
-
-		LinkedList<Chunk> neighbours = new LinkedList<Chunk>();
-
-		if (chunks.containsKey(chunkCoordsToKey(chunkX + 1, chunkY)))
-			neighbours.add(chunks.get(chunkCoordsToKey(chunkX + 1, chunkY)));
-		if (chunks.containsKey(chunkCoordsToKey(chunkX - 1, chunkY)))
-			neighbours.add(chunks.get(chunkCoordsToKey(chunkX - 1, chunkY)));
-		if (chunks.containsKey(chunkCoordsToKey(chunkX, chunkY + 1)))
-			neighbours.add(chunks.get(chunkCoordsToKey(chunkX, chunkY + 1)));
-		if (chunks.containsKey(chunkCoordsToKey(chunkX, chunkY - 1)))
-			neighbours.add(chunks.get(chunkCoordsToKey(chunkX, chunkY - 1)));
-
-		return neighbours;
-	}
 
 	public void update()
 	{
@@ -370,88 +438,6 @@ public class TileMap
 		for (Building building : buildings)
 		{
 			building.update();
-		}
-	}
-
-	public Chunk chunkAtTile(int x, int y)
-	{
-		// - determine what chunk the tile is in
-		int chunkX = (int) Math.floor(x / (float) Chunk.CHUNKSIZE);
-		int chunkY = (int) Math.floor(y / (float) Chunk.CHUNKSIZE);
-
-		// - determine if the chunk exists
-		long key = chunkCoordsToKey(chunkX, chunkY);
-
-		if (!chunks.containsKey(key))
-			return null;
-
-		// - the chunk exists, determine the tile position within the chunk
-		int tileX = Util.negmod(x, Chunk.CHUNKSIZE);
-		int tileY = Util.negmod(y, Chunk.CHUNKSIZE);
-
-		return chunks.get(key);
-	}
-
-	public Building factoryAt(int x, int y)
-	{
-		Chunk chunk = chunkAtTile(x, y);
-
-		if (chunk == null)
-		{
-			return null;
-		}
-		else
-		{
-			int tileX = Util.negmod(x, Chunk.CHUNKSIZE);
-			int tileY = Util.negmod(y, Chunk.CHUNKSIZE);
-
-			return chunk.factoryAt(tileX, tileY);
-		}
-	}
-
-	public ItemType itemAt(int x, int y)
-	{
-		Chunk chunk = chunkAtTile(x, y);
-
-		if (chunk == null)
-		{
-			return null;
-		}
-		else
-		{
-			int tileX = Util.negmod(x, Chunk.CHUNKSIZE);
-			int tileY = Util.negmod(y, Chunk.CHUNKSIZE);
-
-			// int chunkX = chunkKeyToX(chunk.key());
-			// int chunkY = chunkKeyToY(chunk.key());
-			// System.out.format("checking item at (%d, %d) with chunk local coords (%d, %d), chunk is at (%d, %d)%n", x, y, tileX, tileY, chunkX, chunkY);
-
-			return chunk.itemAt(tileX, tileY).getExtractedItem();
-		}
-	}
-
-	public Building conveyorAt(int x, int y)
-	{
-		Chunk chunk = chunkAtTile(x, y);
-
-		if (chunk == null)
-		{
-			return null;
-		}
-		else
-		{
-			int tileX = x % Chunk.CHUNKSIZE;
-			int tileY = y % Chunk.CHUNKSIZE;
-
-			if (tileX < 0)
-				tileX += Chunk.CHUNKSIZE;
-			if (tileY < 0)
-				tileY += Chunk.CHUNKSIZE;
-
-			int chunkX = chunkKeyToX(chunk.key());
-			int chunkY = chunkKeyToY(chunk.key());
-
-			return chunk.conveyorAt(tileX, tileY);
 		}
 	}
 

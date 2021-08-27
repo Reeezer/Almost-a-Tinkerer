@@ -26,6 +26,8 @@ import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.data.Milestone;
 import ch.hearc.p2.aatinkerer.data.Ressource;
+import ch.hearc.p2.aatinkerer.data.Tile;
+import ch.hearc.p2.aatinkerer.data.TileType;
 import ch.hearc.p2.aatinkerer.listeners.ContractListener;
 import ch.hearc.p2.aatinkerer.listeners.MilestoneListener;
 import ch.hearc.p2.aatinkerer.ui.Notification;
@@ -342,7 +344,7 @@ public class GameScreen implements Screen
 				}
 				else
 				{
-					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
+					Building attemptContextualMenuBuilding = (Building) map.tileAt(TileType.FACTORY, tileX, tileY);
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding instanceof Splitter)
 					{
@@ -393,16 +395,22 @@ public class GameScreen implements Screen
 			tooltipx = Gdx.input.getX() + 3;
 			tooltipy = (height - Gdx.input.getY()) + 3;
 
-			ItemType item = map.itemAt(x, y);
-			Building building = map.factoryAt(x, y);
-			Building conveyor = map.conveyorAt(x, y);
-
-			// FIXME maybe still display the ressources if the hovered building is an extractor?
-			// only display on ressources tiles that don't have a building on top
-			if (building == null && conveyor == null && item != null && item != ItemType.NONE)
+			Tile itemTile = map.tileAt(TileType.RESSOURCE, x, y);
+			if (itemTile != null)
 			{
-				tooltipText = item.fullname(); // FIXME parfois ça donne n'importe quoi comme nom
-				renderTooltip = true;
+				ItemType item = ((Ressource) map.tileAt(TileType.RESSOURCE, x, y)).getExtractedItem();
+				
+				// FIXME check for null too 
+				Building building = (Building) map.tileAt(TileType.FACTORY, x, y);
+				Building conveyor = (Building) map.tileAt(TileType.CONVEYOR, x, y);
+	
+				// FIXME maybe still display the ressources if the hovered building is an extractor?
+				// only display on ressources tiles that don't have a building on top
+				if (building == null && conveyor == null && item != null && item != ItemType.NONE)
+				{
+					tooltipText = item.fullname(); // FIXME parfois ça donne n'importe quoi comme nom
+					renderTooltip = true;
+				}
 			}
 		}
 

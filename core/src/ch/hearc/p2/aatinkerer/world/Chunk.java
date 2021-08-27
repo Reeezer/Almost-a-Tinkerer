@@ -22,16 +22,15 @@ import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.Ressource;
+import ch.hearc.p2.aatinkerer.data.Tile;
+import ch.hearc.p2.aatinkerer.data.TileType;
 
 public class Chunk
 {
 	public static final int TILESIZE = 32;
 	public static final int CHUNKSIZE = 64;
 
-	private Ressource[][] map;
-	private Building[][] conveyors;
-	private Building[][] factories;
-
+	private Map<TileType, Tile[][]> tiles;
 	private Map<Long, Ressource> cachedGenerationRessources;
 
 	private Random random;
@@ -46,11 +45,11 @@ public class Chunk
 		this.tilemap = tilemap;
 		this.key = key;
 
-		// - initialise the map to have no resources
-		// - create an empty table of conveyors
-		map = new Ressource[CHUNKSIZE][CHUNKSIZE];
-		conveyors = new Building[CHUNKSIZE][CHUNKSIZE];
-		factories = new Building[CHUNKSIZE][CHUNKSIZE];
+		// - all the tile layers
+		tiles = new HashMap<TileType, Tile[][]>();
+		tiles.put(TileType.RESSOURCE, new Ressource[CHUNKSIZE][CHUNKSIZE]);
+		tiles.put(TileType.FACTORY, new Building[CHUNKSIZE][CHUNKSIZE]);
+		tiles.put(TileType.CONVEYOR, new Building[CHUNKSIZE][CHUNKSIZE]);
 
 		this.cachedGenerationRessources = new HashMap<Long, Ressource>();
 
@@ -58,9 +57,9 @@ public class Chunk
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
 		// this due to collisions)
 
-		for (int i = 0; i < CHUNKSIZE; i++)
-			for (int j = 0; j < CHUNKSIZE; j++)
-				Chunk.this.map[i][j] = Ressource.NONE;
+		for (int x = 0; x < CHUNKSIZE; x++)
+			for (int y = 0; y < CHUNKSIZE; y++)
+				setLocalTile(TileType.RESSOURCE, x, y, Ressource.NONE);
 
 		List<Chunk> neighbours = tilemap.getNeighbours(key);
 
@@ -95,7 +94,7 @@ public class Chunk
 				{
 					System.out.format(" - read new cached ressource %s neighbour's local coords (%d, %d) converted to chunk local (%d,%d)%n", ressource.toString(), neighbourRessourceX, neighbourRessourceY, ressourceX, ressourceY);
 
-					this.map[ressourceX][ressourceY] = ressource;
+					setLocalTile(TileType.RESSOURCE, ressourceX, ressourceY, ressource);
 					toDeleteRessourceKeys.add(ressourceKey);
 				}
 			}
@@ -120,6 +119,50 @@ public class Chunk
 				generate(ressource, life, x, y);
 		}
 
+	}
+
+	// - returns the tile based on local coordinates, also works if the coordinates are outside the chunk since
+	// it first goes through the tilemap to determine what chunk the tile is in
+	// - checking if the coordinates are local is necessary because redirection may not work in the constructor otherwise
+	// (=> generating the chunk while it's being added to the hashmap will cause it to be unable to find itself and set its own tiles)
+	public Tile getLocalTile(TileType type, int localX, int localY)
+	{
+		Chunk target = this;
+
+		// if the coordinates are outside the chunk, fetch it first
+		if (localX < 0 || localX >= 64 || localY < 0 || localY >= 64)
+		{
+			int worldX = localX + keyToX(key) * CHUNKSIZE;
+			int worldY = localY + keyToY(key) * CHUNKSIZE;
+
+			target = tilemap.chunkAtTile(worldX, worldY);
+
+			if (target == null)
+				return null;
+		}
+
+		return target.tiles.get(type)[localX][localY];
+	}
+
+	// - sets the tile, also works with tiles outside the chunk itself
+	// - see getLocalTile for more info
+	public void setLocalTile(TileType type, int localX, int localY, Tile value)
+	{
+		Chunk target = this;
+
+		// if the coordinates are outside the chunk, fetch it first
+		if (localX < 0 || localX >= 64 || localY < 0 || localY >= 64)
+		{
+			int worldX = localX + keyToX(key) * CHUNKSIZE;
+			int worldY = localY + keyToY(key) * CHUNKSIZE;
+
+			target = tilemap.chunkAtTile(worldX, worldY);
+
+			if (target == null)
+				return;
+		}
+
+		target.tiles.get(type)[localX][localY] = value;
 	}
 
 	private long coordsToKey(int x, int y)
@@ -163,10 +206,10 @@ public class Chunk
 				int targetChunkTileX = (x + CHUNKSIZE) % CHUNKSIZE;
 				int targetChunkTileY = (y + CHUNKSIZE) % CHUNKSIZE;
 
-				if (targetChunk.map[targetChunkTileX][targetChunkTileY] == Ressource.NONE)
+				if (targetChunk.getLocalTile(TileType.RESSOURCE, targetChunkTileX, targetChunkTileY) == Ressource.NONE)
 				{
 					System.out.format("adding outbound ressource %s at (%d, %d) from chunk (%d, %d) to already existing chunk at (%d, %d) at local coordinates (%d, %d)%n", ressource, x, y, chunkX, chunkY, targetChunkX, targetChunkY, targetChunkTileX, targetChunkTileY);
-					targetChunk.map[targetChunkTileX][targetChunkTileY] = ressource;
+					targetChunk.setLocalTile(TileType.RESSOURCE, targetChunkTileX, targetChunkTileY, ressource);
 				}
 			}
 
@@ -176,11 +219,11 @@ public class Chunk
 		}
 
 		// only spawn if there's nothing
-		if (tileExists(x, y) && map[x][y] != Ressource.NONE)
+		if (tileExists(x, y) && getLocalTile(TileType.RESSOURCE, x, y) != Ressource.NONE)
 			return;
 
 		if (tileExists(x, y))
-			map[x][y] = ressource;
+			setLocalTile(TileType.RESSOURCE, x, y, ressource);
 
 		// attempt to spawn more resources around
 		final float spawn_probability = 0.6f;
@@ -208,25 +251,25 @@ public class Chunk
 		// ressources
 		for (int i = 0; i < CHUNKSIZE; i++)
 			for (int j = 0; j < CHUNKSIZE; j++)
-				batch.draw(map[i][j].texture(), x + i * TILESIZE, y + j * TILESIZE);
+				batch.draw(((Ressource) getLocalTile(TileType.RESSOURCE, i, j)).texture(), x + i * TILESIZE, y + j * TILESIZE);
 
 		// conveyors
-		for (int i = 0; i < CHUNKSIZE; i++)
-			for (int j = 0; j < CHUNKSIZE; j++)
-				if (conveyors[i][j] != null)
-					conveyors[i][j].render(batch, TILESIZE);
+//		for (int i = 0; i < CHUNKSIZE; i++)
+//			for (int j = 0; j < CHUNKSIZE; j++)
+//				if (conveyors[i][j] != null)
+//					conveyors[i][j].render(batch, TILESIZE);
 
 		// items
-		for (int i = 0; i < CHUNKSIZE; i++)
-			for (int j = 0; j < CHUNKSIZE; j++)
-				if (conveyors[i][j] != null)
-					((Conveyor) conveyors[i][j]).renderItems(batch, TILESIZE);
+//		for (int i = 0; i < CHUNKSIZE; i++)
+//			for (int j = 0; j < CHUNKSIZE; j++)
+//				if (conveyors[i][j] != null)
+//					((Conveyor) conveyors[i][j]).renderItems(batch, TILESIZE);
 
 		// factories
-		for (int i = 0; i < CHUNKSIZE; i++)
-			for (int j = 0; j < CHUNKSIZE; j++)
-				if (factories[i][j] != null)
-					factories[i][j].render(batch, TILESIZE);
+//		for (int i = 0; i < CHUNKSIZE; i++)
+//			for (int j = 0; j < CHUNKSIZE; j++)
+//				if (factories[i][j] != null)
+//					factories[i][j].render(batch, TILESIZE);
 
 	}
 
@@ -256,21 +299,6 @@ public class Chunk
 
 	}
 
-	public Building factoryAt(int x, int y)
-	{
-		return factories[x][y];
-	}
-
-	public Ressource itemAt(int x, int y)
-	{
-		return map[x][y];
-	}
-
-	public Conveyor conveyorAt(int x, int y)
-	{
-		return (Conveyor) conveyors[x][y];
-	}
-	
 	public long key()
 	{
 		return key;

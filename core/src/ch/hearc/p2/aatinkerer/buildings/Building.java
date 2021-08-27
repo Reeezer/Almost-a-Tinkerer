@@ -10,10 +10,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.data.Recipe;
+import ch.hearc.p2.aatinkerer.data.Tile;
+import ch.hearc.p2.aatinkerer.data.TileType;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
-public abstract class Building
+public abstract class Building implements Tile
 {
+	public final TileType tiletype = TileType.FACTORY;
+	
 	protected class Item
 	{
 		public ItemType type;

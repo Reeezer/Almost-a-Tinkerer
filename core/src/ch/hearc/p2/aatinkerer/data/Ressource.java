@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public enum Ressource
+public enum Ressource implements Tile
 {
 	NONE("Tile/Grid.png", ItemType.NONE),
 	COAL("Tile/CoalTile.png", ItemType.COAL),
@@ -17,6 +17,8 @@ public enum Ressource
 	WATER("Tile/WaterTile.png", ItemType.WATER),
 	COTTON("Tile/CottonTile.png", ItemType.COTTON);
 
+	private final TileType tiletype = TileType.RESSOURCE;
+	
 	private Texture texture;
 	private ItemType itemType;
 

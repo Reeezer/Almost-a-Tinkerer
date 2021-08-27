@@ -3,10 +3,13 @@ package ch.hearc.p2.aatinkerer.buildings;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.data.TileType;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Conveyor extends Building
 {
+	public final TileType tiletype = TileType.CONVEYOR;
+	
 	public Conveyor(TileMap tilemap, int x, int y, int[][] inputOutputPosition)
 	{
 		super(tilemap, x, y, inputOutputPosition[1][2], 1, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]), 1, 8, FactoryType.CONVEYOR);
