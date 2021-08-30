@@ -224,6 +224,11 @@ public class GameScreen implements Screen
 		if (Gdx.input.isKeyPressed(Keys.LEFT))
 			x -= 1 * dd;
 
+		if (Gdx.input.isKeyPressed(Keys.SPACE)) {
+			x = 0;
+			y = 0;
+		}
+
 		// with the mouse (drag and drop)
 		if (Gdx.input.isButtonPressed(Buttons.RIGHT)) {
 			x -= (int) (Gdx.input.getDeltaX() * zoom);
@@ -488,6 +493,7 @@ public class GameScreen implements Screen
 			font.draw(game.batch, "[T]\nMirror rotation", width * 5 / 12, 150);
 			font.draw(game.batch, "[Escape]\nUnselect", width * 5 / 12, 100);
 
+			font.draw(game.batch, "[Space]\nTo hub", width / 2, 400);
 			font.draw(game.batch, "[Right click + drag]\nMove", width / 2, 350);
 			font.draw(game.batch, "[Up]\nMove up", width / 2, 300);
 			font.draw(game.batch, "[Down]\nMove down", width / 2, 250);
