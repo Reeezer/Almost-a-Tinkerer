@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -39,6 +40,7 @@ import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
 import ch.hearc.p2.aatinkerer.ui.widgets.SplitterMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
+import ch.hearc.p2.aatinkerer.util.Sounds;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class GameScreen implements Screen
@@ -273,6 +275,9 @@ public class GameScreen implements Screen
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_1))
 			factoryToolbar.setActiveItem(11);
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			if (factoryToolbar.getActiveItem() == null) {
+				game.toPauseScreen();
+			}
 			factoryToolbar.setActiveItem(-1);
 			buildingRecipeDisplay.setBuilding(null);
 			itemDropdownMenu.setItems(null);
@@ -307,8 +312,10 @@ public class GameScreen implements Screen
 					int ix = (int) (mx - bounds.x);
 					int iy = (int) (my - bounds.y);
 
-					if (this.justClicked)
+					if (this.justClicked) {
 						clickable.passRelativeClick((int) ix, (int) iy);
+						Sounds.CLICK.play();
+					}
 
 					this.justClicked = false;
 					break; // stop checking for clicks on clickables, only one should capture the click
@@ -444,6 +451,7 @@ public class GameScreen implements Screen
 		map.render(game.batch);
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
+		
 		// item to be placed
 		if (factoryType != null) {
 			if (factoryType == FactoryType.TUNNEL)
@@ -560,7 +568,8 @@ public class GameScreen implements Screen
 	@Override
 	public void resume()
 	{
-
+		lastTime = TimeUtils.millis();
+		unprocessedTime = 0;
 	}
 
 	@Override
