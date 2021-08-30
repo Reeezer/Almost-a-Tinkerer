@@ -250,27 +250,53 @@ public class Chunk
 	{
 		// ressources
 		for (int i = 0; i < CHUNKSIZE; i++)
+		{
 			for (int j = 0; j < CHUNKSIZE; j++)
-				batch.draw(((Ressource) getLocalTile(TileType.RESSOURCE, i, j)).texture(), x + i * TILESIZE, y + j * TILESIZE);
+			{
+				Ressource ressource = (Ressource) getLocalTile(TileType.RESSOURCE, i, j);
+
+				if (ressource != null)
+					batch.draw(ressource.texture(), x + i * TILESIZE, y + j * TILESIZE);
+				else
+					System.err.format("critical: chunk render attempted to render a null ressource at (%d,%d) in chunk (%d,%d)%n", i, j, keyToX(key), keyToY(key));
+			}
+		}
 
 		// conveyors
-//		for (int i = 0; i < CHUNKSIZE; i++)
-//			for (int j = 0; j < CHUNKSIZE; j++)
-//				if (conveyors[i][j] != null)
-//					conveyors[i][j].render(batch, TILESIZE);
+		for (int i = 0; i < CHUNKSIZE; i++)
+		{
+			for (int j = 0; j < CHUNKSIZE; j++)
+			{
+				Conveyor conveyor = (Conveyor) getLocalTile(TileType.CONVEYOR, i, j);
+
+				if (conveyor != null)
+					conveyor.render(batch, TILESIZE);
+			}
+		}
 
 		// items
-//		for (int i = 0; i < CHUNKSIZE; i++)
-//			for (int j = 0; j < CHUNKSIZE; j++)
-//				if (conveyors[i][j] != null)
-//					((Conveyor) conveyors[i][j]).renderItems(batch, TILESIZE);
+		for (int i = 0; i < CHUNKSIZE; i++)
+		{
+			for (int j = 0; j < CHUNKSIZE; j++)
+			{
+				Conveyor conveyor = (Conveyor) getLocalTile(TileType.CONVEYOR, i, j);
+
+				if (conveyor != null)
+					conveyor.renderItems(batch, TILESIZE);
+			}
+		}
 
 		// factories
-//		for (int i = 0; i < CHUNKSIZE; i++)
-//			for (int j = 0; j < CHUNKSIZE; j++)
-//				if (factories[i][j] != null)
-//					factories[i][j].render(batch, TILESIZE);
+		for (int i = 0; i < CHUNKSIZE; i++)
+		{
+			for (int j = 0; j < CHUNKSIZE; j++)
+			{
+				Building building = (Building) getLocalTile(TileType.FACTORY, i, j);
 
+				if (building != null)
+					building.render(batch, TILESIZE);
+			}
+		}
 	}
 
 	public void update()

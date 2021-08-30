@@ -408,7 +408,7 @@ public class GameScreen implements Screen
 				// only display on ressources tiles that don't have a building on top
 				if (building == null && conveyor == null && item != null && item != ItemType.NONE)
 				{
-					tooltipText = item.fullname(); // FIXME parfois ça donne n'importe quoi comme nom
+					tooltipText = item.fullname();
 					renderTooltip = true;
 				}
 			}
