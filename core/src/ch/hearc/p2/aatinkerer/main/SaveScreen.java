@@ -62,7 +62,7 @@ public class SaveScreen implements Screen
 		loadButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
-				game.toGameScreen();
+				game.toNewGameScreen();
 				// FIXME disable le bouton si rien n'est sélectionné
 				// FIXME lancer la partie en fonction de ce qui est sélectionné
 			};

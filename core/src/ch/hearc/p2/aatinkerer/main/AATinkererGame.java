@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
+import ch.hearc.p2.aatinkerer.data.Difficulty;
 import ch.hearc.p2.aatinkerer.util.Input;
 
 public class AATinkererGame extends Game
@@ -27,6 +28,8 @@ public class AATinkererGame extends Game
 	public static FreeTypeFontParameter titleFontParam;
 	public static FreeTypeFontParameter buttonFontParam;
 
+	public static Difficulty difficulty;
+
 	@Override
 	public void create()
 	{
@@ -46,8 +49,9 @@ public class AATinkererGame extends Game
 		titleFontParam = new FreeTypeFontParameter();
 		titleFontParam.size = 80;
 
+		difficulty = Difficulty.REGULAR;
+
 		// Screens
-		gameScreen = new GameScreen(this);
 		splashScreen = new SplashScreen(this);
 		pauseScreen = new PauseScreen(this);
 		saveScreen = new SaveScreen(this);
@@ -56,9 +60,15 @@ public class AATinkererGame extends Game
 		setScreen(splashScreen);
 	}
 
-	public void toGameScreen()
+	public void toPausedGameScreen()
 	{
 		gameScreen.resume();
+		setScreen(gameScreen);
+	}
+
+	public void toNewGameScreen()
+	{
+		gameScreen = new GameScreen(this);
 		setScreen(gameScreen);
 	}
 

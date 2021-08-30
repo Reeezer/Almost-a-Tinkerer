@@ -22,6 +22,7 @@ import ch.hearc.p2.aatinkerer.buildings.Tunnel;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.data.Ressource;
+import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 
 public class TileMap
 {
@@ -61,8 +62,8 @@ public class TileMap
 		// - generate the map by generating seeds and growing them
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
 		// this due to collisions)
-		final int seeds = (width * height) / 100;
-		final int max_life = 10; // + 2
+		final int seeds = AATinkererGame.difficulty.getNbSeed();
+		final int max_life = AATinkererGame.difficulty.getLife(); // + 2
 		for (int i = 0; i < seeds; i++)
 		{
 			int x = random.nextInt(width);
@@ -108,7 +109,7 @@ public class TileMap
 		map[x][y] = ressource;
 
 		// attempt to spawn more resources around
-		final float spawn_probability = 0.6f;
+		final float spawn_probability = (float) AATinkererGame.difficulty.getProbability();
 		// north
 		if (random.nextFloat() < spawn_probability)
 			generate(ressource, life - 1, x, y - 1);

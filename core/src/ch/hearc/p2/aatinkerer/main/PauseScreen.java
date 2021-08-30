@@ -47,7 +47,7 @@ public class PauseScreen implements Screen
 		resumeButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
-				game.toGameScreen();
+				game.toPausedGameScreen();
 			};
 		});
 		table.add(resumeButton).pad(115);

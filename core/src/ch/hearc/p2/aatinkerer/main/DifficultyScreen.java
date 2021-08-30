@@ -17,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ch.hearc.p2.aatinkerer.data.Difficulty;
+
 public class DifficultyScreen implements Screen
 {
 	private AATinkererGame game;
@@ -66,13 +68,13 @@ public class DifficultyScreen implements Screen
 		NinePatch everywhereHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty5hover.png"), 2, 2, 2, 2);
 		NinePatch goodLuckHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty6hover.png"), 2, 2, 2, 2);
 
-		createButton(regularPatch, regularHoverPatch, "Regular");
-		createButton(abundantPatch, abundantHoverPatch, "Abundant");
-		createButton(rarePatch, rareHoverPatch, "Rare");
+		createButton(regularPatch, regularHoverPatch, "Regular", Difficulty.REGULAR);
+		createButton(abundantPatch, abundantHoverPatch, "Abundant", Difficulty.ABUNDANT);
+		createButton(rarePatch, rareHoverPatch, "Rare", Difficulty.RARE);
 		diffTable.row();
-		createButton(bigSparsePatch, bigSparseHoverPatch, "Big sparse");
-		createButton(everywherePatch, everywhereHoverPatch, "Everywhere");
-		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck");
+		createButton(bigSparsePatch, bigSparseHoverPatch, "Big sparse", Difficulty.BIGSPARSE);
+		createButton(everywherePatch, everywhereHoverPatch, "Everywhere", Difficulty.EVERYWHERE);
+		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck", Difficulty.GOODLUCK);
 
 		// Positioning
 		mainTable.add(title).padBottom(25);
@@ -98,7 +100,7 @@ public class DifficultyScreen implements Screen
 		stage.addActor(exitButton);
 	}
 
-	private void createButton(NinePatch ninePatch, NinePatch ninePatchHover, String title)
+	private void createButton(NinePatch ninePatch, NinePatch ninePatchHover, String title, final Difficulty difficulty)
 	{
 		TextButtonStyle buttonStyle = new TextButtonStyle();
 		buttonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
@@ -109,6 +111,14 @@ public class DifficultyScreen implements Screen
 
 		TextButton button = new TextButton(title, buttonStyle);
 		diffTable.add(button).pad(50);
+
+		button.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				AATinkererGame.difficulty = difficulty;
+				game.toNewGameScreen();
+			};
+		});
 	}
 
 	@Override
