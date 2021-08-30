@@ -7,7 +7,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -16,8 +15,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -50,8 +47,6 @@ public class GameScreen implements Screen
 	private OrthographicCamera mapCamera;
 	private OrthographicCamera uiCamera;
 	private OrthographicCamera hoverCamera;
-
-	private ShapeRenderer shapeRenderer;
 
 	private List<UIElement> uiElements;
 
@@ -94,8 +89,6 @@ public class GameScreen implements Screen
 	public GameScreen(AATinkererGame game)
 	{
 		this.game = game;
-
-		shapeRenderer = new ShapeRenderer();
 
 		mapCamera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
@@ -150,7 +143,7 @@ public class GameScreen implements Screen
 		titleFontParameter.color = Color.WHITE;
 		titleFontParameter.borderColor = Color.BLACK;
 		titleFontParameter.borderWidth = 1;
-		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(titleFontParameter);
+		font = AATinkererGame.font.generateFont(titleFontParameter);
 
 		milestoneListener = new MilestoneListener() {
 			@Override
@@ -187,7 +180,7 @@ public class GameScreen implements Screen
 	@Override
 	public void show()
 	{
-
+		Gdx.input.setInputProcessor(game.input);
 	}
 
 	@Override
@@ -451,7 +444,7 @@ public class GameScreen implements Screen
 		map.render(game.batch);
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
-		
+
 		// item to be placed
 		if (factoryType != null) {
 			if (factoryType == FactoryType.TUNNEL)

@@ -27,7 +27,8 @@ import ch.hearc.p2.aatinkerer.data.Ressource;
 import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
-public class TileMap {
+public class TileMap
+{
 	public static final int TILESIZE = 32;
 
 	private int width, height;
@@ -41,7 +42,8 @@ public class TileMap {
 
 	Random random;
 
-	public TileMap(int w, int h) {
+	public TileMap(int w, int h)
+	{
 		random = new Random();
 
 		width = w;
@@ -65,13 +67,13 @@ public class TileMap {
 		// this due to collisions)
 		final int seeds = AATinkererGame.difficulty.getNbSeed();
 		final int max_life = AATinkererGame.difficulty.getLife(); // + 2
-		for (int i = 0; i < seeds; i++)
-		{
+		for (int i = 0; i < seeds; i++) {
 			int x = random.nextInt(width);
 			int y = random.nextInt(height);
 			int life = random.nextInt(max_life) + 2;
+
 			// choose a random resource to spawn excluding the first value which is NONE
-			Ressource ressource = Ressource.values()[(random.nextInt(Ressource.values().length) - 1) + 1];
+			Ressource ressource = Ressource.values()[(random.nextInt(Ressource.values().length - 1)) + 1];
 
 			// make it so seeds cannot spawn in a way that will make them reach the center
 			// (= the hub) so it stays clear
@@ -94,7 +96,8 @@ public class TileMap {
 	}
 
 	// recursively generate a resource patch from the specified coordinates
-	public void generate(Ressource ressource, int life, int x, int y) {
+	public void generate(Ressource ressource, int life, int x, int y)
+	{
 		// don't spawn if life below 0
 		if (life < 0)
 			return;
@@ -125,11 +128,13 @@ public class TileMap {
 			generate(ressource, life - 1, x - 1, y);
 	}
 
-	private boolean tileExists(int x, int y) {
+	private boolean tileExists(int x, int y)
+	{
 		return x >= 0 && y >= 0 && x < width && y < height;
 	}
 
-	private boolean isEmpty(int x, int y) {
+	private boolean isEmpty(int x, int y)
+	{
 		if (!tileExists(x, y))
 			return false;
 
@@ -144,7 +149,8 @@ public class TileMap {
 		return true;
 	}
 
-	private void updateOutput(int x, int y, Building[][] tabBuilding) {
+	private void updateOutput(int x, int y, Building[][] tabBuilding)
+	{
 		// Update all the outputs of the surrounding buildings
 		if (tabBuilding[x][y] != null)
 			tabBuilding[x][y].updateOutputs();
@@ -160,13 +166,15 @@ public class TileMap {
 			tabBuilding[x][y - 1].updateOutputs();
 	}
 
-	public void updateOutputs(int x, int y) {
+	public void updateOutputs(int x, int y)
+	{
 		// update buildings on both table
 		updateOutput(x, y, conveyors);
 		updateOutput(x, y, factories);
 	}
 
-	public Building getNeighbourBuilding(int[] outputPosition) {
+	public Building getNeighbourBuilding(int[] outputPosition)
+	{
 		// Check the surroundings to find a building that might be the output to the
 		// building who calls this method
 
@@ -177,21 +185,21 @@ public class TileMap {
 		int dy = 0;
 
 		switch (outputPosition[2]) {
-		case 0:
-			dx = 1;
-			break;
-		case 1:
-			dy = 1;
-			break;
-		case 2:
-			dx = -1;
-			break;
-		case 3:
-			dy = -1;
-			break;
-		default:
-			System.out.println("Wrong direction : " + outputPosition[2]);
-			break;
+			case 0:
+				dx = 1;
+				break;
+			case 1:
+				dy = 1;
+				break;
+			case 2:
+				dx = -1;
+				break;
+			case 3:
+				dy = -1;
+				break;
+			default:
+				System.out.println("Wrong direction : " + outputPosition[2]);
+				break;
 		}
 
 		if (!tileExists(x + dx, y + dy))
@@ -216,8 +224,8 @@ public class TileMap {
 		return null;
 	}
 
-	private void checkSurroundings(Building[][] buildings, int x, int dx, int y, int dy, int direction,
-			int addToDirection, boolean isInput, int[][] inputOutputPosition) {
+	private void checkSurroundings(Building[][] buildings, int x, int dx, int y, int dy, int direction, int addToDirection, boolean isInput, int[][] inputOutputPosition)
+	{
 		if (!isInput) {
 			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getInputs() != null) {
 				for (int[] input : buildings[x + dx][y + dy].getInputs()) {
@@ -226,7 +234,8 @@ public class TileMap {
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			if (buildings[x + dx][y + dy] != null && buildings[x + dx][y + dy].getOutput() != null) {
 				int[] output = buildings[x + dx][y + dy].getOutput();
 				if (output[0] == x + dx && output[1] == y + dy && output[2] == (direction + 1 + addToDirection) % 4)
@@ -235,27 +244,28 @@ public class TileMap {
 		}
 	}
 
-	private void connect(int x, int y, int direction, int[][] inputOutputPosition, boolean isInput, boolean isLeft) {
+	private void connect(int x, int y, int direction, int[][] inputOutputPosition, boolean isInput, boolean isLeft)
+	{
 		int addToDirection = (isLeft) ? 2 : 0;
 		int dx = 0;
 		int dy = 0;
 
 		switch (direction) {
-		case 0:
-			dy = (isLeft) ? 1 : -1;
-			break;
-		case 1:
-			dx = (isLeft) ? -1 : 1;
-			break;
-		case 2:
-			dy = (isLeft) ? -1 : 1;
-			break;
-		case 3:
-			dx = (isLeft) ? 1 : -1;
-			break;
-		default:
-			System.out.println("Wrong direction : " + direction);
-			break;
+			case 0:
+				dy = (isLeft) ? 1 : -1;
+				break;
+			case 1:
+				dx = (isLeft) ? -1 : 1;
+				break;
+			case 2:
+				dy = (isLeft) ? -1 : 1;
+				break;
+			case 3:
+				dx = (isLeft) ? 1 : -1;
+				break;
+			default:
+				System.out.println("Wrong direction : " + direction);
+				break;
 		}
 
 		if (!tileExists(x + dx, y + dy))
@@ -266,7 +276,8 @@ public class TileMap {
 		checkSurroundings(factories, x, dx, y, dy, direction, addToDirection, isInput, inputOutputPosition);
 	}
 
-	private int[][] connexion(int x, int y, int direction) {
+	private int[][] connexion(int x, int y, int direction)
+	{
 		// Default behavior
 		int[][] inputOutputPosition = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, direction } };
 
@@ -279,28 +290,29 @@ public class TileMap {
 		return inputOutputPosition;
 	}
 
-	public void findInputTunnel(Tunnel outputTunnel, int x, int y, int direction, int distance) {
+	public void findInputTunnel(Tunnel outputTunnel, int x, int y, int direction, int distance)
+	{
 		// Method called by an the outputTunnel to connect himself with an input one
 
 		int dx = 0;
 		int dy = 0;
 
 		switch (direction) {
-		case 0:
-			dx = 1;
-			break;
-		case 1:
-			dy = 1;
-			break;
-		case 2:
-			dx = -1;
-			break;
-		case 3:
-			dy = -1;
-			break;
-		default:
-			System.out.println("Wrong direction : " + direction);
-			break;
+			case 0:
+				dx = 1;
+				break;
+			case 1:
+				dy = 1;
+				break;
+			case 2:
+				dx = -1;
+				break;
+			case 3:
+				dy = -1;
+				break;
+			default:
+				System.out.println("Wrong direction : " + direction);
+				break;
 		}
 
 		for (int i = 1; i <= distance; i++) {
@@ -328,7 +340,8 @@ public class TileMap {
 		}
 	}
 
-	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored) {
+	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
+	{
 		int ret = 0;
 		if (isEmpty(x, y)) {
 			// For multi-tiles (2 or 3 tiles in a row)
@@ -338,88 +351,88 @@ public class TileMap {
 			int y3 = (direction % 2 != 0) ? ((direction == 1) ? y + 2 : y - 2) : y;
 
 			switch (factoryType) {
-			case EXTRACTOR:
-				Extractor extractor = new Extractor(this, x, y, direction, map[x][y]);
-				factories[x][y] = extractor;
-				buildings.add(extractor);
-				break;
-			case CONVEYOR:
-				// Making corners automatically
-				Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
-				conveyors[x][y] = conveyor;
-				buildings.add(conveyor);
-				break;
-			case FURNACE:
-				Furnace furnace = new Furnace(this, x, y, direction, mirrored);
-				factories[x][y] = furnace;
-				buildings.add(furnace);
-				break;
-			case CUTTER:
-				Cutter cutter = new Cutter(this, x, y, direction);
-				factories[x][y] = cutter;
-				buildings.add(cutter);
-				break;
-			case PRESS:
-				Press press = new Press(this, x, y, direction);
-				factories[x][y] = press;
-				buildings.add(press);
-				break;
-			case MIXER:
-				if (!isEmpty(x2, y2))
-					return ret;
+				case EXTRACTOR:
+					Extractor extractor = new Extractor(this, x, y, direction, map[x][y]);
+					factories[x][y] = extractor;
+					buildings.add(extractor);
+					break;
+				case CONVEYOR:
+					// Making corners automatically
+					Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
+					conveyors[x][y] = conveyor;
+					buildings.add(conveyor);
+					break;
+				case FURNACE:
+					Furnace furnace = new Furnace(this, x, y, direction, mirrored);
+					factories[x][y] = furnace;
+					buildings.add(furnace);
+					break;
+				case CUTTER:
+					Cutter cutter = new Cutter(this, x, y, direction);
+					factories[x][y] = cutter;
+					buildings.add(cutter);
+					break;
+				case PRESS:
+					Press press = new Press(this, x, y, direction);
+					factories[x][y] = press;
+					buildings.add(press);
+					break;
+				case MIXER:
+					if (!isEmpty(x2, y2))
+						return ret;
 
-				Mixer mixer = new Mixer(this, x, y, direction, mirrored, x2, y2);
+					Mixer mixer = new Mixer(this, x, y, direction, mirrored, x2, y2);
 
-				// Multi-tiles building
-				factories[x][y] = mixer;
-				factories[x2][y2] = mixer;
-				buildings.add(mixer);
+					// Multi-tiles building
+					factories[x][y] = mixer;
+					factories[x2][y2] = mixer;
+					buildings.add(mixer);
 
-				updateOutputs(x2, y2);
-				break;
-			case ASSEMBLER:
-				if (!isEmpty(x2, y2) || !isEmpty(x3, y3))
-					return ret;
+					updateOutputs(x2, y2);
+					break;
+				case ASSEMBLER:
+					if (!isEmpty(x2, y2) || !isEmpty(x3, y3))
+						return ret;
 
-				Assembler assembler = new Assembler(this, x, y, direction, x2, y2, x3, y3);
+					Assembler assembler = new Assembler(this, x, y, direction, x2, y2, x3, y3);
 
-				// Multi-tiles building
-				factories[x][y] = assembler;
-				factories[x2][y2] = assembler;
-				factories[x3][y3] = assembler;
-				buildings.add(assembler);
+					// Multi-tiles building
+					factories[x][y] = assembler;
+					factories[x2][y2] = assembler;
+					factories[x3][y3] = assembler;
+					buildings.add(assembler);
 
-				updateOutputs(x2, y2);
-				updateOutputs(x3, y3);
-				break;
-			case TRASH:
-				Trash trash = new Trash(this, x, y, direction);
-				factories[x][y] = trash;
-				buildings.add(trash);
-				break;
-			case SPLITTER:
-				Splitter splitter = new Splitter(this, x, y, direction, mirrored);
-				factories[x][y] = splitter;
-				buildings.add(splitter);
-				break;
-			case MERGER:
-				Merger merger = new Merger(this, x, y, direction, mirrored);
-				factories[x][y] = merger;
-				buildings.add(merger);
-				break;
-			case TUNNEL:
-				// For the hover icons rotation
-				isInputTunnel = !isInputTunnel;
-				ret = isInputTunnel ? 1 : 2;
-				// We do want to place an input tunnel and right after be able to place the
-				// output one
-				Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
-				factories[x][y] = tunnel;
-				buildings.add(tunnel);
-				break;
-			default:
-				System.out.println("Wrong factory type : " + factoryType);
-				break;
+					updateOutputs(x2, y2);
+					updateOutputs(x3, y3);
+					break;
+				case TRASH:
+					Trash trash = new Trash(this, x, y, direction);
+					factories[x][y] = trash;
+					buildings.add(trash);
+					break;
+				case SPLITTER:
+					Splitter splitter = new Splitter(this, x, y, direction, mirrored);
+					factories[x][y] = splitter;
+					buildings.add(splitter);
+					break;
+				case MERGER:
+					Merger merger = new Merger(this, x, y, direction, mirrored);
+					factories[x][y] = merger;
+					buildings.add(merger);
+					break;
+				case TUNNEL:
+					// For the hover icons rotation
+					isInputTunnel = !isInputTunnel;
+					ret = isInputTunnel ? 1 : 2;
+					// We do want to place an input tunnel and right after be able to place the
+					// output one
+					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
+					factories[x][y] = tunnel;
+					buildings.add(tunnel);
+					break;
+				default:
+					System.out.println("Wrong factory type : " + factoryType);
+					break;
 			}
 			// Check for link buildings already placed
 			updateOutputs(x, y);
@@ -429,13 +442,13 @@ public class TileMap {
 		return ret;
 	}
 
-	public void deleteBuilding(int x, int y) {
+	public void deleteBuilding(int x, int y)
+	{
 		if (!tileExists(x, y))
 			return;
 
 		// If it is the hub
-		if ((factories[x][y] != null && factories[x][y].getType() == null)
-				|| (conveyors[x][y] != null && conveyors[x][y].getType() == null))
+		if ((factories[x][y] != null && factories[x][y].getType() == null) || (conveyors[x][y] != null && conveyors[x][y].getType() == null))
 			return;
 
 		Building deleted = null;
@@ -469,7 +482,8 @@ public class TileMap {
 	}
 
 	// FIXME copier coller de la fonction au dessus
-	public void delete(int x, int y, Building building) {
+	public void delete(int x, int y, Building building)
+	{
 		if (!tileExists(x, y))
 			return;
 
@@ -499,7 +513,8 @@ public class TileMap {
 					delete(x + i, y + j, building);
 	}
 
-	public void render(SpriteBatch batch) {
+	public void render(SpriteBatch batch)
+	{
 		// map
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -535,7 +550,8 @@ public class TileMap {
 		}
 	}
 
-	public void update() {
+	public void update()
+	{
 		// update transfer ticks
 		for (FactoryType type : FactoryType.values()) {
 			type.transferTicksIncrease();
@@ -559,28 +575,32 @@ public class TileMap {
 		}
 	}
 
-	public Building factoryAt(int x, int y) {
+	public Building factoryAt(int x, int y)
+	{
 		if (tileExists(x, y))
 			return factories[x][y];
 		else
 			return null;
 	}
 
-	public ItemType itemAt(int x, int y) {
+	public ItemType itemAt(int x, int y)
+	{
 		if (tileExists(x, y))
 			return map[x][y].getExtractedItem();
 		else
 			return null;
 	}
 
-	public Building conveyorAt(int x, int y) {
+	public Building conveyorAt(int x, int y)
+	{
 		if (tileExists(x, y))
 			return conveyors[x][y];
 		else
 			return null;
 	}
 
-	public void dispose() {
+	public void dispose()
+	{
 
 	}
 }
