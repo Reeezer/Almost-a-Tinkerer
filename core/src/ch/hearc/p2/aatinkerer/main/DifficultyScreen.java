@@ -112,6 +112,7 @@ public class DifficultyScreen implements Screen
 		exitButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
+				Sounds.CLICK.play();
 				game.toSaveScreen();
 			};
 		});

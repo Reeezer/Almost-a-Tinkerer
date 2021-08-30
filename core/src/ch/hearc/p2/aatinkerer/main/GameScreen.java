@@ -41,7 +41,8 @@ import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
-public class GameScreen implements Screen {
+public class GameScreen implements Screen
+{
 	final private AATinkererGame game;
 
 	private OrthographicCamera mapCamera;
@@ -83,7 +84,8 @@ public class GameScreen implements Screen {
 	private int initialx;
 	private int initialy;
 
-	public GameScreen(AATinkererGame game) {
+	public GameScreen(AATinkererGame game)
+	{
 		this.game = game;
 
 		mapCamera = new OrthographicCamera();
@@ -140,7 +142,8 @@ public class GameScreen implements Screen {
 
 		milestoneListener = new MilestoneListener() {
 			@Override
-			public void unlockMilestone(Milestone milestone) {
+			public void unlockMilestone(Milestone milestone)
+			{
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
 					factoryToolbar.setItemEnabled(factoryType, true);
 
@@ -159,7 +162,8 @@ public class GameScreen implements Screen {
 
 		contractListener = new ContractListener() {
 			@Override
-			public void contractAdded(Contract contract, boolean isStoryContract) {
+			public void contractAdded(Contract contract, boolean isStoryContract)
+			{
 				contractDisplay.setContract(contract);
 			}
 		};
@@ -169,14 +173,14 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void show() {
+	public void show()
+	{
 
 	}
 
 	@Override
-	public void render(float delta) {
-		Sounds.MUSIC.setVolume(0.4f);
-
+	public void render(float delta)
+	{
 		long firstTime = TimeUtils.millis();
 		long passedTime = firstTime - lastTime;
 		lastTime = firstTime;
@@ -285,8 +289,7 @@ public class GameScreen implements Screen {
 
 				Rectangle bounds = clickable.getBounds();
 
-				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n",
-						clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
+				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n", clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
 
 				if (bounds.contains(new Vector2(mx, my))) {
 					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
@@ -311,15 +314,15 @@ public class GameScreen implements Screen {
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
 
-				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(),
-						Gdx.input.getY(), tileX, tileY);
+				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
 				if (factoryType != null && factoryType != FactoryType.CONVEYOR) {
 					int inputTunnel = map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 					if (inputTunnel == 1 || inputTunnel == 2)
 						isInputTunnel = (inputTunnel == 1) ? true : false;
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
-				} else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a
+				}
+				else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a
 																// line
 				{
 					if ((direction == 0 || direction == 2) && initialy == -1) {
@@ -347,8 +350,7 @@ public class GameScreen implements Screen {
 						this.splitterMenu.setSplitter(null);
 					}
 
-					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null
-							&& attemptContextualMenuBuilding.canSelectRecipe())
+					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
 						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
 					else {
 						buildingRecipeDisplay.setBuilding(null);
@@ -457,9 +459,7 @@ public class GameScreen implements Screen {
 				yoffset = 32;
 			TextureRegion textureRegion = new TextureRegion(hoverTexture);
 
-			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0,
-					(float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f,
-					(float) direction * 90.f);
+			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0, (float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f, (float) direction * 90.f);
 		}
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
@@ -470,8 +470,7 @@ public class GameScreen implements Screen {
 			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
 			float deltaa = Toolbar.TEXSIZE;
 			for (int i = 1; i <= 9; i++)
-				font.draw(game.batch, String.format("[%d]", i), pos + (i - 1) * deltaa + Toolbar.TEXSIZE / 3,
-						toolbarHeight);
+				font.draw(game.batch, String.format("[%d]", i), pos + (i - 1) * deltaa + Toolbar.TEXSIZE / 3, toolbarHeight);
 			font.draw(game.batch, "[Num 0]", pos + 9 * deltaa - 6, toolbarHeight);
 			font.draw(game.batch, "[Num 1]", pos + 10 * deltaa + 15, toolbarHeight);
 
@@ -504,16 +503,19 @@ public class GameScreen implements Screen {
 		game.batch.end();
 	}
 
-	public int screenToTileX(int screenX) {
+	public int screenToTileX(int screenX)
+	{
 		return (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / TileMap.TILESIZE);
 	}
 
-	public int screenToTileY(int screenY) {
+	public int screenToTileY(int screenY)
+	{
 		return (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / TileMap.TILESIZE);
 	}
 
 	@Override
-	public void resize(int width, int height) {
+	public void resize(int width, int height)
+	{
 		this.width = width;
 		this.height = height;
 
@@ -528,7 +530,8 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void pause() {
+	public void pause()
+	{
 
 	}
 
@@ -540,12 +543,14 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void hide() {
+	public void hide()
+	{
 
 	}
 
 	@Override
-	public void dispose() {
+	public void dispose()
+	{
 		// dipose of instance elements
 		map.dispose();
 
