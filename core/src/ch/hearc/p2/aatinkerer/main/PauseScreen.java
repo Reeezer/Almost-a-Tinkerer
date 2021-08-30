@@ -41,23 +41,6 @@ public class PauseScreen implements Screen
 
 		Gdx.input.setInputProcessor(stage);
 
-//		FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
-//		fontParam.size = 32;
-//		fontParam.padLeft = 8;
-//		fontParam.padRight = 8;
-//
-//		NinePatch ninePatch = new NinePatch(new Texture("button.png"), 2, 2, 2, 2);
-//
-//		TextButtonStyle textButtonStyle = new TextButtonStyle();
-//		textButtonStyle.font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(fontParam);
-//		textButtonStyle.overFontColor = new Color(31.f / 255, 33.f / 255, 59.f / 255, 1);
-//		textButtonStyle.downFontColor = Color.GOLD;
-//		textButtonStyle.fontColor = new Color(246.f / 255, 246.f / 255, 246.f / 255, 1);
-//		textButtonStyle.up = new NinePatchDrawable(ninePatch);
-//
-//		TextButton textButton = new TextButton("qsdfqdsfdqsf", textButtonStyle);
-//		table.add(textButton);
-
 		ImageButtonStyle resumeButtonStyle = new ImageButtonStyle();
 		resumeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/play.png"))));
 		resumeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/playhover.png"))));
@@ -68,7 +51,7 @@ public class PauseScreen implements Screen
 				game.toGameScreen();
 			};
 		});
-		table.add(resumeButton).pad(100);
+		table.add(resumeButton).pad(115);
 
 		ImageButtonStyle muteButtonStyle = new ImageButtonStyle();
 		muteButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundon.png"))));
@@ -82,7 +65,7 @@ public class PauseScreen implements Screen
 				// FIXME couper musique
 			};
 		});
-		table.add(muteButton).pad(100);
+		table.add(muteButton).pad(115);
 
 		ImageButtonStyle homeButtonStyle = new ImageButtonStyle();
 		homeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/home.png"))));
@@ -94,7 +77,7 @@ public class PauseScreen implements Screen
 				game.toMainScreen();
 			};
 		});
-		table.add(homeButton).pad(100);
+		table.add(homeButton).pad(115);
 	}
 
 	@Override

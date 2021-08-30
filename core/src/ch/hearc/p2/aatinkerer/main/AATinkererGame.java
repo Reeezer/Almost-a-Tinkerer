@@ -14,6 +14,7 @@ public class AATinkererGame extends Game
 	private GameScreen gameScreen;
 	private SplashScreen splashScreen;
 	private PauseScreen pauseScreen;
+	private DifficultyScreen difficultyScreen;
 
 	@Override
 	public void create()
@@ -26,20 +27,24 @@ public class AATinkererGame extends Game
 		gameScreen = new GameScreen(this);
 		splashScreen = new SplashScreen(this);
 		pauseScreen = new PauseScreen(this);
+		difficultyScreen = new DifficultyScreen(this);
 
-		setScreen(gameScreen);
+		setScreen(difficultyScreen);
 	}
 
 	public void toGameScreen()
 	{
-		System.out.println("RESUME");
 		gameScreen.resume();
 		setScreen(gameScreen);
 	}
 
+	public void toDifficultyScreen()
+	{
+		setScreen(difficultyScreen);
+	}
+
 	public void toPauseScreen()
 	{
-		System.out.println("PAUSED");
 		gameScreen.pause();
 		setScreen(pauseScreen);
 	}
