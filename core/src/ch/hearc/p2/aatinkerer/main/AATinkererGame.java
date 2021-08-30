@@ -5,9 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.util.Input;
+import ch.hearc.p2.aatinkerer.util.Sounds;
 
-public class AATinkererGame extends Game
-{
+public class AATinkererGame extends Game {
 	public SpriteBatch batch;
 	public Input input;
 
@@ -15,12 +15,14 @@ public class AATinkererGame extends Game
 	private SplashScreen splashScreen;
 
 	@Override
-	public void create()
-	{
+	public void create() {
 		batch = new SpriteBatch();
 
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
+		
+		Sounds.MUSIC.setVolume(0.1f);
+		Sounds.MUSIC.play();
 
 		gameScreen = new GameScreen(this);
 		splashScreen = new SplashScreen(this);
@@ -28,20 +30,17 @@ public class AATinkererGame extends Game
 		setScreen(splashScreen);
 	}
 
-	public void toGameScreen()
-	{
+	public void toGameScreen() {
 		setScreen(gameScreen);
 	}
 
 	@Override
-	public void render()
-	{
+	public void render() {
 		super.render();
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		gameScreen.dispose();
 		batch.dispose();
 	}
