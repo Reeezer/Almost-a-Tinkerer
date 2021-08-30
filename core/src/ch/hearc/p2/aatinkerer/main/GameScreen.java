@@ -86,6 +86,9 @@ public class GameScreen implements Screen
 	private int initialx;
 	private int initialy;
 
+	private Texture arrowTexture;
+	private TextureRegion arrowTextureRegion;
+
 	public GameScreen(AATinkererGame game)
 	{
 		this.game = game;
@@ -114,6 +117,9 @@ public class GameScreen implements Screen
 		justClicked = true;
 		initialx = -1;
 		initialy = -1;
+
+		arrowTexture = new Texture("Ui/Arrow.png");
+		arrowTextureRegion = new TextureRegion(arrowTexture);
 
 		lastTime = TimeUtils.millis();
 		unprocessedTime = 0;
@@ -501,16 +507,19 @@ public class GameScreen implements Screen
 
 		// Drawing an arrow pointing towards the hub
 		if (x > 300 || x < -300 || y < -300 || y > 300) {
-			Texture texture = new Texture("Ui/Arrow.png");
-			TextureRegion textureRegion = new TextureRegion(texture);
-
 			float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI) + 180;
 
 			float rad = (float) (angle * (Math.PI / 180));
 			float cosX = (float) Math.cos(rad);
 			float cosY = (float) Math.sin(rad);
 
-			game.batch.draw(textureRegion, width / 2 + cosX * (width / 2 - 100), height / 2 + cosY * (height / 2 - 100), (float) texture.getWidth() / 2, (float) texture.getHeight() / 2, (float) texture.getWidth(), (float) texture.getHeight(), 1.f, 1.f, angle - 90);
+			float posX = width / 2 + cosX * width;
+			float posY = height / 2 + cosY * height;
+
+			posX = (posX < 100) ? 100 : ((posX > width - 100) ? width - 100 : posX);
+			posY = (posY < 100) ? 100 : ((posY > height - 100) ? height - 100 : posY);
+
+			game.batch.draw(arrowTextureRegion, posX, posY, (float) arrowTexture.getWidth() / 2, (float) arrowTexture.getHeight() / 2, (float) arrowTexture.getWidth(), (float) arrowTexture.getHeight(), 1.f, 1.f, angle - 90);
 		}
 
 		game.batch.end();
