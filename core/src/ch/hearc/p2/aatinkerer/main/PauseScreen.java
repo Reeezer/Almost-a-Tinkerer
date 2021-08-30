@@ -22,7 +22,18 @@ public class PauseScreen implements Screen
 	private OrthographicCamera camera;
 	private FitViewport viewport;
 
+	private int width;
+	private int height;
+
+	private float passedTime;
+	private final static float TIME = 0.005f;
+
 	private Stage stage;
+
+	private int frame1;
+	private int frame2;
+
+	private Texture background;
 
 	public PauseScreen(final AATinkererGame game)
 	{
@@ -37,6 +48,12 @@ public class PauseScreen implements Screen
 		stage = new Stage();
 		stage.setViewport(viewport);
 		stage.addActor(table);
+
+		background = new Texture("Menus/menu_background.png");
+
+		passedTime = 0.f;
+		frame1 = 0;
+		frame2 = -background.getWidth();
 
 		// Resume
 		ImageButtonStyle resumeButtonStyle = new ImageButtonStyle();
@@ -97,6 +114,42 @@ public class PauseScreen implements Screen
 
 		stage.act(delta);
 		stage.draw();
+
+		game.batch.begin();
+
+		camera.update();
+		game.batch.setProjectionMatrix(camera.combined);
+
+		// Background
+		float widthRatio = this.width / (float) background.getWidth();
+		float heightRatio = this.height / (float) background.getHeight();
+		float bestRatio = Math.max(widthRatio, heightRatio);
+
+		float newHeight = background.getHeight() * bestRatio;
+
+		game.batch.draw(background, frame1, (height - newHeight) / 2, background.getWidth(), background.getHeight());
+		game.batch.draw(background, frame2, (height - newHeight) / 2, background.getWidth(), background.getHeight());
+
+		game.batch.end();
+
+		stage.act(delta);
+		stage.draw();
+
+		if (passedTime >= TIME) {
+			while (passedTime >= TIME) {
+				passedTime -= TIME;
+
+				frame1++;
+				if (frame1 == background.getWidth())
+					frame1 = -background.getWidth();
+
+				frame2++;
+				if (frame2 == background.getWidth())
+					frame2 = -background.getWidth();
+			}
+		}
+		else
+			passedTime += delta;
 	}
 
 	@Override
@@ -105,6 +158,9 @@ public class PauseScreen implements Screen
 		camera.setToOrtho(false, width, height);
 		viewport.setWorldSize(width, height);
 		stage.getViewport().update(width, height, true);
+
+		this.width = width;
+		this.height = height;
 	}
 
 	@Override

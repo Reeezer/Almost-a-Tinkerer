@@ -31,6 +31,17 @@ public class DifficultyScreen implements Screen
 	private Table diffTable;
 	private TextButton exitButton;
 
+	private int width;
+	private int height;
+
+	private float passedTime;
+	private final static float TIME = 0.005f;
+
+	private int frame1;
+	private int frame2;
+
+	private Texture background;
+
 	public DifficultyScreen(final AATinkererGame game)
 	{
 		this.game = game;
@@ -45,6 +56,12 @@ public class DifficultyScreen implements Screen
 		stage = new Stage();
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
+
+		background = new Texture("Menus/menu_background.png");
+
+		passedTime = 0.f;
+		frame1 = 0;
+		frame2 = -background.getWidth();
 
 		// Title
 		LabelStyle labelStyle = new LabelStyle();
@@ -135,6 +152,42 @@ public class DifficultyScreen implements Screen
 
 		stage.act(delta);
 		stage.draw();
+
+		game.batch.begin();
+
+		camera.update();
+		game.batch.setProjectionMatrix(camera.combined);
+
+		// Background
+		float widthRatio = this.width / (float) background.getWidth();
+		float heightRatio = this.height / (float) background.getHeight();
+		float bestRatio = Math.max(widthRatio, heightRatio);
+
+		float newHeight = background.getHeight() * bestRatio;
+
+		game.batch.draw(background, frame1, (height - newHeight) / 2, background.getWidth(), background.getHeight());
+		game.batch.draw(background, frame2, (height - newHeight) / 2, background.getWidth(), background.getHeight());
+
+		game.batch.end();
+
+		stage.act(delta);
+		stage.draw();
+
+		if (passedTime >= TIME) {
+			while (passedTime >= TIME) {
+				passedTime -= TIME;
+
+				frame1++;
+				if (frame1 == background.getWidth())
+					frame1 = -background.getWidth();
+
+				frame2++;
+				if (frame2 == background.getWidth())
+					frame2 = -background.getWidth();
+			}
+		}
+		else
+			passedTime += delta;
 	}
 
 	@Override
@@ -145,6 +198,9 @@ public class DifficultyScreen implements Screen
 		stage.getViewport().update(width, height, true);
 
 		exitButton.setPosition(20, height - 20 - exitButton.getHeight());
+
+		this.width = width;
+		this.height = height;
 	}
 
 	@Override
