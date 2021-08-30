@@ -90,6 +90,7 @@ public class TileMap
 		}
 	}
 
+	
 	public void setTileAt(TileType type, int x, int y, Tile tile)
 	{
 		Chunk chunk = chunkAtTile(x, y);
@@ -192,11 +193,11 @@ public class TileMap
 
 		// ressources
 		for (Chunk chunk : chunksToRender)
-			chunk.renderTileLayer(TileType.RESSOURCE, batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
+			chunk.renderRessources(batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
 
 		// conveyors
 		for (Chunk chunk : chunksToRender)
-			chunk.renderTileLayer(TileType.CONVEYOR, batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
+			chunk.renderConveyors(batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
 
 		// items
 		for (Chunk chunk : chunksToRender)
@@ -204,7 +205,7 @@ public class TileMap
 
 		// factories
 		for (Chunk chunk : chunksToRender)
-			chunk.renderTileLayer(TileType.FACTORY, batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
+			chunk.renderFactories(batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
 	}
 
 	// FIXME generate only the strictly required chunks
@@ -525,33 +526,71 @@ public class TileMap
 					setTileAt(TileType.FACTORY, x, y, press);
 					buildings.add(press);
 					break;
-				/*
-				 * case MIXER: if (!isEmpty(x2, y2)) return ret;
-				 * 
-				 * Mixer mixer = new Mixer(this, x, y, direction, mirrored, x2, y2);
-				 * 
-				 * // Multi-tiles building factories[x][y] = mixer; factories[x2][y2] = mixer; buildings.add(mixer);
-				 * 
-				 * updateOutputs(x2, y2); break;
-				 * 
-				 * case ASSEMBLER: if (!isEmpty(x2, y2) || !isEmpty(x3, y3)) return ret;
-				 * 
-				 * Assembler assembler = new Assembler(this, x, y, direction, x2, y2, x3, y3);
-				 * 
-				 * // Multi-tiles building factories[x][y] = assembler; factories[x2][y2] = assembler; factories[x3][y3] = assembler; buildings.add(assembler);
-				 * 
-				 * updateOutputs(x2, y2); updateOutputs(x3, y3); break;
-				 * 
-				 * case TRASH: Trash trash = new Trash(this, x, y, direction); factories[x][y] = trash; buildings.add(trash); break;
-				 * 
-				 * case SPLITTER: Splitter splitter = new Splitter(this, x, y, direction, mirrored); factories[x][y] = splitter; buildings.add(splitter); break;
-				 * 
-				 * case MERGER: Merger merger = new Merger(this, x, y, direction, mirrored); factories[x][y] = merger; buildings.add(merger); break;
-				 * 
-				 * case TUNNEL: // For the hover icons rotation isInputTunnel = !isInputTunnel; ret = isInputTunnel ? 1 : 2; // We do want to place an input tunnel
-				 * and right after be able to place the output one Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel); factories[x][y] = tunnel;
-				 * buildings.add(tunnel); break;
-				 */
+
+				case MIXER:
+					if (!isEmpty(x2, y2))
+						return ret;
+
+					Mixer mixer = new Mixer(this, x, y, direction, mirrored, x2, y2);
+
+					// Multi-tiles building
+					setTileAt(TileType.FACTORY, x, y, mixer);
+					setTileAt(TileType.FACTORY, x2, y2, mixer);
+
+					buildings.add(mixer);
+
+					updateOutputs(x2, y2);
+					break;
+
+				case ASSEMBLER:
+					if (!isEmpty(x2, y2) || !isEmpty(x3, y3))
+						return ret;
+
+					Assembler assembler = new Assembler(this, x, y, direction, x2, y2, x3, y3);
+
+					// Multi-tiles building
+					setTileAt(TileType.FACTORY, x, y, assembler);
+					setTileAt(TileType.FACTORY, x2, y2, assembler);
+					setTileAt(TileType.FACTORY, x3, y3, assembler);
+
+					buildings.add(assembler);
+					updateOutputs(x2, y2);
+					updateOutputs(x3, y3);
+					break;
+
+				case TRASH:
+					Trash trash = new Trash(this, x, y, direction);
+
+					setTileAt(TileType.FACTORY, x, y, trash);
+
+					buildings.add(trash);
+					break;
+
+				case SPLITTER:
+					Splitter splitter = new Splitter(this, x, y, direction, mirrored);
+					setTileAt(TileType.FACTORY, x, y, splitter);
+
+					buildings.add(splitter);
+					break;
+
+				case MERGER:
+					Merger merger = new Merger(this, x, y, direction, mirrored);
+
+					setTileAt(TileType.FACTORY, x, y, merger);
+
+					buildings.add(merger);
+					break;
+
+				case TUNNEL: // For the hover icons rotation
+					isInputTunnel = !isInputTunnel;
+					ret = isInputTunnel ? 1 : 2; // We do want to place an input tunnel and right after be able to place the output one
+
+					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
+					setTileAt(TileType.FACTORY, x, y, tunnel);
+
+					buildings.add(tunnel);
+					break;
+
 				default:
 					System.out.println("Wrong factory type : " + factoryType);
 					break;

@@ -32,7 +32,8 @@ public class Chunk
 
 	private Map<TileType, Tile[][]> tiles;
 	private Map<Long, Ressource> cachedGenerationRessources;
-	private List<Conveyor> conveyors; // used to animate items
+	private List<Conveyor> conveyors; // used to animate items and to render the conveyors
+	private List<Building> buildings; // used to render the buildings - important: if a building is present across two chunks it will be rendered twice due to being present in both chunk's building list, but it is necessary to avoid building not rendering when they should if the player's screen is very close to a chunk border that is not being rendered
 
 	private Random random;
 
@@ -54,6 +55,7 @@ public class Chunk
 
 		this.cachedGenerationRessources = new HashMap<Long, Ressource>();
 		this.conveyors = new LinkedList<Conveyor>();
+		this.buildings = new LinkedList<Building>();
 
 		// - generate the map by generating seeds and growing them
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
@@ -173,6 +175,14 @@ public class Chunk
 				conveyors.remove((Conveyor) getLocalTile(TileType.CONVEYOR, localX, localY));
 		}
 
+		else if (type == TileType.FACTORY)
+		{
+			if (value != null && !buildings.contains(value))
+				buildings.add((Building) value);
+			else
+				buildings.remove((Building) getLocalTile(TileType.FACTORY, localX, localY));
+		}
+		
 		target.tiles.get(type)[localX][localY] = value;
 	}
 
@@ -257,18 +267,30 @@ public class Chunk
 		return x >= 0 && y >= 0 && x < CHUNKSIZE && y < CHUNKSIZE;
 	}
 
-	public void renderTileLayer(TileType type, SpriteBatch batch, int x, int y)
+	public void renderRessources(SpriteBatch batch, int x, int y)
 	{
 		for (int i = 0; i < CHUNKSIZE; i++)
 		{
 			for (int j = 0; j < CHUNKSIZE; j++)
 			{
-				Tile tile = getLocalTile(type, i, j);
+				Tile tile = getLocalTile(TileType.RESSOURCE, i, j);
 
 				if (tile != null)
 					tile.render(batch, x + i, y + j);
 			}
 		}
+	}
+	
+	public void renderFactories(SpriteBatch batch, int x, int y)
+	{
+		for (Building building : buildings)
+			building.render(batch, x, y);
+	}
+	
+	public void renderConveyors(SpriteBatch batch, int x, int y)
+	{
+		for (Conveyor conveyor : conveyors)
+			conveyor.render(batch, x, y);
 	}
 
 	public void renderItems(SpriteBatch batch, int x, int y)

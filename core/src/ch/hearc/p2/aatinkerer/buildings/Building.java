@@ -87,7 +87,7 @@ public abstract class Building implements Tile
 		return this.canSelectRecipe;
 	}
 
-	public void render(SpriteBatch batch, int x, int y)
+	public void render(SpriteBatch batch, int dx, int dy)
 	{
 		for (int i = 0; i < tiles.length; i++)
 		{
