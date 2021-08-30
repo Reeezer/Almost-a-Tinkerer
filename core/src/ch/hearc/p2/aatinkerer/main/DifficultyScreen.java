@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -16,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
@@ -28,7 +30,7 @@ public class DifficultyScreen implements Screen
 
 	private Stage stage;
 	private Table diffTable;
-	private Table mainTable;
+	private TextButton exitButton;
 
 	public DifficultyScreen(final AATinkererGame game)
 	{
@@ -38,7 +40,7 @@ public class DifficultyScreen implements Screen
 		this.viewport = new FitViewport(0, 0, camera);
 
 		diffTable = new Table();
-		mainTable = new Table();
+		Table mainTable = new Table();
 		mainTable.setFillParent(true);
 
 		stage = new Stage();
@@ -46,7 +48,11 @@ public class DifficultyScreen implements Screen
 		stage.addActor(mainTable);
 
 		Gdx.input.setInputProcessor(stage);
-		
+
+		Color blueColor = new Color(31.f / 255, 33.f / 255, 59.f / 255, 1);
+		Color whiteColor = new Color(246.f / 255, 246.f / 255, 246.f / 255, 1);
+		Color transparentColor = new Color(1, 1, 1, 0);
+
 		// Title
 		FreeTypeFontParameter titleFontParam = new FreeTypeFontParameter();
 		titleFontParam.size = 80;
@@ -63,9 +69,6 @@ public class DifficultyScreen implements Screen
 		fontParam.padLeft = 8;
 		fontParam.padRight = 8;
 
-		Color fontColor = new Color(31.f / 255, 33.f / 255, 59.f / 255, 1);
-		Color overColor = new Color(1, 1, 1, 0);
-
 		NinePatch regularPatch = new NinePatch(new Texture("Ui/Buttons/difficulty1.png"), 2, 2, 2, 2);
 		NinePatch abundantPatch = new NinePatch(new Texture("Ui/Buttons/difficulty2.png"), 2, 2, 2, 2);
 		NinePatch rarePatch = new NinePatch(new Texture("Ui/Buttons/difficulty3.png"), 2, 2, 2, 2);
@@ -80,25 +83,35 @@ public class DifficultyScreen implements Screen
 		NinePatch everywhereHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty5hover.png"), 2, 2, 2, 2);
 		NinePatch goodLuckHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty6hover.png"), 2, 2, 2, 2);
 
-//		TextButtonStyle regularButtonStyle = new TextButtonStyle();
-//		regularButtonStyle.font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(fontParam);
-//		regularButtonStyle.overFontColor = overColor;
-//		regularButtonStyle.fontColor = fontColor;
-//		regularButtonStyle.up = new NinePatchDrawable(regularPatch);
-//		TextButton regularButton = new TextButton("Regular", regularButtonStyle);
-//		diffTable.add(regularButton);
-
-		createButton(regularPatch, regularHoverPatch, "Regular", fontParam, overColor, fontColor);
-		createButton(abundantPatch, abundantHoverPatch, "Abundant", fontParam, overColor, fontColor);
-		createButton(rarePatch, rareHoverPatch, "Rare", fontParam, overColor, fontColor);
+		createButton(regularPatch, regularHoverPatch, "Regular", fontParam, transparentColor, blueColor);
+		createButton(abundantPatch, abundantHoverPatch, "Abundant", fontParam, transparentColor, blueColor);
+		createButton(rarePatch, rareHoverPatch, "Rare", fontParam, transparentColor, blueColor);
 		diffTable.row();
-		createButton(bigSparsePatch, bigSparseHoverPatch, "Big sparse", fontParam, overColor, fontColor);
-		createButton(everywherePatch, everywhereHoverPatch, "Everywhere", fontParam, overColor, fontColor);
-		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck", fontParam, overColor, fontColor);
+		createButton(bigSparsePatch, bigSparseHoverPatch, "Big sparse", fontParam, transparentColor, blueColor);
+		createButton(everywherePatch, everywhereHoverPatch, "Everywhere", fontParam, transparentColor, blueColor);
+		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck", fontParam, transparentColor, blueColor);
 
 		mainTable.add(title).padBottom(25);
 		mainTable.row();
 		mainTable.add(diffTable);
+
+		// Exit
+		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
+
+		TextButtonStyle regularButtonStyle = new TextButtonStyle();
+		regularButtonStyle.font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(fontParam);
+		regularButtonStyle.overFontColor = blueColor;
+		regularButtonStyle.fontColor = whiteColor;
+		regularButtonStyle.up = new NinePatchDrawable(textButtonPatch);
+
+		exitButton = new TextButton("Exit", regularButtonStyle);
+		exitButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				// FIXME return to previous menu
+			};
+		});
+		stage.addActor(exitButton);
 	}
 
 	private void createButton(NinePatch ninePatch, NinePatch ninePatchHover, String title, FreeTypeFontParameter fontParam, Color overColor, Color fontColor)
@@ -136,6 +149,8 @@ public class DifficultyScreen implements Screen
 		camera.setToOrtho(false, width, height);
 		viewport.setWorldSize(width, height);
 		stage.getViewport().update(width, height, true);
+
+		exitButton.setPosition(20, height - 20 - exitButton.getHeight());
 	}
 
 	@Override
