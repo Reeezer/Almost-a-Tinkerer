@@ -2,7 +2,10 @@ package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 import ch.hearc.p2.aatinkerer.util.Input;
 
@@ -15,6 +18,14 @@ public class AATinkererGame extends Game
 	private SplashScreen splashScreen;
 	private PauseScreen pauseScreen;
 	private DifficultyScreen difficultyScreen;
+	private SaveScreen saveScreen;
+
+	public static final Color BLUE = new Color(31.f / 255, 33.f / 255, 59.f / 255, 1);
+	public static final Color WHITE = new Color(246.f / 255, 246.f / 255, 246.f / 255, 1);
+	public static final Color TRANSPARENT = new Color(1, 1, 1, 0);
+	public static FreeTypeFontGenerator font;
+	public static FreeTypeFontParameter titleFontParam;
+	public static FreeTypeFontParameter buttonFontParam;
 
 	@Override
 	public void create()
@@ -24,12 +35,25 @@ public class AATinkererGame extends Game
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
 
+		// Initializations
+		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"));
+
+		buttonFontParam = new FreeTypeFontParameter();
+		buttonFontParam.size = 40;
+		buttonFontParam.padLeft = 8;
+		buttonFontParam.padRight = 8;
+
+		titleFontParam = new FreeTypeFontParameter();
+		titleFontParam.size = 80;
+
+		// Screens
 		gameScreen = new GameScreen(this);
 		splashScreen = new SplashScreen(this);
 		pauseScreen = new PauseScreen(this);
+		saveScreen = new SaveScreen(this);
 		difficultyScreen = new DifficultyScreen(this);
 
-		setScreen(difficultyScreen);
+		setScreen(splashScreen);
 	}
 
 	public void toGameScreen()
@@ -49,9 +73,9 @@ public class AATinkererGame extends Game
 		setScreen(pauseScreen);
 	}
 
-	public void toMainScreen()
+	public void toSaveScreen()
 	{
-		setScreen(splashScreen); // FIXME to save menu
+		setScreen(saveScreen);
 	}
 
 	@Override

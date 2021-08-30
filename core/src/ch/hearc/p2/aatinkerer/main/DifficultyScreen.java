@@ -2,16 +2,12 @@ package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.HorizontalGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -29,6 +25,7 @@ public class DifficultyScreen implements Screen
 	private FitViewport viewport;
 
 	private Stage stage;
+
 	private Table diffTable;
 	private TextButton exitButton;
 
@@ -47,28 +44,14 @@ public class DifficultyScreen implements Screen
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
-		Gdx.input.setInputProcessor(stage);
-
-		Color blueColor = new Color(31.f / 255, 33.f / 255, 59.f / 255, 1);
-		Color whiteColor = new Color(246.f / 255, 246.f / 255, 246.f / 255, 1);
-		Color transparentColor = new Color(1, 1, 1, 0);
-
 		// Title
-		FreeTypeFontParameter titleFontParam = new FreeTypeFontParameter();
-		titleFontParam.size = 80;
-
 		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(titleFontParam);
-		labelStyle.fontColor = Color.WHITE;
+		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
+		labelStyle.fontColor = AATinkererGame.WHITE;
 
 		Label title = new Label("Choose a difficulty", labelStyle);
 
 		// Difficulties
-		FreeTypeFontParameter fontParam = new FreeTypeFontParameter();
-		fontParam.size = 40;
-		fontParam.padLeft = 8;
-		fontParam.padRight = 8;
-
 		NinePatch regularPatch = new NinePatch(new Texture("Ui/Buttons/difficulty1.png"), 2, 2, 2, 2);
 		NinePatch abundantPatch = new NinePatch(new Texture("Ui/Buttons/difficulty2.png"), 2, 2, 2, 2);
 		NinePatch rarePatch = new NinePatch(new Texture("Ui/Buttons/difficulty3.png"), 2, 2, 2, 2);
@@ -83,14 +66,15 @@ public class DifficultyScreen implements Screen
 		NinePatch everywhereHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty5hover.png"), 2, 2, 2, 2);
 		NinePatch goodLuckHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty6hover.png"), 2, 2, 2, 2);
 
-		createButton(regularPatch, regularHoverPatch, "Regular", fontParam, transparentColor, blueColor);
-		createButton(abundantPatch, abundantHoverPatch, "Abundant", fontParam, transparentColor, blueColor);
-		createButton(rarePatch, rareHoverPatch, "Rare", fontParam, transparentColor, blueColor);
+		createButton(regularPatch, regularHoverPatch, "Regular");
+		createButton(abundantPatch, abundantHoverPatch, "Abundant");
+		createButton(rarePatch, rareHoverPatch, "Rare");
 		diffTable.row();
-		createButton(bigSparsePatch, bigSparseHoverPatch, "Big sparse", fontParam, transparentColor, blueColor);
-		createButton(everywherePatch, everywhereHoverPatch, "Everywhere", fontParam, transparentColor, blueColor);
-		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck", fontParam, transparentColor, blueColor);
+		createButton(bigSparsePatch, bigSparseHoverPatch, "Big sparse");
+		createButton(everywherePatch, everywhereHoverPatch, "Everywhere");
+		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck");
 
+		// Positioning
 		mainTable.add(title).padBottom(25);
 		mainTable.row();
 		mainTable.add(diffTable);
@@ -98,28 +82,28 @@ public class DifficultyScreen implements Screen
 		// Exit
 		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
 
-		TextButtonStyle regularButtonStyle = new TextButtonStyle();
-		regularButtonStyle.font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(fontParam);
-		regularButtonStyle.overFontColor = blueColor;
-		regularButtonStyle.fontColor = whiteColor;
-		regularButtonStyle.up = new NinePatchDrawable(textButtonPatch);
+		TextButtonStyle textButtonStyle = new TextButtonStyle();
+		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		textButtonStyle.overFontColor = AATinkererGame.BLUE;
+		textButtonStyle.fontColor = AATinkererGame.WHITE;
+		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
 
-		exitButton = new TextButton("Exit", regularButtonStyle);
+		exitButton = new TextButton("Exit", textButtonStyle);
 		exitButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
-				// FIXME return to previous menu
+				game.toSaveScreen();
 			};
 		});
 		stage.addActor(exitButton);
 	}
 
-	private void createButton(NinePatch ninePatch, NinePatch ninePatchHover, String title, FreeTypeFontParameter fontParam, Color overColor, Color fontColor)
+	private void createButton(NinePatch ninePatch, NinePatch ninePatchHover, String title)
 	{
 		TextButtonStyle buttonStyle = new TextButtonStyle();
-		buttonStyle.font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(fontParam);
-		buttonStyle.overFontColor = overColor;
-		buttonStyle.fontColor = fontColor;
+		buttonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		buttonStyle.overFontColor = AATinkererGame.TRANSPARENT;
+		buttonStyle.fontColor = AATinkererGame.BLUE;
 		buttonStyle.up = new NinePatchDrawable(ninePatch);
 		buttonStyle.over = new NinePatchDrawable(ninePatchHover);
 
@@ -130,13 +114,13 @@ public class DifficultyScreen implements Screen
 	@Override
 	public void show()
 	{
-
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void render(float delta)
 	{
-		Gdx.gl.glClearColor(31.f / 255, 33.f / 255, 59.f / 255, 1);
+		Gdx.gl.glClearColor(AATinkererGame.BLUE.r, AATinkererGame.BLUE.g, AATinkererGame.BLUE.b, AATinkererGame.BLUE.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act(delta);
@@ -168,7 +152,7 @@ public class DifficultyScreen implements Screen
 	@Override
 	public void hide()
 	{
-
+		Gdx.input.setInputProcessor(null);
 	}
 
 	@Override

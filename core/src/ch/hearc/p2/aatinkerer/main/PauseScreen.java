@@ -23,7 +23,6 @@ public class PauseScreen implements Screen
 	private FitViewport viewport;
 
 	private Stage stage;
-	private Table table;
 
 	public PauseScreen(final AATinkererGame game)
 	{
@@ -32,18 +31,18 @@ public class PauseScreen implements Screen
 		this.camera = new OrthographicCamera();
 		this.viewport = new FitViewport(0, 0, camera);
 
-		table = new Table();
+		Table table = new Table();
 		table.setFillParent(true);
 
 		stage = new Stage();
 		stage.setViewport(viewport);
 		stage.addActor(table);
 
-		Gdx.input.setInputProcessor(stage);
-
+		// Resume
 		ImageButtonStyle resumeButtonStyle = new ImageButtonStyle();
 		resumeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/play.png"))));
 		resumeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/playhover.png"))));
+
 		ImageButton resumeButton = new ImageButton(resumeButtonStyle);
 		resumeButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
@@ -53,11 +52,13 @@ public class PauseScreen implements Screen
 		});
 		table.add(resumeButton).pad(115);
 
+		// Sound
 		ImageButtonStyle muteButtonStyle = new ImageButtonStyle();
 		muteButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundon.png"))));
 		muteButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundonhover.png"))));
 		muteButtonStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundoff.png"))));
 		muteButtonStyle.imageCheckedOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundoffhover.png"))));
+
 		ImageButton muteButton = new ImageButton(muteButtonStyle);
 		muteButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
@@ -67,14 +68,16 @@ public class PauseScreen implements Screen
 		});
 		table.add(muteButton).pad(115);
 
+		// Back home
 		ImageButtonStyle homeButtonStyle = new ImageButtonStyle();
 		homeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/home.png"))));
 		homeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/homehover.png"))));
+
 		ImageButton homeButton = new ImageButton(homeButtonStyle);
 		homeButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
-				game.toMainScreen();
+				game.toSaveScreen();
 			};
 		});
 		table.add(homeButton).pad(115);
@@ -83,13 +86,13 @@ public class PauseScreen implements Screen
 	@Override
 	public void show()
 	{
-
+		Gdx.input.setInputProcessor(stage);
 	}
 
 	@Override
 	public void render(float delta)
 	{
-		Gdx.gl.glClearColor(31.f / 255, 33.f / 255, 59.f / 255, 1);
+		Gdx.gl.glClearColor(AATinkererGame.BLUE.r, AATinkererGame.BLUE.g, AATinkererGame.BLUE.b, AATinkererGame.BLUE.a);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		stage.act(delta);
@@ -119,7 +122,7 @@ public class PauseScreen implements Screen
 	@Override
 	public void hide()
 	{
-
+		Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
