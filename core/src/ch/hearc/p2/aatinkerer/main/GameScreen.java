@@ -16,6 +16,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
@@ -32,11 +34,11 @@ import ch.hearc.p2.aatinkerer.listeners.MilestoneListener;
 import ch.hearc.p2.aatinkerer.ui.Notification;
 import ch.hearc.p2.aatinkerer.ui.UIElement;
 import ch.hearc.p2.aatinkerer.ui.widgets.BuildingRecipeDisplay;
-import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.ItemDropdownMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.MiniHoverPopup;
 import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
 import ch.hearc.p2.aatinkerer.ui.widgets.SplitterMenu;
+import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 import ch.hearc.p2.aatinkerer.world.TileMap;
@@ -48,6 +50,8 @@ public class GameScreen implements Screen
 	private OrthographicCamera mapCamera;
 	private OrthographicCamera uiCamera;
 	private OrthographicCamera hoverCamera;
+
+	private ShapeRenderer shapeRenderer;
 
 	private List<UIElement> uiElements;
 
@@ -84,9 +88,14 @@ public class GameScreen implements Screen
 	private int initialx;
 	private int initialy;
 
+	private Texture arrowTexture;
+	private TextureRegion arrowTextureRegion;
+
 	public GameScreen(AATinkererGame game)
 	{
 		this.game = game;
+
+		shapeRenderer = new ShapeRenderer();
 
 		mapCamera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
@@ -110,6 +119,9 @@ public class GameScreen implements Screen
 		justClicked = true;
 		initialx = -1;
 		initialy = -1;
+
+		arrowTexture = new Texture("Ui/Arrow.png");
+		arrowTextureRegion = new TextureRegion(arrowTexture);
 
 		lastTime = TimeUtils.millis();
 		unprocessedTime = 0;
@@ -439,8 +451,8 @@ public class GameScreen implements Screen
 		map.render(game.batch);
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
+		
 		// item to be placed
-
 		if (factoryType != null) {
 			if (factoryType == FactoryType.TUNNEL)
 				factoryType.setMirrored(isInputTunnel);
@@ -464,6 +476,7 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
+		// Display the different controls
 		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
 		if (ctrlPressed) {
 			int toolbarHeight = 50;
@@ -499,6 +512,23 @@ public class GameScreen implements Screen
 
 		if (renderTooltip)
 			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
+
+		// Drawing an arrow pointing towards the hub
+		if (x > 300 || x < -300 || y < -300 || y > 300) {
+			float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI) + 180;
+
+			float rad = (float) (angle * (Math.PI / 180));
+			float cosX = (float) Math.cos(rad);
+			float cosY = (float) Math.sin(rad);
+
+			float posX = width / 2 + cosX * width;
+			float posY = height / 2 + cosY * height;
+
+			posX = (posX < 100) ? 100 : ((posX > width - 100) ? width - 100 : posX);
+			posY = (posY < 100) ? 100 : ((posY > height - 100) ? height - 100 : posY);
+
+			game.batch.draw(arrowTextureRegion, posX, posY, (float) arrowTexture.getWidth() / 2, (float) arrowTexture.getHeight() / 2, (float) arrowTexture.getWidth(), (float) arrowTexture.getHeight(), 1.f, 1.f, angle - 90);
+		}
 
 		game.batch.end();
 	}
