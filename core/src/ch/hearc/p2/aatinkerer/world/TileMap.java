@@ -181,7 +181,17 @@ public class TileMap
 
 			// only render the chunk if it is visible on the screen
 			if (screenbox.overlaps(chunkbox))
-				chunk.render(batch, x * Chunk.CHUNKSIZE * Chunk.TILESIZE, y * Chunk.CHUNKSIZE * Chunk.TILESIZE);
+			{
+				int absX = x * Chunk.CHUNKSIZE;
+				int absY = y * Chunk.CHUNKSIZE;
+				
+				// FIXME change rendering so that items don't get drawn under bordering chunks
+				
+				chunk.renderTileLayer(TileType.RESSOURCE, batch, absX, absY);
+				chunk.renderTileLayer(TileType.CONVEYOR, batch, absX, absY);
+				chunk.renderItems(batch, absX, absY);
+				chunk.renderTileLayer(TileType.FACTORY, batch, absX, absY);
+			}
 		}
 	}
 
@@ -214,21 +224,17 @@ public class TileMap
 
 	private boolean isEmpty(int x, int y)
 	{
-		System.out.format("is empty: (%d,%d) ?%n", x, y);
 		// en théorie, impossible que cette condition soit fausse via un clic de souris mais on sait jamais
 		if (chunkAtTile(x, y) != null)
 		{
-			System.out.format("chunk at (%d,%d) exists.%n", x, y);
-			
 			// conveyors layer
 			if (tileAt(TileType.CONVEYOR, x, y) != null)
 				return false;
-	
+
 			// factories layer
 			if (tileAt(TileType.FACTORY, x, y) != null)
 				return false;
-			
-			System.out.println(" -- yes");
+
 			return true;
 		}
 
@@ -245,19 +251,19 @@ public class TileMap
 			building.updateOutputs();
 
 		building = (Building) tileAt(type, x + 1, y);
-		if (chunkAtTile(x + 1, y)  != null && building != null)
+		if (chunkAtTile(x + 1, y) != null && building != null)
 			building.updateOutputs();
 
 		building = (Building) tileAt(type, x - 1, y);
-		if (chunkAtTile(x - 1, y)  != null && building != null)
+		if (chunkAtTile(x - 1, y) != null && building != null)
 			building.updateOutputs();
 
 		building = (Building) tileAt(type, x, y + 1);
-		if (chunkAtTile(x, y + 1)  != null && building != null)
+		if (chunkAtTile(x, y + 1) != null && building != null)
 			building.updateOutputs();
 
 		building = (Building) tileAt(type, x, y - 1);
-		if (chunkAtTile(x, y - 1)  != null && building != null)
+		if (chunkAtTile(x, y - 1) != null && building != null)
 			building.updateOutputs();
 	}
 
@@ -359,7 +365,7 @@ public class TileMap
 	{
 
 		int addToDirection = (isLeft) ? 2 : 0;
-		
+
 		int dx = 0;
 		int dy = 0;
 
@@ -466,7 +472,7 @@ public class TileMap
 		int ret = 0;
 
 		System.out.format("placing new building of type %s at (%d,%d)%n", factoryType, x, y);
-		
+
 		if (isEmpty(x, y))
 		{
 			// For multi-tiles (2 or 3 tiles in a row)
@@ -632,8 +638,12 @@ public class TileMap
 	{
 		// update buildings
 		for (Building building : buildings)
-		{
 			building.update();
+		
+		for (Map.Entry<Long, Chunk> entry : chunks.entrySet())
+		{
+			Chunk chunk = entry.getValue();
+			chunk.update();
 		}
 	}
 

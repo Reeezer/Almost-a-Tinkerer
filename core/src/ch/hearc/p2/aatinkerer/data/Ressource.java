@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import ch.hearc.p2.aatinkerer.world.Chunk;
+
 public enum Ressource implements Tile
 {
 	NONE("Tile/Grid.png", ItemType.NONE),
@@ -42,5 +44,11 @@ public enum Ressource implements Tile
 	{
 		for (Ressource ressource : Ressource.values())
 			ressource.texture.dispose();
+	}
+
+	@Override
+	public void render(SpriteBatch batch, int x, int y)
+	{
+		batch.draw(texture, x * Chunk.TILESIZE, y * Chunk.TILESIZE);
 	}
 }

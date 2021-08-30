@@ -32,6 +32,7 @@ public class Chunk
 
 	private Map<TileType, Tile[][]> tiles;
 	private Map<Long, Ressource> cachedGenerationRessources;
+	private List<Conveyor> conveyors; // used to animate items
 
 	private Random random;
 
@@ -52,6 +53,7 @@ public class Chunk
 		tiles.put(TileType.CONVEYOR, new Building[CHUNKSIZE][CHUNKSIZE]);
 
 		this.cachedGenerationRessources = new HashMap<Long, Ressource>();
+		this.conveyors = new LinkedList<Conveyor>();
 
 		// - generate the map by generating seeds and growing them
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
@@ -139,7 +141,7 @@ public class Chunk
 
 			if (target == null)
 				return null;
-		}
+		}			
 
 		return target.tiles.get(type)[localX][localY];
 	}
@@ -160,6 +162,15 @@ public class Chunk
 
 			if (target == null)
 				return;
+		}
+		
+		// if it's a conveyor, add/remove it to/from the conveyors list to animate its items more easily
+		if (type == TileType.CONVEYOR)
+		{
+			if (value != null)
+				conveyors.add((Conveyor) value);
+			else
+				conveyors.remove((Conveyor) getLocalTile(TileType.CONVEYOR, localX, localY));
 		}
 
 		target.tiles.get(type)[localX][localY] = value;
@@ -246,62 +257,28 @@ public class Chunk
 		return x >= 0 && y >= 0 && x < CHUNKSIZE && y < CHUNKSIZE;
 	}
 
-	public void render(SpriteBatch batch, int x, int y)
+	public void renderTileLayer(TileType type, SpriteBatch batch, int x, int y)
 	{
-		// ressources
 		for (int i = 0; i < CHUNKSIZE; i++)
 		{
 			for (int j = 0; j < CHUNKSIZE; j++)
 			{
-				Ressource ressource = (Ressource) getLocalTile(TileType.RESSOURCE, i, j);
+				Tile tile = getLocalTile(type, i, j);
 
-				if (ressource != null)
-					batch.draw(ressource.texture(), x + i * TILESIZE, y + j * TILESIZE);
-				else
-					System.err.format("critical: chunk render attempted to render a null ressource at (%d,%d) in chunk (%d,%d)%n", i, j, keyToX(key), keyToY(key));
-			}
-		}
-
-		// conveyors
-		for (int i = 0; i < CHUNKSIZE; i++)
-		{
-			for (int j = 0; j < CHUNKSIZE; j++)
-			{
-				Conveyor conveyor = (Conveyor) getLocalTile(TileType.CONVEYOR, i, j);
-
-				if (conveyor != null)
-					conveyor.render(batch, TILESIZE);
-			}
-		}
-
-		// items
-		for (int i = 0; i < CHUNKSIZE; i++)
-		{
-			for (int j = 0; j < CHUNKSIZE; j++)
-			{
-				Conveyor conveyor = (Conveyor) getLocalTile(TileType.CONVEYOR, i, j);
-
-				if (conveyor != null)
-					conveyor.renderItems(batch, TILESIZE);
-			}
-		}
-
-		// factories
-		for (int i = 0; i < CHUNKSIZE; i++)
-		{
-			for (int j = 0; j < CHUNKSIZE; j++)
-			{
-				Building building = (Building) getLocalTile(TileType.FACTORY, i, j);
-
-				if (building != null)
-					building.render(batch, TILESIZE);
+				if (tile != null)
+					tile.render(batch, x + i, y + j);
 			}
 		}
 	}
 
+	public void renderItems(SpriteBatch batch, int x, int y)
+	{
+		for (Conveyor conveyor : conveyors)
+			conveyor.renderItems(batch, x, y);
+	}
+
 	public void update()
 	{
-
 		// update transfer ticks
 		for (FactoryType type : FactoryType.values())
 		{
