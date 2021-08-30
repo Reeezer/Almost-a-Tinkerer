@@ -420,7 +420,7 @@ public class GameScreen implements Screen
 
 		// cap on fixed TPS
 		while (unprocessedTime >= processingTimeCap)
-		{
+		{			
 			unprocessedTime -= processingTimeCap;
 			map.update();
 

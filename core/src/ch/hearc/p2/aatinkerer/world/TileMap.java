@@ -165,6 +165,10 @@ public class TileMap
 
 		// FIXME improvement : compute the keys for the chunks that must be displayed based on the screenbox instead of iterating through them all,
 		// that way the amount of already generated chunks won't even have any importance since they will never be accessed unless strictly necessary
+
+		List<Chunk> chunksToRender = new LinkedList<Chunk>();
+
+		// build a list of chunks that need to be rendered so that each layer can then be rendered at the same time instead of at once with the whole chunk
 		for (Map.Entry<Long, Chunk> chunkEntry : chunks.entrySet())
 		{
 			long key = chunkEntry.getKey();
@@ -181,18 +185,26 @@ public class TileMap
 
 			// only render the chunk if it is visible on the screen
 			if (screenbox.overlaps(chunkbox))
-			{
-				int absX = x * Chunk.CHUNKSIZE;
-				int absY = y * Chunk.CHUNKSIZE;
-				
-				// FIXME change rendering so that items don't get drawn under bordering chunks
-				
-				chunk.renderTileLayer(TileType.RESSOURCE, batch, absX, absY);
-				chunk.renderTileLayer(TileType.CONVEYOR, batch, absX, absY);
-				chunk.renderItems(batch, absX, absY);
-				chunk.renderTileLayer(TileType.FACTORY, batch, absX, absY);
-			}
+				chunksToRender.add(chunk);
 		}
+
+		// - render steps
+
+		// ressources
+		for (Chunk chunk : chunksToRender)
+			chunk.renderTileLayer(TileType.RESSOURCE, batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
+
+		// conveyors
+		for (Chunk chunk : chunksToRender)
+			chunk.renderTileLayer(TileType.CONVEYOR, batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
+
+		// items
+		for (Chunk chunk : chunksToRender)
+			chunk.renderItems(batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
+
+		// factories
+		for (Chunk chunk : chunksToRender)
+			chunk.renderTileLayer(TileType.FACTORY, batch, chunkKeyToX(chunk.key()) * Chunk.CHUNKSIZE, chunkKeyToY(chunk.key()) * Chunk.CHUNKSIZE);
 	}
 
 	// FIXME generate only the strictly required chunks
@@ -639,11 +651,26 @@ public class TileMap
 		// update buildings
 		for (Building building : buildings)
 			building.update();
-		
-		for (Map.Entry<Long, Chunk> entry : chunks.entrySet())
+
+		// update transfer ticks
+		for (FactoryType type : FactoryType.values())
 		{
-			Chunk chunk = entry.getValue();
-			chunk.update();
+			type.transferTicksIncrease();
+			if (type.getTransferTicks() > type.getTransferTimeout())
+			{
+				type.resetTransferTicks();
+			}
+		}
+
+		// update animation ticks
+		for (FactoryType type : FactoryType.values())
+		{
+			type.animationTicksIncrease();
+			if (type.getAnimationTicks() > type.getAnimationTimeout())
+			{
+				type.resetAnimationTicks();
+				type.frameIncrease();
+			}
 		}
 	}
 

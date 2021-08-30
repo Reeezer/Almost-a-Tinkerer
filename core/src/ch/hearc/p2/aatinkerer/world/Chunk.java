@@ -277,31 +277,6 @@ public class Chunk
 			conveyor.renderItems(batch, x, y);
 	}
 
-	public void update()
-	{
-		// update transfer ticks
-		for (FactoryType type : FactoryType.values())
-		{
-			type.transferTicksIncrease();
-			if (type.getTransferTicks() > type.getTransferTimeout())
-			{
-				type.resetTransferTicks();
-			}
-		}
-
-		// update animation ticks
-		for (FactoryType type : FactoryType.values())
-		{
-			type.animationTicksIncrease();
-			if (type.getAnimationTicks() > type.getAnimationTimeout())
-			{
-				type.resetAnimationTicks();
-				type.frameIncrease();
-			}
-		}
-
-	}
-
 	public long key()
 	{
 		return key;
