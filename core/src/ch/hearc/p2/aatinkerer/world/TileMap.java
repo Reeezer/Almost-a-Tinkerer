@@ -214,20 +214,25 @@ public class TileMap
 
 	private boolean isEmpty(int x, int y)
 	{
-
+		System.out.format("is empty: (%d,%d) ?%n", x, y);
 		// en théorie, impossible que cette condition soit fausse via un clic de souris mais on sait jamais
-		if (chunkExists(chunkCoordsToKey(x, y)))
+		if (chunkAtTile(x, y) != null)
+		{
+			System.out.format("chunk at (%d,%d) exists.%n", x, y);
+			
+			// conveyors layer
+			if (tileAt(TileType.CONVEYOR, x, y) != null)
+				return false;
+	
+			// factories layer
+			if (tileAt(TileType.FACTORY, x, y) != null)
+				return false;
+			
+			System.out.println(" -- yes");
 			return true;
+		}
 
-		// conveyors layer
-		if (tileAt(TileType.CONVEYOR, x, y) != null)
-			return false;
-
-		// factories layer
-		if (tileAt(TileType.FACTORY, x, y) != null)
-			return false;
-
-		return true;
+		return false;
 	}
 
 	private void updateOutput(int x, int y, TileType type)
@@ -240,19 +245,19 @@ public class TileMap
 			building.updateOutputs();
 
 		building = (Building) tileAt(type, x + 1, y);
-		if (chunkExists(chunkCoordsToKey(x + 1, y)) && building != null)
+		if (chunkAtTile(x + 1, y)  != null && building != null)
 			building.updateOutputs();
 
 		building = (Building) tileAt(type, x - 1, y);
-		if (chunkExists(chunkCoordsToKey(x - 1, y)) && building != null)
+		if (chunkAtTile(x - 1, y)  != null && building != null)
 			building.updateOutputs();
 
 		building = (Building) tileAt(type, x, y + 1);
-		if (chunkExists(chunkCoordsToKey(x, y + 1)) && building != null)
+		if (chunkAtTile(x, y + 1)  != null && building != null)
 			building.updateOutputs();
 
 		building = (Building) tileAt(type, x, y - 1);
-		if (chunkExists(chunkCoordsToKey(x, y - 1)) && building != null)
+		if (chunkAtTile(x, y - 1)  != null && building != null)
 			building.updateOutputs();
 	}
 
@@ -292,7 +297,7 @@ public class TileMap
 				break;
 		}
 
-		if (!chunkExists(chunkCoordsToKey(x + dx, y + dy)))
+		if (chunkAtTile(x + dx, y + dy) == null)
 			return null;
 
 		Conveyor conveyor = (Conveyor) tileAt(TileType.CONVEYOR, x + dx, y + dy);
@@ -377,7 +382,7 @@ public class TileMap
 				break;
 		}
 
-		if (!chunkExists(chunkCoordsToKey(x + dx, y + dy)))
+		if (chunkAtTile(x + dx, y + dy) == null)
 			return;
 
 		// Search for a building to connect with (in factories and conveyors)
@@ -431,8 +436,8 @@ public class TileMap
 			int posX = x + dx * i;
 			int posY = y + dy * i;
 
-			// If there is no building on the tile
-			if (!chunkExists(chunkCoordsToKey(posX, posY)))
+			// If there is no building on the tile FIXME wrong comment
+			if (chunkAtTile(posX, posY) == null)
 				continue;
 
 			Building factory = (Building) tileAt(TileType.FACTORY, posX, posY);
@@ -544,7 +549,7 @@ public class TileMap
 	public void deleteBuilding(int x, int y)
 	{
 
-		if (!chunkExists(chunkCoordsToKey(x, y)))
+		if (chunkAtTile(x, y) == null)
 			return;
 
 		Building factory = (Building) tileAt(TileType.FACTORY, x, y);
@@ -587,7 +592,7 @@ public class TileMap
 	public void delete(int x, int y, Building building)
 	{
 
-		if (!chunkExists(chunkCoordsToKey(x, y)))
+		if (chunkAtTile(x, y) == null)
 			return;
 
 		Building factory = (Building) tileAt(TileType.FACTORY, x, y);
