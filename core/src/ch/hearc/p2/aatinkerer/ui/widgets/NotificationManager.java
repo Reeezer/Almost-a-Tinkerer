@@ -113,7 +113,7 @@ public class NotificationManager implements UIElement
 
 	public static float ease_in_out(float x)
 	{
-		final float a = 3;
+		final float a = 3; 
 
 		float numerator = (float) Math.pow(x, a);
 		float denominator = numerator + (float) Math.pow(1 - x, a);

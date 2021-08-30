@@ -259,6 +259,9 @@ public class GameScreen implements Screen {
 		if (Gdx.input.isKeyJustPressed(Keys.NUMPAD_1))
 			factoryToolbar.setActiveItem(11);
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE)) {
+			if (factoryToolbar.getActiveItem() == null) {
+				game.toPauseScreen();
+			}
 			factoryToolbar.setActiveItem(-1);
 			buildingRecipeDisplay.setBuilding(null);
 			itemDropdownMenu.setItems(null);
@@ -286,8 +289,7 @@ public class GameScreen implements Screen {
 						clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
 
 				if (bounds.contains(new Vector2(mx, my))) {
-					System.out.format("click captured at (%d,%d) by %s%n", mx, my,
-							clickable.getClass().getSimpleName());
+					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
 
 					mouseCaptured = true;
 
@@ -333,13 +335,15 @@ public class GameScreen implements Screen {
 						map.placeBuilding(tileX, initialy, direction, factoryType, mirrored);
 					if (direction == 1 || direction == 3)
 						map.placeBuilding(initialx, tileY, direction, factoryType, mirrored);
-				} else {
+				}
+				else {
 					Building attemptContextualMenuBuilding = map.factoryAt(tileX, tileY);
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding instanceof Splitter) {
 						this.splitterMenu.setSplitter((Splitter) attemptContextualMenuBuilding);
 						this.justClicked = false;
-					} else {
+					}
+					else {
 						this.splitterMenu.setSplitter(null);
 					}
 
@@ -352,7 +356,8 @@ public class GameScreen implements Screen {
 					}
 				}
 			}
-		} else {
+		}
+		else {
 			justClicked = true;
 			initialx = -1;
 			initialy = -1;
@@ -433,6 +438,7 @@ public class GameScreen implements Screen {
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
+
 		if (factoryType != null) {
 			if (factoryType == FactoryType.TUNNEL)
 				factoryType.setMirrored(isInputTunnel);
@@ -527,8 +533,10 @@ public class GameScreen implements Screen {
 	}
 
 	@Override
-	public void resume() {
-
+	public void resume()
+	{
+		lastTime = TimeUtils.millis();
+		unprocessedTime = 0;
 	}
 
 	@Override
