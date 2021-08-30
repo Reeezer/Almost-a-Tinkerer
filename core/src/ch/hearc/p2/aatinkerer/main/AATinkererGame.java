@@ -9,9 +9,9 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
 import ch.hearc.p2.aatinkerer.util.Input;
+import ch.hearc.p2.aatinkerer.util.Sounds;
 
-public class AATinkererGame extends Game
-{
+public class AATinkererGame extends Game {
 	public SpriteBatch batch;
 	public Input input;
 
@@ -31,12 +31,14 @@ public class AATinkererGame extends Game
 	public static Difficulty difficulty;
 
 	@Override
-	public void create()
-	{
+	public void create() {
 		batch = new SpriteBatch();
 
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
+		
+		Sounds.MUSIC.setVolume(0.1f);
+		Sounds.MUSIC.play();
 
 		// Initializations
 		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"));
@@ -89,14 +91,12 @@ public class AATinkererGame extends Game
 	}
 
 	@Override
-	public void render()
-	{
+	public void render() {
 		super.render();
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		gameScreen.dispose();
 		batch.dispose();
 	}

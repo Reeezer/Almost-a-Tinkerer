@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -37,10 +38,10 @@ import ch.hearc.p2.aatinkerer.ui.widgets.MiniHoverPopup;
 import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
 import ch.hearc.p2.aatinkerer.ui.widgets.SplitterMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
+import ch.hearc.p2.aatinkerer.util.Sounds;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
-public class GameScreen implements Screen
-{
+public class GameScreen implements Screen {
 	final private AATinkererGame game;
 
 	private OrthographicCamera mapCamera;
@@ -82,8 +83,7 @@ public class GameScreen implements Screen
 	private int initialx;
 	private int initialy;
 
-	public GameScreen(AATinkererGame game)
-	{
+	public GameScreen(AATinkererGame game) {
 		this.game = game;
 
 		mapCamera = new OrthographicCamera();
@@ -140,8 +140,7 @@ public class GameScreen implements Screen
 
 		milestoneListener = new MilestoneListener() {
 			@Override
-			public void unlockMilestone(Milestone milestone)
-			{
+			public void unlockMilestone(Milestone milestone) {
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
 					factoryToolbar.setItemEnabled(factoryType, true);
 
@@ -160,8 +159,7 @@ public class GameScreen implements Screen
 
 		contractListener = new ContractListener() {
 			@Override
-			public void contractAdded(Contract contract, boolean isStoryContract)
-			{
+			public void contractAdded(Contract contract, boolean isStoryContract) {
 				contractDisplay.setContract(contract);
 			}
 		};
@@ -171,14 +169,14 @@ public class GameScreen implements Screen
 	}
 
 	@Override
-	public void show()
-	{
+	public void show() {
 
 	}
 
 	@Override
-	public void render(float delta)
-	{
+	public void render(float delta) {
+		Sounds.MUSIC.setVolume(0.4f);
+
 		long firstTime = TimeUtils.millis();
 		long passedTime = firstTime - lastTime;
 		lastTime = firstTime;
@@ -287,7 +285,8 @@ public class GameScreen implements Screen
 
 				Rectangle bounds = clickable.getBounds();
 
-				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n", clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
+				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n",
+						clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
 
 				if (bounds.contains(new Vector2(mx, my))) {
 					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
@@ -298,8 +297,10 @@ public class GameScreen implements Screen
 					int ix = (int) (mx - bounds.x);
 					int iy = (int) (my - bounds.y);
 
-					if (this.justClicked)
+					if (this.justClicked) {
 						clickable.passRelativeClick((int) ix, (int) iy);
+						Sounds.CLICK.play();
+					}
 
 					this.justClicked = false;
 					break; // stop checking for clicks on clickables, only one should capture the click
@@ -310,15 +311,16 @@ public class GameScreen implements Screen
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
 
-				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
+				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(),
+						Gdx.input.getY(), tileX, tileY);
 
 				if (factoryType != null && factoryType != FactoryType.CONVEYOR) {
 					int inputTunnel = map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 					if (inputTunnel == 1 || inputTunnel == 2)
 						isInputTunnel = (inputTunnel == 1) ? true : false;
 					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
-				}
-				else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a line
+				} else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a
+																// line
 				{
 					if ((direction == 0 || direction == 2) && initialy == -1) {
 						initialy = tileY;
@@ -345,7 +347,8 @@ public class GameScreen implements Screen
 						this.splitterMenu.setSplitter(null);
 					}
 
-					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null && attemptContextualMenuBuilding.canSelectRecipe())
+					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding.recipes() != null
+							&& attemptContextualMenuBuilding.canSelectRecipe())
 						buildingRecipeDisplay.setBuilding(attemptContextualMenuBuilding);
 					else {
 						buildingRecipeDisplay.setBuilding(null);
@@ -385,7 +388,8 @@ public class GameScreen implements Screen
 			Building building = map.factoryAt(x, y);
 			Building conveyor = map.conveyorAt(x, y);
 
-			// FIXME maybe still display the ressources if the hovered building is an extractor?
+			// FIXME maybe still display the ressources if the hovered building is an
+			// extractor?
 			// only display on ressources tiles that don't have a building on top
 			if (building == null && conveyor == null && item != null && item != ItemType.NONE) {
 				tooltipText = item.fullname();
@@ -434,81 +438,82 @@ public class GameScreen implements Screen
 
 		game.batch.setProjectionMatrix(hoverCamera.combined);
 		// item to be placed
-//		if (factoryType != null) {
-//			if (factoryType == FactoryType.TUNNEL)
-//				factoryType.setMirrored(isInputTunnel);
-//			else
-//				factoryType.setMirrored(mirrored);
-//			Texture hoverTexture = factoryType.getHoverTexture();
-//			int x = Gdx.input.getX();
-//			int y = height - Gdx.input.getY();
-//
-//			int xoffset = 0;
-//			if (direction == 1 || direction == 2)
-//				xoffset = 32;
-//
-//			int yoffset = 0;
-//			if (direction == 2 || direction == 3)
-//				yoffset = 32;
-//			TextureRegion textureRegion = new TextureRegion(hoverTexture);
-//
-//			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0, (float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f, (float) direction * 90.f);
-//		}
+
+		if (factoryType != null) {
+			if (factoryType == FactoryType.TUNNEL)
+				factoryType.setMirrored(isInputTunnel);
+			else
+				factoryType.setMirrored(mirrored);
+			Texture hoverTexture = factoryType.getHoverTexture();
+			int x = Gdx.input.getX();
+			int y = height - Gdx.input.getY();
+
+			int xoffset = 0;
+			if (direction == 1 || direction == 2)
+				xoffset = 32;
+
+			int yoffset = 0;
+			if (direction == 2 || direction == 3)
+				yoffset = 32;
+			TextureRegion textureRegion = new TextureRegion(hoverTexture);
+
+			game.batch.draw(textureRegion, (x + xoffset) * hoverCamera.zoom, (y + yoffset) * hoverCamera.zoom, 0, 0,
+					(float) hoverTexture.getWidth(), (float) hoverTexture.getHeight(), 1.f, 1.f,
+					(float) direction * 90.f);
+		}
 
 		game.batch.setProjectionMatrix(uiCamera.combined);
 
-//		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
-//		if (ctrlPressed) {
-//			int toolbarHeight = 50;
-//			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
-//			float deltaa = Toolbar.TEXSIZE;
-//			for (int i = 1; i <= 9; i++)
-//				font.draw(game.batch, String.format("[%d]", i), pos + (i - 1) * deltaa + Toolbar.TEXSIZE / 3, toolbarHeight);
-//			font.draw(game.batch, "[Num 0]", pos + 9 * deltaa - 6, toolbarHeight);
-//			font.draw(game.batch, "[Num 1]", pos + 10 * deltaa + 15, toolbarHeight);
-//
-//			font.draw(game.batch, "[Left click]\nPlace", width / 3, 150);
-//			font.draw(game.batch, "[DEL]\nDelete", width / 3, 100);
-//
-//			font.draw(game.batch, "[R]\nRotate left", width * 5 / 12, 250);
-//			font.draw(game.batch, "[Shift + R]\nRotate right", width * 5 / 12, 200);
-//			font.draw(game.batch, "[T]\nMirror rotation", width * 5 / 12, 150);
-//			font.draw(game.batch, "[Escape]\nUnselect", width * 5 / 12, 100);
-//
-//			font.draw(game.batch, "[Right click + drag]\nMove", width / 2, 350);
-//			font.draw(game.batch, "[Up]\nMove up", width / 2, 300);
-//			font.draw(game.batch, "[Down]\nMove down", width / 2, 250);
-//			font.draw(game.batch, "[Left]\nMove left", width / 2, 200);
-//			font.draw(game.batch, "[Right]\nMove right", width / 2, 150);
-//			font.draw(game.batch, "[Hold Shift]\nMove faster", width / 2, 100);
-//
-//			font.draw(game.batch, "[Scroll]\nZoom", width * 7 / 12, 200);
-//			font.draw(game.batch, "[Num +]\nZoom in", width * 7 / 12, 150);
-//			font.draw(game.batch, "[Num -]\nZoom out", width * 7 / 12, 100);
-//		}
+		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
+		if (ctrlPressed) {
+			int toolbarHeight = 50;
+			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
+			float deltaa = Toolbar.TEXSIZE;
+			for (int i = 1; i <= 9; i++)
+				font.draw(game.batch, String.format("[%d]", i), pos + (i - 1) * deltaa + Toolbar.TEXSIZE / 3,
+						toolbarHeight);
+			font.draw(game.batch, "[Num 0]", pos + 9 * deltaa - 6, toolbarHeight);
+			font.draw(game.batch, "[Num 1]", pos + 10 * deltaa + 15, toolbarHeight);
 
-//		for (UIElement uiElement : this.uiElements)
-//			uiElement.render(game.batch, delta);
-//
-//		if (renderTooltip)
-//			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
+			font.draw(game.batch, "[Left click]\nPlace", width / 3, 150);
+			font.draw(game.batch, "[DEL]\nDelete", width / 3, 100);
+
+			font.draw(game.batch, "[R]\nRotate left", width * 5 / 12, 250);
+			font.draw(game.batch, "[Shift + R]\nRotate right", width * 5 / 12, 200);
+			font.draw(game.batch, "[T]\nMirror rotation", width * 5 / 12, 150);
+			font.draw(game.batch, "[Escape]\nUnselect", width * 5 / 12, 100);
+
+			font.draw(game.batch, "[Right click + drag]\nMove", width / 2, 350);
+			font.draw(game.batch, "[Up]\nMove up", width / 2, 300);
+			font.draw(game.batch, "[Down]\nMove down", width / 2, 250);
+			font.draw(game.batch, "[Left]\nMove left", width / 2, 200);
+			font.draw(game.batch, "[Right]\nMove right", width / 2, 150);
+			font.draw(game.batch, "[Hold Shift]\nMove faster", width / 2, 100);
+
+			font.draw(game.batch, "[Scroll]\nZoom", width * 7 / 12, 200);
+			font.draw(game.batch, "[Num +]\nZoom in", width * 7 / 12, 150);
+			font.draw(game.batch, "[Num -]\nZoom out", width * 7 / 12, 100);
+		}
+
+		for (UIElement uiElement : this.uiElements)
+			uiElement.render(game.batch, delta);
+
+		if (renderTooltip)
+			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
 
 		game.batch.end();
 	}
 
-	public int screenToTileX(int screenX)
-	{
+	public int screenToTileX(int screenX) {
 		return (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / TileMap.TILESIZE);
 	}
 
-	public int screenToTileY(int screenY)
-	{
+	public int screenToTileY(int screenY) {
 		return (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / TileMap.TILESIZE);
 	}
 
 	@Override
-	public void resize(int width, int height)
-	{
+	public void resize(int width, int height) {
 		this.width = width;
 		this.height = height;
 
@@ -523,8 +528,7 @@ public class GameScreen implements Screen
 	}
 
 	@Override
-	public void pause()
-	{
+	public void pause() {
 
 	}
 
@@ -536,14 +540,12 @@ public class GameScreen implements Screen
 	}
 
 	@Override
-	public void hide()
-	{
+	public void hide() {
 
 	}
 
 	@Override
-	public void dispose()
-	{
+	public void dispose() {
 		// dipose of instance elements
 		map.dispose();
 
