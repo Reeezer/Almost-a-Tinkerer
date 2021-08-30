@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
+import ch.hearc.p2.aatinkerer.util.Sounds;
 
 public class DifficultyScreen implements Screen
 {
@@ -132,6 +133,7 @@ public class DifficultyScreen implements Screen
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
+				Sounds.CLICK.play();
 				AATinkererGame.difficulty = difficulty;
 				game.toNewGameScreen();
 			};

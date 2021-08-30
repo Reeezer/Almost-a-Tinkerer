@@ -18,6 +18,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ch.hearc.p2.aatinkerer.util.Sounds;
+
 public class SaveScreen implements Screen
 {
 	private AATinkererGame game;
@@ -79,6 +81,7 @@ public class SaveScreen implements Screen
 		loadButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
+				Sounds.CLICK.play();
 				game.toNewGameScreen();
 				// FIXME disable le bouton si rien n'est sélectionné
 				// FIXME lancer la partie en fonction de ce qui est sélectionné
@@ -90,6 +93,7 @@ public class SaveScreen implements Screen
 		newButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
+				Sounds.CLICK.play();
 				game.toDifficultyScreen();
 			};
 		});

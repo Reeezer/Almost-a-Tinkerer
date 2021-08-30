@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 
-public class Sounds {
+public class Sounds
+{
+	public static boolean muted = false;
 	public static final Music MUSIC = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
 	public static final Sound MAXIMISE = Gdx.audio.newSound(Gdx.files.internal("sounds/maximise.mp3"));
 	public static final Sound MINIMISE = Gdx.audio.newSound(Gdx.files.internal("sounds/minimise.mp3"));

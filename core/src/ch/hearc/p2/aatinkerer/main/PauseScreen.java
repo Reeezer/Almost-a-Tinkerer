@@ -15,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ch.hearc.p2.aatinkerer.util.Sounds;
+
 public class PauseScreen implements Screen
 {
 	private AATinkererGame game;
@@ -64,6 +66,7 @@ public class PauseScreen implements Screen
 		resumeButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
+				Sounds.CLICK.play();
 				game.toPausedGameScreen();
 			};
 		});
@@ -80,7 +83,13 @@ public class PauseScreen implements Screen
 		muteButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
-				// FIXME couper musique
+				Sounds.CLICK.play();
+
+				Sounds.muted = !Sounds.muted;
+				if (Sounds.muted)
+					Sounds.MUSIC.setVolume(0.f);
+				else
+					Sounds.MUSIC.setVolume(AATinkererGame.VOLUME_LOW);
 			};
 		});
 		table.add(muteButton).pad(115);
@@ -94,6 +103,7 @@ public class PauseScreen implements Screen
 		homeButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
+				Sounds.CLICK.play();
 				game.toSaveScreen();
 			};
 		});
