@@ -10,10 +10,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.data.Recipe;
+import ch.hearc.p2.aatinkerer.data.Tile;
+import ch.hearc.p2.aatinkerer.data.TileType;
+import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
-public abstract class Building
+public abstract class Building implements Tile
 {
+	public final TileType tiletype = TileType.FACTORY;
+	
 	protected class Item
 	{
 		public ItemType type;
@@ -82,7 +87,7 @@ public abstract class Building
 		return this.canSelectRecipe;
 	}
 
-	public void render(SpriteBatch batch, int tileSize)
+	public void render(SpriteBatch batch, int dx, int dy)
 	{
 		for (int i = 0; i < tiles.length; i++)
 		{
@@ -91,7 +96,7 @@ public abstract class Building
 			int tx = (direction % 2 == 0) ? ((direction == 0) ? x + i : x - i) : x;
 			int ty = (direction % 2 != 0) ? ((direction == 1) ? y + i : y - i) : y;
 
-			tile.render(batch, tileSize, direction, tx, ty);
+			tile.render(batch, Chunk.TILESIZE, direction, tx, ty);
 		}
 	}
 

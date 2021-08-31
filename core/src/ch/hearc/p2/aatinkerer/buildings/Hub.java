@@ -3,6 +3,7 @@ package ch.hearc.p2.aatinkerer.buildings;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.main.GameManager;
+import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Hub extends Building
@@ -15,7 +16,7 @@ public class Hub extends Building
 	}
 
 	@Override
-	public void render(SpriteBatch batch, int tileSize)
+	public void render(SpriteBatch batch, int dx, int dy)
 	{
 		int z = 0;
 		for (int i = -1; i <= 1; i++)
@@ -26,7 +27,7 @@ public class Hub extends Building
 				int tx = x + i;
 				int ty = y + j;
 
-				tile.render(batch, tileSize, direction, tx, ty);
+				tile.render(batch, Chunk.TILESIZE, direction, tx, ty);
 			}
 		}
 	}

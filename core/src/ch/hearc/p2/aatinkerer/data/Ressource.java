@@ -1,10 +1,13 @@
 package ch.hearc.p2.aatinkerer.data;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-public enum Ressource
+import ch.hearc.p2.aatinkerer.world.Chunk;
+
+public enum Ressource implements Tile
 {
 	NONE("Tile/Grid.png", ItemType.NONE),
 	COAL("Tile/CoalTile.png", ItemType.COAL),
@@ -16,18 +19,20 @@ public enum Ressource
 	WATER("Tile/WaterTile.png", ItemType.WATER),
 	COTTON("Tile/CottonTile.png", ItemType.COTTON);
 
+	private final TileType tiletype = TileType.RESSOURCE;
+	
 	private Texture texture;
 	private ItemType itemType;
 
 	private Ressource(String texturePath, ItemType item)
 	{
 		texture = new Texture(Gdx.files.internal(texturePath));
-		itemType = item;
+		itemType = item;		
 	}
 
-	public void render(SpriteBatch batch, int x, int y)
+	public Texture texture()
 	{
-		batch.draw(texture, x, y);
+		return texture;
 	}
 
 	public ItemType getExtractedItem()
@@ -39,5 +44,11 @@ public enum Ressource
 	{
 		for (Ressource ressource : Ressource.values())
 			ressource.texture.dispose();
+	}
+
+	@Override
+	public void render(SpriteBatch batch, int x, int y)
+	{
+		batch.draw(texture, x * Chunk.TILESIZE, y * Chunk.TILESIZE);
 	}
 }

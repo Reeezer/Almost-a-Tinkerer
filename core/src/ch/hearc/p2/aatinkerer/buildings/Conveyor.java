@@ -3,10 +3,14 @@ package ch.hearc.p2.aatinkerer.buildings;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.data.FactoryType;
+import ch.hearc.p2.aatinkerer.data.TileType;
+import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Conveyor extends Building
 {
+	public final TileType tiletype = TileType.CONVEYOR;
+	
 	public Conveyor(TileMap tilemap, int x, int y, int[][] inputOutputPosition)
 	{
 		super(tilemap, x, y, inputOutputPosition[1][2], 1, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]), 1, 8, FactoryType.CONVEYOR);
@@ -14,7 +18,7 @@ public class Conveyor extends Building
 		this.outputPosition = inputOutputPosition[1];
 	}
 
-	public void renderItems(SpriteBatch batch, int tileSize)
+	public void renderItems(SpriteBatch batch, int dx, int dy)
 	{
 		int index = -1;
 		for (Item item : items)
@@ -28,8 +32,8 @@ public class Conveyor extends Building
 			if (index > 0) // FIXME item teleports if there are two per conveyor or more
 				position = position / (float) maxSize;
 
-			int xPixPosition = ((x * tileSize) + (int) (position * (float) tileSize * xOrientation) /*- (tileSize * xOrientation) / 2*/);
-			int yPixPosition = ((y * tileSize) + (int) (position * (float) tileSize * yOrientation) /*- (tileSize * yOrientation) / 2*/);
+			int xPixPosition = ((x * Chunk.TILESIZE) + (int) (position * (float) Chunk.TILESIZE * xOrientation) /*- (tileSize * xOrientation) / 2*/);
+			int yPixPosition = ((y * Chunk.TILESIZE) + (int) (position * (float) Chunk.TILESIZE * yOrientation) /*- (tileSize * yOrientation) / 2*/);
 
 			item.type.render(batch, xPixPosition, yPixPosition);
 		}

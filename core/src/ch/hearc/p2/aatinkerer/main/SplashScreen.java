@@ -52,20 +52,20 @@ public class SplashScreen implements Screen
 		// free to use font https://tinyworlds.itch.io/free-pixel-font-thaleah
 		FreeTypeFontParameter veryLargeFontParameter = new FreeTypeFontParameter();
 		veryLargeFontParameter.size = 96;
-		veryLargeFontParameter.color = Color.WHITE;
+		veryLargeFontParameter.color = AATinkererGame.WHITE;
 		veryLargeFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/ThaleahFat.ttf")).generateFont(veryLargeFontParameter);
 
 		// public domain font https://grafxkid.itch.io/at01
 		FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
 		fontParameter.size = 64;
-		fontParameter.color = Color.WHITE;
-		largeFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(fontParameter);
+		fontParameter.color = AATinkererGame.WHITE;
+		largeFont = AATinkererGame.font.generateFont(fontParameter);
 
 		// public domain font https://grafxkid.itch.io/at01
 		FreeTypeFontParameter smallFontParameter = new FreeTypeFontParameter();
 		smallFontParameter.size = 32;
-		smallFontParameter.color = Color.WHITE;
-		smallFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(smallFontParameter);
+		smallFontParameter.color = AATinkererGame.WHITE;
+		smallFont = AATinkererGame.font.generateFont(smallFontParameter);
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class SplashScreen implements Screen
 	public void render(float delta)
 	{
 		if (Gdx.input.isKeyJustPressed(Keys.SPACE))
-			game.toGameScreen();
+			game.toSaveScreen();
 
 		Gdx.gl.glClearColor(0, 0.2f, 0.3f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -154,7 +154,7 @@ public class SplashScreen implements Screen
 	@Override
 	public void hide()
 	{
-
+		Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
