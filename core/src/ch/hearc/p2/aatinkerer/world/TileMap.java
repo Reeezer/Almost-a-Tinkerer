@@ -35,6 +35,7 @@ import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.data.Ressource;
 import ch.hearc.p2.aatinkerer.data.Tile;
 import ch.hearc.p2.aatinkerer.data.TileType;
+import ch.hearc.p2.aatinkerer.util.Sounds;
 import ch.hearc.p2.aatinkerer.util.Util;
 
 public class TileMap
@@ -70,9 +71,9 @@ public class TileMap
 		buildings.add(hub);
 		
 		// clear out the ressources around the hub
-		for (int x = -4; x <= 4; x++)
+		for (int x = -2; x <= 4; x++)
 		{
-			for (int y = -4; y <= 4; y++)
+			for (int y = -2; y <= 4; y++)
 			{
 				setTileAt(TileType.RESSOURCE, x, y, Ressource.NONE);
 			}
@@ -619,6 +620,8 @@ public class TileMap
 
 			// Check for link buildings already placed
 			updateOutputs(x, y);
+			
+			Sounds.PLACING.play();
 		}
 		return ret;
 
@@ -646,6 +649,8 @@ public class TileMap
 			buildings.remove(conveyor);
 
 			setTileAt(TileType.CONVEYOR, x, y, null);
+			
+			Sounds.DESTROYING.play();
 		}
 
 		// factories layer
@@ -655,6 +660,8 @@ public class TileMap
 			buildings.remove(factory);
 
 			setTileAt(TileType.FACTORY, x, y, null);
+			
+			Sounds.DESTROYING.play();
 		}
 
 		// Check for link/unlink buildings already placed

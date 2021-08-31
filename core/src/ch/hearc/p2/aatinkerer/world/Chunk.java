@@ -24,6 +24,7 @@ import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.Ressource;
 import ch.hearc.p2.aatinkerer.data.Tile;
 import ch.hearc.p2.aatinkerer.data.TileType;
+import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 
 public class Chunk
 {
@@ -107,8 +108,8 @@ public class Chunk
 				neighbour.cachedGenerationRessources.remove(toDeleteKey);
 		}
 
-		final int seeds = (CHUNKSIZE * CHUNKSIZE) / 100;
-		final int max_life = 10; // + 2
+		final int seeds = AATinkererGame.difficulty.getNbSeed();
+		final int max_life = AATinkererGame.difficulty.getLife(); // + 2
 
 		for (int i = 0; i < seeds; i++)
 		{
@@ -247,7 +248,7 @@ public class Chunk
 			setLocalTile(TileType.RESSOURCE, x, y, ressource);
 
 		// attempt to spawn more resources around
-		final float spawn_probability = 0.6f;
+		final float spawn_probability = (float) AATinkererGame.difficulty.getProbability();
 		// north
 		if (random.nextFloat() < spawn_probability)
 			generate(ressource, life - 1, x, y - 1);
