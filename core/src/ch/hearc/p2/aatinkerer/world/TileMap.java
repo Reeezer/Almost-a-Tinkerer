@@ -55,7 +55,16 @@ public class TileMap
 
 		chunks = new HashMap<Long, Chunk>();
 
-		// FIXME add the hub back
+		
+		cameraMovedToPosition(new Vector3(0,0,0), 20, 20);
+		
+		Hub hub = new Hub(this, 1, 1); // FIXME essayer de le mettre vraiment au centre sans le bug graphique
+		
+		for (int x = 0; x <= 2; x++)
+			for (int y = 0; y <= 2; y++)
+				setTileAt(TileType.FACTORY, x, y, hub);
+		
+		buildings.add(hub);
 	}
 
 	public Chunk chunkAtTile(int x, int y)

@@ -16,7 +16,7 @@ public class Hub extends Building
 	}
 
 	@Override
-	public void render(SpriteBatch batch, int x, int y)
+	public void render(SpriteBatch batch, int dx, int dy)
 	{
 		int z = 0;
 		for (int i = -1; i <= 1; i++)
