@@ -143,10 +143,16 @@ public class SaveScreen implements Screen
 
 		Table table = new Table();
 
+		// Scroll pane which takes directly the mouse scroll when entering the mouse into its bounds
 		AutoFocusScrollPane pane = new AutoFocusScrollPane(table, paneStyle);
 		pane.setScrollbarsVisible(true);
 		pane.setFadeScrollBars(false);
 
+		// Create directory if doesn't exists
+		if (!Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").exists())
+			Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").mkdirs();
+
+		// Read all files 1 by 1
 		JsonReader jsonReader = new JsonReader();
 		FileHandle[] files = Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").list();
 		for (FileHandle file : files) {
@@ -158,6 +164,7 @@ public class SaveScreen implements Screen
 			Label dateLabel = new Label(json.getString("date"), labelStyle);
 			Image difficultyImage = new Image(new Texture("Ui/Buttons/" + json.getString("difficulty").toLowerCase() + "hover.png"));
 
+			// Create a table for each row
 			table.row().padBottom(10).padTop(10);
 			final Table line = new Table();
 			savesList.add(line);
