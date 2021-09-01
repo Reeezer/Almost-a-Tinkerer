@@ -8,7 +8,7 @@ import ch.hearc.p2.aatinkerer.data.Recipe;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Mixer extends Building
-{
+{	
 	public Mixer(TileMap tilemap, int x, int y, int direction, boolean mirrored, int x2, int y2)
 	{
 		super(tilemap, x, y, direction, 10, (mirrored ? "Tile/MixerMirror/" : "Tile/Mixer/"), 2, 6, FactoryType.MIXER);

@@ -18,6 +18,8 @@ public class Furnace extends Building
 			this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, (direction + 1) % 4 } };
 		this.outputPosition = new int[] { x, y, direction };
 
+		this.mirrored = mirrored;
+		
 		createRecipes();
 	}
 

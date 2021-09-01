@@ -4,7 +4,7 @@ import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Merger extends Building
-{
+{	
 	private boolean toggle;
 
 	public Merger(TileMap tilemap, int x, int y, int direction, boolean mirrored)

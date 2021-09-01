@@ -2,12 +2,13 @@ package ch.hearc.p2.aatinkerer.buildings;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.main.GameManager;
 import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Hub extends Building
-{
+{	
 	public Hub(TileMap tilemap, int x, int y)
 	{
 		super(tilemap, x, y, 0, Integer.MAX_VALUE, "Tile/Hub/", 9, 1, null);

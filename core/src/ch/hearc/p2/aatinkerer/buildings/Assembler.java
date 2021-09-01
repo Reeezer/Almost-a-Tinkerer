@@ -8,7 +8,7 @@ import ch.hearc.p2.aatinkerer.data.Recipe;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class Assembler extends Building
-{
+{	
 	public Assembler(TileMap tilemap, int x, int y, int direction, int x2, int y2, int x3, int y3)
 	{
 		super(tilemap, x, y, direction, 10, "Tile/Assembler/", 3, 9, FactoryType.ASSEMBLER);

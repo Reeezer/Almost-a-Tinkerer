@@ -31,18 +31,20 @@ public class GameManager {
 	private ArrayList<Contract> storyContracts;
 	private ArrayList<Milestone> storyMilestones;
 
-	public static GameManager init() {
-		return (instance = new GameManager());
-	}
-
 	public static GameManager getInstance() {
 		if (instance != null)
 			return instance;
 		else
-			return init();
+			return (instance = new GameManager());
 	}
 
-	private GameManager() {
+	private GameManager()
+	{
+		reset();
+	}
+	
+	public void reset()
+	{		
 		milestoneListeners = new LinkedList<MilestoneListener>();
 		contractListeners = new LinkedList<ContractListener>();
 		moneyListeners = new LinkedList<MoneyListener>();

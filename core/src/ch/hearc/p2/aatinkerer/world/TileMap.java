@@ -1,5 +1,9 @@
 package ch.hearc.p2.aatinkerer.world;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +20,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Json;
 
 import ch.hearc.p2.aatinkerer.buildings.Assembler;
 import ch.hearc.p2.aatinkerer.buildings.Building;
@@ -38,38 +43,42 @@ import ch.hearc.p2.aatinkerer.data.TileType;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 import ch.hearc.p2.aatinkerer.util.Util;
 
-public class TileMap
+public class TileMap implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private Map<Long, Chunk> chunks;
 	private Set<Building> buildings;
 
-	private boolean isInputTunnel;
+	private Random random;
 
-	Random random;
+	private transient boolean isInputTunnel = false;
 
 	public TileMap()
 	{
 		random = new Random();
-
-		isInputTunnel = false;
 		buildings = new HashSet<Building>();
-
 		chunks = new HashMap<Long, Chunk>();
 
-		
+		placeHub();
+	}
+
+	public void placeHub()
+	{
 		// generate the chunks around the center so we can place the hub
-		cameraMovedToPosition(new Vector3(0,0,0), 20, 20);
-		
-		
+		// the size of 20x20 is completely arbitrary and in theory any value larger than or equal to 2x2 should work (2x2 = minimal size to display the 4
+		// central chunks)
+		cameraMovedToPosition(new Vector3(0, 0, 0), 20, 20);
+
 		// add the hub back
 		Hub hub = new Hub(this, 1, 1); // FIXME essayer de le mettre vraiment au centre sans le bug graphique
-		
+
 		for (int x = 0; x <= 2; x++)
 			for (int y = 0; y <= 2; y++)
 				setTileAt(TileType.FACTORY, x, y, hub);
-		
+
 		buildings.add(hub);
-		
+
 		// clear out the ressources around the hub
 		for (int x = -2; x <= 4; x++)
 		{
@@ -78,6 +87,50 @@ public class TileMap
 				setTileAt(TileType.RESSOURCE, x, y, Ressource.NONE);
 			}
 		}
+	}
+
+	private void writeObject(ObjectOutputStream oos) throws IOException
+	{
+		oos.defaultWriteObject();
+	}
+
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException
+	{
+		ois.defaultReadObject();
+
+		for (Map.Entry<Long, Chunk> entry : chunks.entrySet())
+		{
+			Chunk chunk = entry.getValue();
+
+			chunk.setRandom(this.random);
+			chunk.setTileMap(this);
+		}
+
+		// the buildings set needs to be cleared and all buildings placed back again for them to reconnect properly
+		Set<Building> temporaryBuildings = new HashSet<Building>(buildings);
+		buildings = new HashSet<Building>();
+
+		// FIXME add back all the contained items
+		for (Building building : temporaryBuildings)
+		{
+			if (building.getType() != null)
+			{
+				int outputdirection = -1;
+				int inputdirection = -1;
+				
+				if (building.getType() == FactoryType.CONVEYOR)
+				{
+					Conveyor conveyor = (Conveyor) building;
+					
+					outputdirection = conveyor.getOutputDirection();
+					inputdirection = conveyor.getInputDirection();
+				}
+				
+				placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), inputdirection, outputdirection);
+			}
+		}
+
+		placeHub();
 	}
 
 	public Chunk chunkAtTile(int x, int y)
@@ -112,7 +165,6 @@ public class TileMap
 		}
 	}
 
-	
 	public void setTileAt(TileType type, int x, int y, Tile tile)
 	{
 		Chunk chunk = chunkAtTile(x, y);
@@ -502,7 +554,7 @@ public class TileMap
 		}
 	}
 
-	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
+	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, int inputdirection, int outputdirection)
 	{
 		int ret = 0;
 
@@ -620,7 +672,7 @@ public class TileMap
 
 			// Check for link buildings already placed
 			updateOutputs(x, y);
-			
+
 			Sounds.PLACING.play();
 		}
 		return ret;
@@ -649,7 +701,7 @@ public class TileMap
 			buildings.remove(conveyor);
 
 			setTileAt(TileType.CONVEYOR, x, y, null);
-			
+
 			Sounds.DESTROYING.play();
 		}
 
@@ -660,7 +712,7 @@ public class TileMap
 			buildings.remove(factory);
 
 			setTileAt(TileType.FACTORY, x, y, null);
-			
+
 			Sounds.DESTROYING.play();
 		}
 

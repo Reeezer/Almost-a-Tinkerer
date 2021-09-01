@@ -1,9 +1,10 @@
 package ch.hearc.p2.aatinkerer.data;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Recipe
+public class Recipe implements Serializable
 {
 	private Map<ItemType, Integer> ingredients;
 	private ItemType product;

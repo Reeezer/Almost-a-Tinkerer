@@ -1,62 +1,86 @@
 package ch.hearc.p2.aatinkerer.world;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.atomic.AtomicBoolean;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Matrix4;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
-import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.Ressource;
 import ch.hearc.p2.aatinkerer.data.Tile;
 import ch.hearc.p2.aatinkerer.data.TileType;
 import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 
-public class Chunk
+public class Chunk implements Serializable
 {
-	public static final int TILESIZE = 32;
-	public static final int CHUNKSIZE = 64;
-
-	private Map<TileType, Tile[][]> tiles;
-	private Map<Long, Ressource> cachedGenerationRessources;
-	private List<Conveyor> conveyors; // used to animate items and to render the conveyors
-	private List<Building> buildings; // used to render the buildings - important: if a building is present across two chunks it will be rendered twice due to being present in both chunk's building list, but it is necessary to avoid building not rendering when they should if the player's screen is very close to a chunk border that is not being rendered
-
-	private Random random;
-
-	private TileMap tilemap; // the tilemap that contains the chunk for easy access to surrounding chunks
+	private static final long serialVersionUID = 1L;
 
 	private long key;
 
-	public Chunk(Random random, TileMap tilemap, long key)
+	public static final int TILESIZE = 32;
+	public static final int CHUNKSIZE = 64;
+
+	private Map<Long, Ressource> cachedGenerationRessources;
+
+	private transient Map<TileType, Tile[][]> tiles;
+	private transient List<Conveyor> conveyors; // used to animate items and to render the conveyors
+	private transient List<Building> buildings; // used to render the buildings - important: if a building is present across two chunks it will be rendered twice due to being present in both chunk's
+												// building list, but it is necessary to avoid building not rendering when they should if the player's screen is very close to a chunk border that is
+												// not being rendered
+
+	private transient Random random;
+	private transient TileMap tilemap; // the tilemap that contains the chunk for easy access to surrounding chunks
+
+	public void setRandom(Random random)
 	{
+		this.random = random;
+	}
+
+	public void setTileMap(TileMap tilemap)
+	{
+		this.tilemap = tilemap;
+	}
+
+	private void writeObject(ObjectOutputStream oos) throws IOException
+	{
+		oos.defaultWriteObject();
+		
+		Tile[][] ressources = tiles.get(TileType.RESSOURCE);
+		
+		oos.writeObject(ressources);
+	}
+
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException
+	{
+		ois.defaultReadObject();
+		
+		createStorageMembers();
+		
+		Tile[][] ressources = (Tile[][]) ois.readObject();
+		tiles.put(TileType.RESSOURCE, ressources);
+	}
+
+	public Chunk(Random random, TileMap tilemap, long key)
+	{		
+		createStorageMembers();
+		tiles.put(TileType.RESSOURCE, new Ressource[CHUNKSIZE][CHUNKSIZE]);
+		
 		this.random = random;
 		this.tilemap = tilemap;
 		this.key = key;
 
 		// - all the tile layers
-		tiles = new HashMap<TileType, Tile[][]>();
-		tiles.put(TileType.RESSOURCE, new Ressource[CHUNKSIZE][CHUNKSIZE]);
-		tiles.put(TileType.FACTORY, new Building[CHUNKSIZE][CHUNKSIZE]);
-		tiles.put(TileType.CONVEYOR, new Building[CHUNKSIZE][CHUNKSIZE]);
+		
 
 		this.cachedGenerationRessources = new HashMap<Long, Ressource>();
-		this.conveyors = new LinkedList<Conveyor>();
-		this.buildings = new LinkedList<Building>();
 
 		// - generate the map by generating seeds and growing them
 		// - attempt to spawn around 1 seed per x tiles (actual numbers are lower than
@@ -81,7 +105,7 @@ public class Chunk
 			int coordsOffsetX = (neighbourX - chunkX) * CHUNKSIZE;
 			int coordsOffsetY = (neighbourY - chunkY) * CHUNKSIZE;
 
-			// since we shouldn't modify a map while it's being iterated, store all consumed ressources to be deleted later
+			// since we shouldn't modify a map while it's being iterated, store all consumed resources to be deleted later
 			List<Long> toDeleteRessourceKeys = new LinkedList<Long>();
 
 			for (Map.Entry<Long, Ressource> cachedRessource : neighbour.cachedGenerationRessources.entrySet())
@@ -118,12 +142,22 @@ public class Chunk
 			int life = random.nextInt(max_life) + 2;
 			// choose a random resource to spawn excluding the first value which is NONE
 			Ressource ressource = Ressource.values()[random.nextInt(Ressource.values().length - 1) + 1];
-			
+
 			generate(ressource, life, x, y);
 		}
 
 	}
 
+	public void createStorageMembers()
+	{
+		conveyors = new LinkedList<Conveyor>();
+		buildings = new LinkedList<Building>();
+		
+		tiles = new HashMap<TileType, Tile[][]>();
+		tiles.put(TileType.FACTORY, new Building[CHUNKSIZE][CHUNKSIZE]);
+		tiles.put(TileType.CONVEYOR, new Building[CHUNKSIZE][CHUNKSIZE]);
+	}
+	
 	// - returns the tile based on local coordinates, also works if the coordinates are outside the chunk since
 	// it first goes through the tilemap to determine what chunk the tile is in
 	// - checking if the coordinates are local is necessary because redirection may not work in the constructor otherwise
@@ -142,7 +176,7 @@ public class Chunk
 
 			if (target == null)
 				return null;
-		}			
+		}
 
 		return target.tiles.get(type)[localX][localY];
 	}
@@ -164,7 +198,7 @@ public class Chunk
 			if (target == null)
 				return;
 		}
-		
+
 		// if it's a conveyor, add/remove it to/from the conveyors list to animate its items more easily
 		if (type == TileType.CONVEYOR)
 		{
@@ -181,7 +215,7 @@ public class Chunk
 			else
 				buildings.remove((Building) getLocalTile(TileType.FACTORY, localX, localY));
 		}
-		
+
 		target.tiles.get(type)[localX][localY] = value;
 	}
 
@@ -279,13 +313,13 @@ public class Chunk
 			}
 		}
 	}
-	
+
 	public void renderFactories(SpriteBatch batch, int x, int y)
 	{
 		for (Building building : buildings)
 			building.render(batch, x, y);
 	}
-	
+
 	public void renderConveyors(SpriteBatch batch, int x, int y)
 	{
 		for (Conveyor conveyor : conveyors)
@@ -302,4 +336,5 @@ public class Chunk
 	{
 		return key;
 	}
+
 }

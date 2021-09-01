@@ -11,9 +11,16 @@ public class Conveyor extends Building
 {
 	public final TileType tiletype = TileType.CONVEYOR;
 	
+	private int inputDirection;
+	private int outputDirection;
+	
 	public Conveyor(TileMap tilemap, int x, int y, int[][] inputOutputPosition)
 	{
 		super(tilemap, x, y, inputOutputPosition[1][2], 1, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]), 1, 8, FactoryType.CONVEYOR);
+		
+		outputDirection = inputOutputPosition[0][2];
+		inputDirection = inputOutputPosition[0][2];
+		
 		this.inputPositions = new int[][] { inputOutputPosition[0] };
 		this.outputPosition = inputOutputPosition[1];
 	}
@@ -49,5 +56,15 @@ public class Conveyor extends Building
 			return "Tile/ConveyorLeft/";
 		return null; // shouldn't happen, if it happens, then crash, instead check that on return by
 						// caller
+	}
+
+	public int getInputDirection()
+	{
+		return inputDirection;
+	}
+
+	public int getOutputDirection()
+	{
+		return outputDirection;
 	}
 }

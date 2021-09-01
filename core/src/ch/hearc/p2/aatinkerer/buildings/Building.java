@@ -1,5 +1,6 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,11 +16,13 @@ import ch.hearc.p2.aatinkerer.data.TileType;
 import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
-public abstract class Building implements Tile
+public abstract class Building implements Tile, Serializable
 {
-	public final TileType tiletype = TileType.FACTORY;
-	
-	protected class Item
+	private static final long serialVersionUID = 1L;
+
+	public transient final TileType tiletype = TileType.FACTORY;
+
+	protected class Item implements Serializable
 	{
 		public ItemType type;
 		public long ticksSpent;
@@ -36,29 +39,39 @@ public abstract class Building implements Tile
 		}
 	}
 
-	protected TileMap tilemap;
-	protected BuildingTile[] tiles;
-	protected FactoryType type;
-
+	// - since the whole object will be recreated, we just store the bare minimum to recreate the object and recreate its connections
+	// from these, that's why everything is marked transient
+	// - FIXME there has to be a better solution
+	
 	protected int direction;
 	protected int x;
 	protected int y;
+	protected FactoryType type;
+	protected boolean mirrored;
+	
+	protected transient TileMap tilemap;
+	protected transient BuildingTile[] tiles;
 
-	protected int contentSize;
-	protected int maxSize;
-	protected LinkedList<Item> items;
-	protected HashMap<ItemType, Integer> currentIngredients;
+	protected transient int tilecount;
+	
+	protected transient String spritePath;
+	protected transient int framecount;
 
-	protected Building output;
-	protected int[][] inputPositions;
-	protected int[] outputPosition;
+	protected transient int contentSize;
+	protected transient int maxSize;
+	protected transient LinkedList<Item> items;
+	protected transient HashMap<ItemType, Integer> currentIngredients;
 
-	protected static int ticks = 0;
+	protected transient Building output;
+	protected transient int[][] inputPositions;
+	protected transient int[] outputPosition;
 
-	protected List<Recipe> recipes;
-	protected Recipe selectedRecipe;
-	protected boolean canSelectRecipe;
+	protected transient static int ticks = 0;
 
+	protected transient List<Recipe> recipes;
+	protected transient Recipe selectedRecipe;
+	protected transient boolean canSelectRecipe;
+	
 	public Building(TileMap tilemap, int x, int y, int direction, int size, String spritePath, int tiles, int frames, FactoryType type)
 	{
 		this.tilemap = tilemap;
@@ -67,12 +80,9 @@ public abstract class Building implements Tile
 		this.x = x;
 		this.y = y;
 		this.direction = direction;
-
-		this.tiles = new BuildingTile[tiles];
-		for (int i = 0; i < tiles; i++)
-		{
-			this.tiles[i] = new BuildingTile(spritePath + String.format("%02d", i) + "/", frames, type);
-		}
+		this.tilecount = tiles;
+		this.spritePath = spritePath;
+		this.framecount = frames;
 
 		this.contentSize = 0;
 		this.maxSize = size;
@@ -80,6 +90,13 @@ public abstract class Building implements Tile
 		this.currentIngredients = new HashMap<ItemType, Integer>();
 		this.recipes = null;
 		this.canSelectRecipe = false;
+
+		this.tiles = new BuildingTile[tilecount];
+
+		for (int i = 0; i < tilecount; i++)
+		{
+			this.tiles[i] = new BuildingTile(spritePath + String.format("%02d", i) + "/", framecount, type);
+		}
 	}
 
 	public boolean canSelectRecipe()
@@ -98,6 +115,27 @@ public abstract class Building implements Tile
 
 			tile.render(batch, Chunk.TILESIZE, direction, tx, ty);
 		}
+	}
+
+	public int getX()
+	{
+		return x;
+	}
+
+	public int getY()
+	{
+		return y;
+	}
+
+	public int getDirection()
+	{
+		return direction;
+	}
+
+	public boolean getMirrored()
+
+	{
+		return mirrored;
 	}
 
 	public int[][] getInputs()
@@ -286,4 +324,5 @@ public abstract class Building implements Tile
 	{
 		return this.recipes;
 	}
+
 }

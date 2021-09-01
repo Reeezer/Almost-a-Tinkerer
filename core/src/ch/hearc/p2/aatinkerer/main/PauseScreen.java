@@ -105,6 +105,8 @@ public class PauseScreen implements Screen
 			{
 				Sounds.CLICK.play();
 				game.toSaveScreen();
+
+				
 			};
 		});
 		table.add(homeButton).pad(115);
