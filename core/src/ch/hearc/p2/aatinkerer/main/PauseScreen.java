@@ -9,7 +9,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -44,18 +46,28 @@ public class PauseScreen implements Screen
 		this.camera = new OrthographicCamera();
 		this.viewport = new FitViewport(0, 0, camera);
 
-		Table table = new Table();
-		table.setFillParent(true);
+		Table mainTable = new Table();
+		Table buttonTable = new Table();
+		mainTable.setFillParent(true);
 
 		stage = new Stage();
 		stage.setViewport(viewport);
-		stage.addActor(table);
+		stage.addActor(mainTable);
 
 		background = new Texture("Menus/menu_background.png");
 
 		passedTime = 0.f;
 		frame1 = 0;
 		frame2 = -background.getWidth();
+
+		int pad = 75;
+
+		// Title
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
+		labelStyle.fontColor = AATinkererGame.WHITE;
+
+		Label title = new Label("Pause", labelStyle);
 
 		// Resume
 		ImageButtonStyle resumeButtonStyle = new ImageButtonStyle();
@@ -70,7 +82,7 @@ public class PauseScreen implements Screen
 				game.toPausedGameScreen();
 			};
 		});
-		table.add(resumeButton).pad(115);
+		buttonTable.add(resumeButton).pad(pad);
 
 		// Sound
 		ImageButtonStyle muteButtonStyle = new ImageButtonStyle();
@@ -92,7 +104,22 @@ public class PauseScreen implements Screen
 					Sounds.MUSIC.setVolume(AATinkererGame.VOLUME_LOW);
 			};
 		});
-		table.add(muteButton).pad(115);
+		buttonTable.add(muteButton).pad(pad);
+
+		// Save
+		ImageButtonStyle saveButtonStyle = new ImageButtonStyle();
+		saveButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/save.png"))));
+		saveButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/savehover.png"))));
+
+		ImageButton saveButton = new ImageButton(saveButtonStyle);
+		saveButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				Sounds.CLICK.play();
+				// FIXME save the game
+			};
+		});
+		buttonTable.add(saveButton).pad(pad);
 
 		// Back home
 		ImageButtonStyle homeButtonStyle = new ImageButtonStyle();
@@ -107,7 +134,11 @@ public class PauseScreen implements Screen
 				game.toSaveScreen();
 			};
 		});
-		table.add(homeButton).pad(115);
+		buttonTable.add(homeButton).pad(pad);
+
+		mainTable.add(title).padTop(50).padBottom(50);
+		mainTable.row();
+		mainTable.add(buttonTable);
 	}
 
 	@Override

@@ -72,27 +72,22 @@ public class DifficultyScreen implements Screen
 		Label title = new Label("Choose a difficulty", labelStyle);
 
 		// Difficulties
-		NinePatch regularPatch = new NinePatch(new Texture("Ui/Buttons/difficulty1.png"), 2, 2, 2, 2);
-		NinePatch abundantPatch = new NinePatch(new Texture("Ui/Buttons/difficulty2.png"), 2, 2, 2, 2);
-		NinePatch rarePatch = new NinePatch(new Texture("Ui/Buttons/difficulty3.png"), 2, 2, 2, 2);
-		NinePatch bigSparsePatch = new NinePatch(new Texture("Ui/Buttons/difficulty4.png"), 2, 2, 2, 2);
-		NinePatch everywherePatch = new NinePatch(new Texture("Ui/Buttons/difficulty5.png"), 2, 2, 2, 2);
-		NinePatch goodLuckPatch = new NinePatch(new Texture("Ui/Buttons/difficulty6.png"), 2, 2, 2, 2);
+		NinePatch difficultyPatch = new NinePatch(new Texture("Ui/Buttons/difficulty.png"), 2, 2, 2, 2);
 
-		NinePatch regularHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty1hover.png"), 2, 2, 2, 2);
-		NinePatch abundantHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty2hover.png"), 2, 2, 2, 2);
-		NinePatch rareHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty3hover.png"), 2, 2, 2, 2);
-		NinePatch bigSparseHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty4hover.png"), 2, 2, 2, 2);
-		NinePatch everywhereHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty5hover.png"), 2, 2, 2, 2);
-		NinePatch goodLuckHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty6hover.png"), 2, 2, 2, 2);
+		NinePatch regularHoverPatch = new NinePatch(new Texture("Ui/Buttons/regularhover.png"), 2, 2, 2, 2);
+		NinePatch abundantHoverPatch = new NinePatch(new Texture("Ui/Buttons/abundanthover.png"), 2, 2, 2, 2);
+		NinePatch rareHoverPatch = new NinePatch(new Texture("Ui/Buttons/rarehover.png"), 2, 2, 2, 2);
+		NinePatch bigSparseHoverPatch = new NinePatch(new Texture("Ui/Buttons/bigsparsehover.png"), 2, 2, 2, 2);
+		NinePatch everywhereHoverPatch = new NinePatch(new Texture("Ui/Buttons/everywherehover.png"), 2, 2, 2, 2);
+		NinePatch goodLuckHoverPatch = new NinePatch(new Texture("Ui/Buttons/goodluckhover.png"), 2, 2, 2, 2);
 
-		createButton(regularPatch, regularHoverPatch, "Regular", Difficulty.REGULAR);
-		createButton(abundantPatch, abundantHoverPatch, "Abundant", Difficulty.ABUNDANT);
-		createButton(rarePatch, rareHoverPatch, "Rare", Difficulty.RARE);
+		createButton(difficultyPatch, regularHoverPatch, "Regular", Difficulty.REGULAR);
+		createButton(difficultyPatch, abundantHoverPatch, "Abundant", Difficulty.ABUNDANT);
+		createButton(difficultyPatch, rareHoverPatch, "Rare", Difficulty.RARE);
 		diffTable.row();
-		createButton(bigSparsePatch, bigSparseHoverPatch, "Big sparse", Difficulty.BIGSPARSE);
-		createButton(everywherePatch, everywhereHoverPatch, "Everywhere", Difficulty.EVERYWHERE);
-		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck", Difficulty.GOODLUCK);
+		createButton(difficultyPatch, bigSparseHoverPatch, "Big sparse", Difficulty.BIGSPARSE);
+		createButton(difficultyPatch, everywhereHoverPatch, "Everywhere", Difficulty.EVERYWHERE);
+		createButton(difficultyPatch, goodLuckHoverPatch, "Good luck", Difficulty.GOODLUCK);
 
 		// Positioning
 		mainTable.add(title).padBottom(25);
@@ -101,14 +96,15 @@ public class DifficultyScreen implements Screen
 
 		// Exit
 		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
+		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
 
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
 		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
-		textButtonStyle.overFontColor = AATinkererGame.BLUE;
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
 		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
+		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
 
-		exitButton = new TextButton("Exit", textButtonStyle);
+		exitButton = new TextButton("Return", textButtonStyle);
 		exitButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -124,7 +120,7 @@ public class DifficultyScreen implements Screen
 		TextButtonStyle buttonStyle = new TextButtonStyle();
 		buttonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
 		buttonStyle.overFontColor = AATinkererGame.TRANSPARENT;
-		buttonStyle.fontColor = AATinkererGame.BLUE;
+		buttonStyle.fontColor = AATinkererGame.WHITE;
 		buttonStyle.up = new NinePatchDrawable(ninePatch);
 		buttonStyle.over = new NinePatchDrawable(ninePatchHover);
 

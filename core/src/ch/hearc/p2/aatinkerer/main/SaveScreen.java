@@ -1,23 +1,32 @@
 package ch.hearc.p2.aatinkerer.main;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ch.hearc.p2.aatinkerer.util.AutoFocusScrollPane;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
 public class SaveScreen implements Screen
@@ -37,8 +46,13 @@ public class SaveScreen implements Screen
 
 	private int frame1;
 	private int frame2;
+	private int saveSelected;
 
 	private Texture background;
+
+	private TextButton loadButton;
+	private Table savesTable;
+	private List<Table> savesList;
 
 	public SaveScreen(final AATinkererGame game)
 	{
@@ -49,6 +63,7 @@ public class SaveScreen implements Screen
 
 		Table mainTable = new Table();
 		Table buttonsTable = new Table();
+		savesTable = new Table();
 		mainTable.setFillParent(true);
 
 		background = new Texture("Menus/menu_background.png");
@@ -70,24 +85,26 @@ public class SaveScreen implements Screen
 
 		// Buttons
 		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
+		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
+		NinePatch textButtonDisabledPatch = new NinePatch(new Texture("Ui/Buttons/textbuttondisabled.png"), 2, 2, 2, 2);
 
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
 		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
-		textButtonStyle.overFontColor = AATinkererGame.BLUE;
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
 		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
+		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
+		textButtonStyle.disabled = new NinePatchDrawable(textButtonDisabledPatch);
 
-		TextButton loadButton = new TextButton("Load world", textButtonStyle);
+		loadButton = new TextButton("Load world", textButtonStyle);
 		loadButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
 				Sounds.CLICK.play();
-				game.toNewGameScreen();
-				// FIXME disable le bouton si rien n'est sélectionné
+				System.out.format("%s%02d%s", "AppData/Roaming/almost-a-tinkerer/save", saveSelected, "/\n");
 				// FIXME lancer la partie en fonction de ce qui est sélectionné
 			};
 		});
-		buttonsTable.add(loadButton).pad(100);
+		buttonsTable.add(loadButton).padRight(200).padTop(50).padBottom(50);
 
 		TextButton newButton = new TextButton("New world", textButtonStyle);
 		newButton.addListener(new ClickListener() {
@@ -97,11 +114,78 @@ public class SaveScreen implements Screen
 				game.toDifficultyScreen();
 			};
 		});
-		buttonsTable.add(newButton).pad(100);
+		buttonsTable.add(newButton);
 
-		mainTable.add(title);
+		// Adding to the layout
+		mainTable.add(title).padTop(50).padBottom(50);
+		mainTable.row();
+		mainTable.add(savesTable).grow().width(800);
 		mainTable.row();
 		mainTable.add(buttonsTable);
+	}
+
+	public void displaySaves()
+	{
+		savesTable.clear();
+		saveSelected = -1;
+		loadButton.setTouchable(Touchable.disabled);
+		loadButton.setDisabled(true);
+
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		labelStyle.fontColor = AATinkererGame.WHITE;
+
+		ScrollPaneStyle paneStyle = new ScrollPaneStyle();
+		paneStyle.vScroll = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2));
+		paneStyle.vScrollKnob = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2));
+
+		savesList = new LinkedList<Table>();
+
+		Table table = new Table();
+
+		AutoFocusScrollPane pane = new AutoFocusScrollPane(table, paneStyle);
+		pane.setScrollbarsVisible(true);
+		pane.setFadeScrollBars(false);
+
+		JsonReader jsonReader = new JsonReader();
+		FileHandle[] files = Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").list();
+		for (FileHandle file : files) {
+			System.out.println(file.path());
+			JsonValue json = jsonReader.parse(Gdx.files.external(file.path() + "/gamedata.json"));
+			System.out.println(json);
+
+			Label nameLabel = new Label(json.getString("name"), labelStyle);
+			Label dateLabel = new Label(json.getString("date"), labelStyle);
+			Image difficultyImage = new Image(new Texture("Ui/Buttons/" + json.getString("difficulty").toLowerCase() + "hover.png"));
+
+			table.row().padBottom(10).padTop(10);
+			final Table line = new Table();
+			savesList.add(line);
+			line.addListener(new ClickListener() {
+				public void clicked(InputEvent event, float x, float y)
+				{
+					saveSelected = savesList.indexOf(line) + 1;
+
+					if (loadButton.isDisabled()) {
+						loadButton.setDisabled(false);
+						loadButton.setTouchable(Touchable.enabled);
+					}
+
+					for (Table otherLine : savesList)
+						if (otherLine != line)
+							otherLine.setBackground(new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2)));
+					line.setBackground(new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2)));
+				}
+			});
+
+			line.setBackground(new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2)));
+			line.add(nameLabel).width(350).fill();
+			line.add(dateLabel).width(250).fill();
+			line.add(difficultyImage).width(150).height(150).fill();
+			table.add(line).expand();
+		}
+
+		savesTable.add(pane).grow();
 	}
 
 	@Override

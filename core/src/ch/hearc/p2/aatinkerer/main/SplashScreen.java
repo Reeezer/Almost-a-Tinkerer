@@ -41,7 +41,7 @@ public class SplashScreen implements Screen
 		camera.position.y = 0;
 		camera.zoom = 1;
 
-		background = new Texture("Menus/splash3.png");
+		background = new Texture("Menus/splash.png");
 		hearcLogo = new Texture("Menus/pixel_arc.png");
 
 		passedTime = 0;

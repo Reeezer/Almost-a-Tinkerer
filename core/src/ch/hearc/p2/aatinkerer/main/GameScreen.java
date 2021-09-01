@@ -177,6 +177,8 @@ public class GameScreen implements Screen
 		GameManager.init().addMilestoneListener(milestoneListener);
 		GameManager.getInstance().addContractListener(contractListener);
 	}
+	
+	
 
 	@Override
 	public void show()

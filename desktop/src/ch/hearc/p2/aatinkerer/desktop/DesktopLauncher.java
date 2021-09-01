@@ -1,5 +1,6 @@
 package ch.hearc.p2.aatinkerer.desktop;
 
+import com.badlogic.gdx.Files;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
@@ -16,6 +17,7 @@ public class DesktopLauncher
 		config.resizable = true;
 		config.title = "Almost a Tinkerer";
 		config.fullscreen = false;
+		config.addIcon("Ui/appicon.png", Files.FileType.Internal);
 
 		new LwjglApplication(new AATinkererGame(), config);
 	}
