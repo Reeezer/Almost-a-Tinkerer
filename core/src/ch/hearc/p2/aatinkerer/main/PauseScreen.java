@@ -2,6 +2,7 @@ package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -191,6 +192,9 @@ public class PauseScreen implements Screen
 		}
 		else
 			passedTime += delta;
+
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+			game.toPausedGameScreen();
 	}
 
 	@Override
