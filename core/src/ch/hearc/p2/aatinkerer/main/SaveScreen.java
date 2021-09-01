@@ -122,13 +122,11 @@ public class SaveScreen implements Screen
 		mainTable.add(savesTable).grow().width(800);
 		mainTable.row();
 		mainTable.add(buttonsTable);
-
-		// Displaying all the saves found
-		displaySaves();
 	}
 
 	public void displaySaves()
 	{
+		savesTable.clear();
 		saveSelected = -1;
 		loadButton.setTouchable(Touchable.disabled);
 		loadButton.setDisabled(true);

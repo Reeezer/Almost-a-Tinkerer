@@ -96,6 +96,7 @@ public class AATinkererGame extends Game
 	public void toSaveScreen()
 	{
 		changeVolume(VOLUME_LOW);
+		saveScreen.displaySaves();
 		setScreen(saveScreen);
 	}
 
