@@ -114,19 +114,16 @@ public class TileMap implements Serializable
 		for (Building building : temporaryBuildings)
 		{
 			if (building.getType() != null)
-			{
-				int outputdirection = -1;
-				int inputdirection = -1;
-				
+			{				
 				if (building.getType() == FactoryType.CONVEYOR)
 				{
 					Conveyor conveyor = (Conveyor) building;
 					
-					outputdirection = conveyor.getOutputDirection();
-					inputdirection = conveyor.getInputDirection();
+					// custom method to replace only conveyors because they have annoying behavior after loading a saved game
+					replaceConveyor(building.getX(), building.getY(), conveyor.getInputDirection(), conveyor.getOutputDirection());
 				}
-				
-				placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), inputdirection, outputdirection);
+				else
+					placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored());
 			}
 		}
 
@@ -554,7 +551,7 @@ public class TileMap implements Serializable
 		}
 	}
 
-	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, int inputdirection, int outputdirection)
+	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
 		int ret = 0;
 
@@ -676,7 +673,20 @@ public class TileMap implements Serializable
 			Sounds.PLACING.play();
 		}
 		return ret;
+	}
+	
+	private void replaceConveyor(int x, int y, int inputDirection, int outputDirection)
+	{
+		if (isEmpty(x, y))
+		{
+			Conveyor conveyor = new Conveyor(this, x, y, new int[][] { { x, y, inputDirection }, { x, y, outputDirection } });
+			setTileAt(TileType.CONVEYOR, x, y, conveyor);
+			buildings.add(conveyor);
+			
+			updateOutputs(x, y);
 
+			Sounds.PLACING.play();
+		}
 	}
 
 	public void deleteBuilding(int x, int y)

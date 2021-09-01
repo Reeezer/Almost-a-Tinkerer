@@ -384,10 +384,10 @@ public class GameScreen implements Screen
 
 				if (factoryType != null && factoryType != FactoryType.CONVEYOR)
 				{
-					int inputTunnel = map.placeBuilding(tileX, tileY, direction, factoryType, mirrored, -1, -1);
+					int inputTunnel = map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 					if (inputTunnel == 1 || inputTunnel == 2)
 						isInputTunnel = (inputTunnel == 1) ? true : false;
-					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored, -1, -1);
+					map.placeBuilding(tileX, tileY, direction, factoryType, mirrored);
 				}
 				else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a
 																// line
@@ -404,9 +404,9 @@ public class GameScreen implements Screen
 					}
 
 					if (direction == 0 || direction == 2)
-						map.placeBuilding(tileX, initialy, direction, factoryType, mirrored, -1, -1);
+						map.placeBuilding(tileX, initialy, direction, factoryType, mirrored);
 					if (direction == 1 || direction == 3)
-						map.placeBuilding(initialx, tileY, direction, factoryType, mirrored, -1, -1);
+						map.placeBuilding(initialx, tileY, direction, factoryType, mirrored);
 				}
 				else
 				{

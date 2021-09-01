@@ -18,7 +18,7 @@ public class Conveyor extends Building
 	{
 		super(tilemap, x, y, inputOutputPosition[1][2], 1, getSpritePath(inputOutputPosition[1][2], inputOutputPosition[0][2]), 1, 8, FactoryType.CONVEYOR);
 		
-		outputDirection = inputOutputPosition[0][2];
+		outputDirection = inputOutputPosition[1][2];
 		inputDirection = inputOutputPosition[0][2];
 		
 		this.inputPositions = new int[][] { inputOutputPosition[0] };
