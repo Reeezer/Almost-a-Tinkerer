@@ -45,7 +45,7 @@ public class TileMap
 
 	private boolean isInputTunnel;
 
-	Random random;
+	private Random random;
 
 	public TileMap()
 	{
@@ -56,25 +56,21 @@ public class TileMap
 
 		chunks = new HashMap<Long, Chunk>();
 
-		
 		// generate the chunks around the center so we can place the hub
-		cameraMovedToPosition(new Vector3(0,0,0), 20, 20);
-		
-		
+		cameraMovedToPosition(new Vector3(0, 0, 0), 20, 20);
+
 		// add the hub back
 		Hub hub = new Hub(this, 1, 1); // FIXME essayer de le mettre vraiment au centre sans le bug graphique
-		
+
 		for (int x = 0; x <= 2; x++)
 			for (int y = 0; y <= 2; y++)
 				setTileAt(TileType.FACTORY, x, y, hub);
-		
+
 		buildings.add(hub);
-		
+
 		// clear out the ressources around the hub
-		for (int x = -2; x <= 4; x++)
-		{
-			for (int y = -2; y <= 4; y++)
-			{
+		for (int x = -2; x <= 4; x++) {
+			for (int y = -2; y <= 4; y++) {
 				setTileAt(TileType.RESSOURCE, x, y, Ressource.NONE);
 			}
 		}
@@ -99,12 +95,10 @@ public class TileMap
 	{
 		Chunk chunk = chunkAtTile(x, y);
 
-		if (chunk == null)
-		{
+		if (chunk == null) {
 			return null;
 		}
-		else
-		{
+		else {
 			int tileX = Util.negmod(x, Chunk.CHUNKSIZE);
 			int tileY = Util.negmod(y, Chunk.CHUNKSIZE);
 
@@ -112,17 +106,14 @@ public class TileMap
 		}
 	}
 
-	
 	public void setTileAt(TileType type, int x, int y, Tile tile)
 	{
 		Chunk chunk = chunkAtTile(x, y);
 
-		if (chunk == null)
-		{
+		if (chunk == null) {
 			return;
 		}
-		else
-		{
+		else {
 			int tileX = Util.negmod(x, Chunk.CHUNKSIZE);
 			int tileY = Util.negmod(y, Chunk.CHUNKSIZE);
 
@@ -192,8 +183,7 @@ public class TileMap
 		List<Chunk> chunksToRender = new LinkedList<Chunk>();
 
 		// build a list of chunks that need to be rendered so that each layer can then be rendered at the same time instead of at once with the whole chunk
-		for (Map.Entry<Long, Chunk> chunkEntry : chunks.entrySet())
-		{
+		for (Map.Entry<Long, Chunk> chunkEntry : chunks.entrySet()) {
 			long key = chunkEntry.getKey();
 			Chunk chunk = chunkEntry.getValue();
 
@@ -245,10 +235,8 @@ public class TileMap
 		int chunkX = cameraX / Chunk.CHUNKSIZE;
 		int chunkY = cameraY / Chunk.CHUNKSIZE;
 
-		for (int x = chunkX - maxDeltaX; x <= chunkX + maxDeltaX; x++)
-		{
-			for (int y = chunkY - maxDeltaY; y <= chunkY + maxDeltaY; y++)
-			{
+		for (int x = chunkX - maxDeltaX; x <= chunkX + maxDeltaX; x++) {
+			for (int y = chunkY - maxDeltaY; y <= chunkY + maxDeltaY; y++) {
 				long key = chunkCoordsToKey(x, y);
 
 				if (!chunks.containsKey(key))
@@ -260,8 +248,7 @@ public class TileMap
 	private boolean isEmpty(int x, int y)
 	{
 		// en théorie, impossible que cette condition soit fausse via un clic de souris mais on sait jamais
-		if (chunkAtTile(x, y) != null)
-		{
+		if (chunkAtTile(x, y) != null) {
 			// conveyors layer
 			if (tileAt(TileType.CONVEYOR, x, y) != null)
 				return false;
@@ -319,8 +306,7 @@ public class TileMap
 		int dx = 0;
 		int dy = 0;
 
-		switch (outputPosition[2])
-		{
+		switch (outputPosition[2]) {
 			case 0:
 				dx = 1;
 				break;
@@ -342,24 +328,18 @@ public class TileMap
 			return null;
 
 		Conveyor conveyor = (Conveyor) tileAt(TileType.CONVEYOR, x + dx, y + dy);
-		if (conveyor != null && conveyor.getInputs() != null)
-		{
-			for (int[] input : conveyor.getInputs())
-			{
-				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4)
-				{
+		if (conveyor != null && conveyor.getInputs() != null) {
+			for (int[] input : conveyor.getInputs()) {
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4) {
 					return conveyor;
 				}
 			}
 		}
 
 		Building factory = (Building) tileAt(TileType.FACTORY, x + dx, y + dy);
-		if (factory != null && factory.getInputs() != null)
-		{
-			for (int[] input : factory.getInputs())
-			{
-				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4)
-				{
+		if (factory != null && factory.getInputs() != null) {
+			for (int[] input : factory.getInputs()) {
+				if (input[0] == x + dx && input[1] == y + dy && input[2] == (outputPosition[2] + 2) % 4) {
 					return factory;
 				}
 			}
@@ -372,23 +352,17 @@ public class TileMap
 	{
 		Building building = (Building) tileAt(type, x + dx, y + dy);
 
-		if (!isInput)
-		{
-			if (building != null && building.getInputs() != null)
-			{
-				for (int[] input : building.getInputs())
-				{
-					if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 1 + addToDirection) % 4)
-					{
+		if (!isInput) {
+			if (building != null && building.getInputs() != null) {
+				for (int[] input : building.getInputs()) {
+					if (input[0] == x + dx && input[1] == y + dy && input[2] == (direction + 1 + addToDirection) % 4) {
 						inputOutputPosition[1] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
 					}
 				}
 			}
 		}
-		else
-		{
-			if (building != null && building.getOutput() != null)
-			{
+		else {
+			if (building != null && building.getOutput() != null) {
 				int[] output = building.getOutput();
 				if (output[0] == x + dx && output[1] == y + dy && output[2] == (direction + 1 + addToDirection) % 4)
 					inputOutputPosition[0] = new int[] { x, y, (direction + 3 + addToDirection) % 4 };
@@ -404,8 +378,7 @@ public class TileMap
 		int dx = 0;
 		int dy = 0;
 
-		switch (direction)
-		{
+		switch (direction) {
 			case 0:
 				dy = (isLeft) ? 1 : -1;
 				break;
@@ -453,8 +426,7 @@ public class TileMap
 		int dx = 0;
 		int dy = 0;
 
-		switch (direction)
-		{
+		switch (direction) {
 			case 0:
 				dx = 1;
 				break;
@@ -472,8 +444,7 @@ public class TileMap
 				break;
 		}
 
-		for (int i = 1; i <= distance; i++)
-		{
+		for (int i = 1; i <= distance; i++) {
 			int posX = x + dx * i;
 			int posY = y + dy * i;
 
@@ -508,16 +479,14 @@ public class TileMap
 
 		System.out.format("placing new building of type %s at (%d,%d)%n", factoryType, x, y);
 
-		if (isEmpty(x, y))
-		{
+		if (isEmpty(x, y)) {
 			// For multi-tiles (2 or 3 tiles in a row)
 			int x2 = (direction % 2 == 0) ? ((direction == 0) ? x + 1 : x - 1) : x;
 			int y2 = (direction % 2 != 0) ? ((direction == 1) ? y + 1 : y - 1) : y;
 			int x3 = (direction % 2 == 0) ? ((direction == 0) ? x + 2 : x - 2) : x;
 			int y3 = (direction % 2 != 0) ? ((direction == 1) ? y + 2 : y - 2) : y;
 
-			switch (factoryType)
-			{
+			switch (factoryType) {
 				case EXTRACTOR:
 					Ressource ressource = (Ressource) tileAt(TileType.RESSOURCE, x, y);
 					Extractor extractor = new Extractor(this, x, y, direction, ressource);
@@ -620,7 +589,7 @@ public class TileMap
 
 			// Check for link buildings already placed
 			updateOutputs(x, y);
-			
+
 			Sounds.PLACING.play();
 		}
 		return ret;
@@ -643,24 +612,22 @@ public class TileMap
 		Building deleted = null;
 
 		// conveyors layer
-		if (conveyor != null)
-		{
+		if (conveyor != null) {
 			deleted = conveyor;
 			buildings.remove(conveyor);
 
 			setTileAt(TileType.CONVEYOR, x, y, null);
-			
+
 			Sounds.DESTROYING.play();
 		}
 
 		// factories layer
-		if (factory != null)
-		{
+		if (factory != null) {
 			deleted = factory;
 			buildings.remove(factory);
 
 			setTileAt(TileType.FACTORY, x, y, null);
-			
+
 			Sounds.DESTROYING.play();
 		}
 
@@ -686,8 +653,7 @@ public class TileMap
 		Building deleted = null;
 
 		// conveyors layer
-		if (conveyor != null && conveyor == building)
-		{
+		if (conveyor != null && conveyor == building) {
 			deleted = conveyor;
 			buildings.remove(conveyor);
 
@@ -695,8 +661,7 @@ public class TileMap
 		}
 
 		// factories layer
-		if (factory != null && factory == building)
-		{
+		if (factory != null && factory == building) {
 			deleted = factory;
 			buildings.remove(factory);
 
@@ -720,21 +685,17 @@ public class TileMap
 			building.update();
 
 		// update transfer ticks
-		for (FactoryType type : FactoryType.values())
-		{
+		for (FactoryType type : FactoryType.values()) {
 			type.transferTicksIncrease();
-			if (type.getTransferTicks() > type.getTransferTimeout())
-			{
+			if (type.getTransferTicks() > type.getTransferTimeout()) {
 				type.resetTransferTicks();
 			}
 		}
 
 		// update animation ticks
-		for (FactoryType type : FactoryType.values())
-		{
+		for (FactoryType type : FactoryType.values()) {
 			type.animationTicksIncrease();
-			if (type.getAnimationTicks() > type.getAnimationTimeout())
-			{
+			if (type.getAnimationTicks() > type.getAnimationTimeout()) {
 				type.resetAnimationTicks();
 				type.frameIncrease();
 			}

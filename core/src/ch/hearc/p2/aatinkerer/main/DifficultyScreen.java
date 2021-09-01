@@ -72,19 +72,19 @@ public class DifficultyScreen implements Screen
 		Label title = new Label("Choose a difficulty", labelStyle);
 
 		// Difficulties
-		NinePatch regularPatch = new NinePatch(new Texture("Ui/Buttons/difficulty1.png"), 2, 2, 2, 2);
-		NinePatch abundantPatch = new NinePatch(new Texture("Ui/Buttons/difficulty2.png"), 2, 2, 2, 2);
-		NinePatch rarePatch = new NinePatch(new Texture("Ui/Buttons/difficulty3.png"), 2, 2, 2, 2);
-		NinePatch bigSparsePatch = new NinePatch(new Texture("Ui/Buttons/difficulty4.png"), 2, 2, 2, 2);
-		NinePatch everywherePatch = new NinePatch(new Texture("Ui/Buttons/difficulty5.png"), 2, 2, 2, 2);
-		NinePatch goodLuckPatch = new NinePatch(new Texture("Ui/Buttons/difficulty6.png"), 2, 2, 2, 2);
+		NinePatch regularPatch = new NinePatch(new Texture("Ui/Buttons/regular.png"), 2, 2, 2, 2);
+		NinePatch abundantPatch = new NinePatch(new Texture("Ui/Buttons/abundant.png"), 2, 2, 2, 2);
+		NinePatch rarePatch = new NinePatch(new Texture("Ui/Buttons/rare.png"), 2, 2, 2, 2);
+		NinePatch bigSparsePatch = new NinePatch(new Texture("Ui/Buttons/bigsparse.png"), 2, 2, 2, 2);
+		NinePatch everywherePatch = new NinePatch(new Texture("Ui/Buttons/everywhere.png"), 2, 2, 2, 2);
+		NinePatch goodLuckPatch = new NinePatch(new Texture("Ui/Buttons/goodluck.png"), 2, 2, 2, 2);
 
-		NinePatch regularHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty1hover.png"), 2, 2, 2, 2);
-		NinePatch abundantHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty2hover.png"), 2, 2, 2, 2);
-		NinePatch rareHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty3hover.png"), 2, 2, 2, 2);
-		NinePatch bigSparseHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty4hover.png"), 2, 2, 2, 2);
-		NinePatch everywhereHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty5hover.png"), 2, 2, 2, 2);
-		NinePatch goodLuckHoverPatch = new NinePatch(new Texture("Ui/Buttons/difficulty6hover.png"), 2, 2, 2, 2);
+		NinePatch regularHoverPatch = new NinePatch(new Texture("Ui/Buttons/regularhover.png"), 2, 2, 2, 2);
+		NinePatch abundantHoverPatch = new NinePatch(new Texture("Ui/Buttons/abundanthover.png"), 2, 2, 2, 2);
+		NinePatch rareHoverPatch = new NinePatch(new Texture("Ui/Buttons/rarehover.png"), 2, 2, 2, 2);
+		NinePatch bigSparseHoverPatch = new NinePatch(new Texture("Ui/Buttons/bigsparsehover.png"), 2, 2, 2, 2);
+		NinePatch everywhereHoverPatch = new NinePatch(new Texture("Ui/Buttons/everywherehover.png"), 2, 2, 2, 2);
+		NinePatch goodLuckHoverPatch = new NinePatch(new Texture("Ui/Buttons/goodluckhover.png"), 2, 2, 2, 2);
 
 		createButton(regularPatch, regularHoverPatch, "Regular", Difficulty.REGULAR);
 		createButton(abundantPatch, abundantHoverPatch, "Abundant", Difficulty.ABUNDANT);
