@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -39,8 +38,8 @@ import ch.hearc.p2.aatinkerer.ui.widgets.NotificationManager;
 import ch.hearc.p2.aatinkerer.ui.widgets.SplitterMenu;
 import ch.hearc.p2.aatinkerer.ui.widgets.StoryContractDisplay;
 import ch.hearc.p2.aatinkerer.ui.widgets.Toolbar;
-import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.util.Sounds;
+import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.world.TileMap;
 
 public class GameScreen implements Screen
@@ -177,8 +176,6 @@ public class GameScreen implements Screen
 		GameManager.init().addMilestoneListener(milestoneListener);
 		GameManager.getInstance().addContractListener(contractListener);
 	}
-	
-	
 
 	@Override
 	public void show()
@@ -352,8 +349,7 @@ public class GameScreen implements Screen
 					if (direction == 1 || direction == 3)
 						map.placeBuilding(initialx, tileY, direction, factoryType, mirrored);
 				}
-				else
-				{
+				else {
 					Building attemptContextualMenuBuilding = (Building) map.tileAt(TileType.FACTORY, tileX, tileY);
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding instanceof Splitter) {
@@ -401,18 +397,16 @@ public class GameScreen implements Screen
 			tooltipy = (height - Gdx.input.getY()) + 3;
 
 			Tile itemTile = map.tileAt(TileType.RESSOURCE, x, y);
-			if (itemTile != null)
-			{
+			if (itemTile != null) {
 				ItemType item = ((Ressource) map.tileAt(TileType.RESSOURCE, x, y)).getExtractedItem();
-				
-				// FIXME check for null too 
+
+				// FIXME check for null too
 				Building building = (Building) map.tileAt(TileType.FACTORY, x, y);
 				Building conveyor = (Building) map.tileAt(TileType.CONVEYOR, x, y);
-	
+
 				// FIXME maybe still display the ressources if the hovered building is an extractor?
 				// only display on ressources tiles that don't have a building on top
-				if (building == null && conveyor == null && item != null && item != ItemType.NONE)
-				{
+				if (building == null && conveyor == null && item != null && item != ItemType.NONE) {
 					tooltipText = item.fullname();
 					renderTooltip = true;
 				}
@@ -425,14 +419,13 @@ public class GameScreen implements Screen
 		/* update */
 
 		// cap on fixed TPS
-		while (unprocessedTime >= processingTimeCap)
-		{			
+		while (unprocessedTime >= processingTimeCap) {
 			unprocessedTime -= processingTimeCap;
 			map.update();
 
 			GameManager.getInstance().tick();
 		}
-		
+
 		map.cameraMovedToPosition(mapCamera.position, width, height);
 
 		/* render */
@@ -529,7 +522,9 @@ public class GameScreen implements Screen
 			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
 
 		// Drawing an arrow pointing towards the hub
-		if (x > 300 || x < -300 || y < -300 || y > 300) {
+		float arrowPositionDisapear = Math.min(width, height) * zoom;
+		System.out.println(arrowPositionDisapear);
+		if (x > arrowPositionDisapear || x < -arrowPositionDisapear || y < -arrowPositionDisapear || y > arrowPositionDisapear) {
 			float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI) + 180;
 
 			float rad = (float) (angle * (Math.PI / 180));
@@ -551,30 +546,30 @@ public class GameScreen implements Screen
 	public int screenToTileX(int screenX)
 	{
 		// - original (likely buggy) formula
-		//int result = (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / Chunk.TILESIZE);
-		
+		// int result = (int) (((screenX - (width / 2.f)) * zoom + mapCamera.position.x) / Chunk.TILESIZE);
+
 		float screenCenter = width / 2.f;
 		float positionRelativeToCenter = screenX - screenCenter;
 		float positionRelativeToCamera = (positionRelativeToCenter * mapCamera.zoom) + mapCamera.position.x;
 		float actualTilePosition = positionRelativeToCamera / Chunk.TILESIZE;
-		
+
 		int result = (int) Math.floor(actualTilePosition);
-		
+
 		return result;
 	}
 
 	public int screenToTileY(int screenY)
 	{
 		// - original (likely buggy) formula
-		//int result = (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / Chunk.TILESIZE);
-		
+		// int result = (int) ((((height - screenY) - (height / 2.f)) * zoom + mapCamera.position.y) / Chunk.TILESIZE);
+
 		float screenCenter = height / 2.f;
 		float positionRelativeToCenter = (height - screenY) - screenCenter; // height - y => vertical screen coordinates are flipped compared to camera coordinates
 		float positionRelativeToCamera = (positionRelativeToCenter * mapCamera.zoom) + mapCamera.position.y;
 		float actualTilePosition = positionRelativeToCamera / Chunk.TILESIZE;
-		
+
 		int result = (int) Math.floor(actualTilePosition);
-		
+
 		return result;
 	}
 
