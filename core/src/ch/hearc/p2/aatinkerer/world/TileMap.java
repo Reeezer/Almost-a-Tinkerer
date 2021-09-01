@@ -110,6 +110,8 @@ public class TileMap implements Serializable
 		Set<Building> temporaryBuildings = new HashSet<Building>(buildings);
 		buildings = new HashSet<Building>();
 
+		placeHub();
+		
 		// FIXME add back all the contained items
 		for (Building building : temporaryBuildings)
 		{
@@ -127,7 +129,7 @@ public class TileMap implements Serializable
 			}
 		}
 
-		placeHub();
+		
 	}
 
 	public Chunk chunkAtTile(int x, int y)
