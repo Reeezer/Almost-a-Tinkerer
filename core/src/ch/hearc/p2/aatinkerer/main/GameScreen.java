@@ -580,10 +580,9 @@ public class GameScreen implements Screen
 		this.height = height;
 		
 		// make it so the UI's scale adapts itself to the screen size
-		int smallestDim = Math.min(height, width);
-		if (smallestDim > 1400)
+		if (height > 2000 && width > 3000)
 			uiCamera.zoom = 0.25f;
-		else if (smallestDim > 700)
+		else if (height > 1000 && width > 1500)
 			uiCamera.zoom = 0.5f;
 		else
 			uiCamera.zoom = 1.f;
