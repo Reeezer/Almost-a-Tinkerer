@@ -523,7 +523,6 @@ public class GameScreen implements Screen
 
 		// Drawing an arrow pointing towards the hub
 		float arrowPositionDisapear = Math.min(width, height) * zoom;
-		System.out.println(arrowPositionDisapear);
 		if (x > arrowPositionDisapear || x < -arrowPositionDisapear || y < -arrowPositionDisapear || y > arrowPositionDisapear) {
 			float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI) + 180;
 

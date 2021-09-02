@@ -2,6 +2,7 @@ package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -72,7 +73,12 @@ public class DifficultyScreen implements Screen
 		Label title = new Label("Choose a difficulty", labelStyle);
 
 		// Difficulties
-		NinePatch difficultyPatch = new NinePatch(new Texture("Ui/Buttons/difficulty.png"), 2, 2, 2, 2);
+		NinePatch regularPatch = new NinePatch(new Texture("Ui/Buttons/regular.png"), 2, 2, 2, 2);
+		NinePatch abundantPatch = new NinePatch(new Texture("Ui/Buttons/abundant.png"), 2, 2, 2, 2);
+		NinePatch rarePatch = new NinePatch(new Texture("Ui/Buttons/rare.png"), 2, 2, 2, 2);
+		NinePatch bigSparsePatch = new NinePatch(new Texture("Ui/Buttons/bigsparse.png"), 2, 2, 2, 2);
+		NinePatch everywherePatch = new NinePatch(new Texture("Ui/Buttons/everywhere.png"), 2, 2, 2, 2);
+		NinePatch goodLuckPatch = new NinePatch(new Texture("Ui/Buttons/goodluck.png"), 2, 2, 2, 2);
 
 		NinePatch regularHoverPatch = new NinePatch(new Texture("Ui/Buttons/regularhover.png"), 2, 2, 2, 2);
 		NinePatch abundantHoverPatch = new NinePatch(new Texture("Ui/Buttons/abundanthover.png"), 2, 2, 2, 2);
@@ -81,20 +87,20 @@ public class DifficultyScreen implements Screen
 		NinePatch everywhereHoverPatch = new NinePatch(new Texture("Ui/Buttons/everywherehover.png"), 2, 2, 2, 2);
 		NinePatch goodLuckHoverPatch = new NinePatch(new Texture("Ui/Buttons/goodluckhover.png"), 2, 2, 2, 2);
 
-		createButton(difficultyPatch, regularHoverPatch, "Regular", Difficulty.REGULAR);
-		createButton(difficultyPatch, abundantHoverPatch, "Abundant", Difficulty.ABUNDANT);
-		createButton(difficultyPatch, rareHoverPatch, "Rare", Difficulty.RARE);
+		createButton(regularPatch, regularHoverPatch, "Regular", Difficulty.REGULAR);
+		createButton(abundantPatch, abundantHoverPatch, "Abundant", Difficulty.ABUNDANT);
+		createButton(rarePatch, rareHoverPatch, "Rare", Difficulty.RARE);
 		diffTable.row();
-		createButton(difficultyPatch, bigSparseHoverPatch, "Big sparse", Difficulty.BIGSPARSE);
-		createButton(difficultyPatch, everywhereHoverPatch, "Everywhere", Difficulty.EVERYWHERE);
-		createButton(difficultyPatch, goodLuckHoverPatch, "Good luck", Difficulty.GOODLUCK);
+		createButton(bigSparsePatch, bigSparseHoverPatch, "Big sparse", Difficulty.BIGSPARSE);
+		createButton(everywherePatch, everywhereHoverPatch, "Everywhere", Difficulty.EVERYWHERE);
+		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck", Difficulty.GOODLUCK);
 
 		// Positioning
 		mainTable.add(title).padBottom(25);
 		mainTable.row();
 		mainTable.add(diffTable);
 
-		// Exit
+		// Return
 		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
 		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
 
@@ -187,6 +193,9 @@ public class DifficultyScreen implements Screen
 		}
 		else
 			passedTime += delta;
+
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+			game.toSaveScreen();
 	}
 
 	@Override

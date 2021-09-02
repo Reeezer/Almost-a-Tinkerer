@@ -6,7 +6,7 @@ public enum Difficulty
 	ABUNDANT(40, 10, 0.6), //
 	RARE(4, 3, 0.6), //
 	BIGSPARSE(2, 14, 0.75), //
-	EVERYWHERE(15000, 1, 0.1), //
+	EVERYWHERE(10000, 1, 0.1), //
 	GOODLUCK(1, 1, 0); //
 
 	private int nbSeed;
