@@ -38,7 +38,7 @@ public class ItemDropdownMenu implements UIElement
 		this.spritesheet = new Texture(Gdx.files.internal("Ui/item_dropdown.png"));
 
 		this.topBorderRegion = new TextureRegion(this.spritesheet, 0, 0, 256, 5);
-		this.itemRegion = new TextureRegion(this.spritesheet, 0, 6, 256, 32);
+		this.itemRegion = new TextureRegion(this.spritesheet, 0, 7, 256, 30);
 		this.bottomBorderRegion = new TextureRegion(this.spritesheet, 0, 39, 256, 5);
 
 		FreeTypeFontParameter descriptionFontParameter = new FreeTypeFontParameter();

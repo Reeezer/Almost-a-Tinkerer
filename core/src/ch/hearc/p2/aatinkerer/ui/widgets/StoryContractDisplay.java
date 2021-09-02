@@ -39,7 +39,7 @@ public class StoryContractDisplay implements UIElement
 		this.spritesheet = new Texture("Ui/contracts_ui.png");
 
 		this.titlebarArea = new TextureRegion(this.spritesheet, 0, 0, 256, 104);
-		this.contractRowArea = new TextureRegion(this.spritesheet, 0, 105, 256, 36);
+		this.contractRowArea = new TextureRegion(this.spritesheet, 0, 108, 256, 30);
 		this.bottomBorderArea = new TextureRegion(this.spritesheet, 0, 142, 256, 5);
 		this.checkmarkArea = new TextureRegion(this.spritesheet, 6, 151, 26, 21);
 
@@ -107,7 +107,7 @@ public class StoryContractDisplay implements UIElement
 
 				itemNameFont.draw(batch, displayedString, xcorner + 42, ycorner + 19, 0, displayedString.length(), 239.f, -1, false);
 
-				itemType.render(batch, xcorner + 3, ycorner + 2);
+				itemType.render(batch, xcorner + 3, ycorner - 1);
 
 				if (currentContract.isItemFulfilled(itemType))
 				{
