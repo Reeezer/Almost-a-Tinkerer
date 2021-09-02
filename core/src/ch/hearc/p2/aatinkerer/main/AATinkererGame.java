@@ -116,6 +116,11 @@ public class AATinkererGame extends Game
 			Sounds.MUSIC.setVolume(volume);
 	}
 
+	public void resizeGameScreen()
+	{
+		gameScreen.resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	}
+
 	@Override
 	public void render()
 	{

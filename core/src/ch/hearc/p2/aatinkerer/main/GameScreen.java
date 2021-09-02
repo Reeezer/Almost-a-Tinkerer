@@ -296,7 +296,7 @@ public class GameScreen implements Screen
 					continue;
 
 				int mx = (int) (Gdx.input.getX() * uiCamera.zoom);
-				int my = (int) ((height - Gdx.input.getY()) *uiCamera.zoom);
+				int my = (int) ((height - Gdx.input.getY()) * uiCamera.zoom);
 
 				Rectangle bounds = clickable.getBounds();
 
@@ -578,14 +578,29 @@ public class GameScreen implements Screen
 	{
 		this.width = width;
 		this.height = height;
-		
+
 		// make it so the UI's scale adapts itself to the screen size
-		if (height > 2000 && width > 3000)
-			uiCamera.zoom = 0.25f;
-		else if (height > 1000 && width > 1500)
-			uiCamera.zoom = 0.5f;
-		else
-			uiCamera.zoom = 1.f;
+		switch (AATinkererGame.scale) {
+			case AUTO:
+				if (height > 2000 && width > 3000)
+					uiCamera.zoom = 0.25f;
+				else if (height > 1000 && width > 1500)
+					uiCamera.zoom = 0.5f;
+				else
+					uiCamera.zoom = 1.f;
+				break;
+			case X1:
+				uiCamera.zoom = 1.f;
+				break;
+			case X2:
+				uiCamera.zoom = 0.5f;
+				break;
+			case X4:
+				uiCamera.zoom = 0.25f;
+				break;
+			default:
+				break;
+		}
 
 		mapCamera.setToOrtho(false, width, height);
 		uiCamera.setToOrtho(false, width, height);

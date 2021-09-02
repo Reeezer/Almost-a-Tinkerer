@@ -194,6 +194,7 @@ public class PauseScreen implements Screen
 			public void clicked(InputEvent event, float x, float y)
 			{
 				AATinkererGame.scale = scale;
+				game.resizeGameScreen();
 			};
 		});
 
