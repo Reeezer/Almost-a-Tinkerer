@@ -58,14 +58,10 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 
 		// Load and store for each building type the textures in the different folders and states of the building
 		textures = new Texture[texturesPaths.length][tileCount][maxFrame];
-		for (int i = 0; i < texturesPaths.length; i++) {
-			for (int k = 0; k < tileCount; k++) {
-				for (int j = 0; j < maxFrame; j++) {
+		for (int i = 0; i < texturesPaths.length; i++)
+			for (int k = 0; k < tileCount; k++)
+				for (int j = 0; j < maxFrame; j++)
 					textures[i][k][j] = new Texture(texturesPaths[i] + String.format("%02d/%02d.png", k, j));
-					System.out.println(texturesPaths[i] + String.format("%02d/%02d.png", k, j));
-				}
-			}
-		}
 	}
 
 	private FactoryType(String[] texturesPaths, int tileCount, String itemTexturePath, String[] hoverTexturePath, int maxFrame)
@@ -169,15 +165,16 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	{
 		int i = 0;
 
-		if (factoryType == FURNACE || factoryType == MERGER || factoryType == MIXER || factoryType == SPLITTER)
+		if (factoryType == FURNACE || factoryType == MERGER || factoryType == MIXER || factoryType == SPLITTER) {
 			if (mirrored)
 				i = 1;
-			else {
-				if (animationType == AnimationType.OUT || animationType == AnimationType.LEFT)
-					i = 1;
-				else if (animationType == AnimationType.RIGHT)
-					i = 2;
-			}
+		}
+		else {
+			if (animationType == AnimationType.OUT || animationType == AnimationType.LEFT)
+				i = 1;
+			else if (animationType == AnimationType.RIGHT)
+				i = 2;
+		}
 
 		return textures[i][tile][currentFrame];
 	}
