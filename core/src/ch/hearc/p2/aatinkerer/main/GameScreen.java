@@ -94,6 +94,7 @@ public class GameScreen implements Screen
 
 		mapCamera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
+		uiCamera.zoom = 1.f;
 		hoverCamera = new OrthographicCamera();
 
 		uiElements = new ArrayList<UIElement>();
@@ -294,8 +295,8 @@ public class GameScreen implements Screen
 				if (!clickable.visible())
 					continue;
 
-				int mx = Gdx.input.getX();
-				int my = height - Gdx.input.getY();
+				int mx = (int) (Gdx.input.getX() * uiCamera.zoom);
+				int my = (int) ((height - Gdx.input.getY()) *uiCamera.zoom);
 
 				Rectangle bounds = clickable.getBounds();
 
@@ -406,7 +407,7 @@ public class GameScreen implements Screen
 
 				// FIXME maybe still display the ressources if the hovered building is an extractor?
 				// only display on ressources tiles that don't have a building on top
-				if (building == null && conveyor == null && item != null && item != ItemType.NONE) {
+				if ((building == null || (building != null && building.getType() == FactoryType.EXTRACTOR)) && conveyor == null && item != null && item != ItemType.NONE) {
 					tooltipText = item.fullname();
 					renderTooltip = true;
 				}
@@ -485,44 +486,44 @@ public class GameScreen implements Screen
 		font.draw(game.batch, "Press [Ctrl]\nto see controls", 30, 50);
 		if (ctrlPressed) {
 			int toolbarHeight = 50;
-			float pos = (width - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
+			float pos = (width * uiCamera.zoom - (FactoryType.values().length * Toolbar.TEXSIZE)) / 2;
 			float deltaa = Toolbar.TEXSIZE;
 			for (int i = 1; i <= 9; i++)
 				font.draw(game.batch, String.format("[%d]", i), pos + (i - 1) * deltaa + Toolbar.TEXSIZE / 3, toolbarHeight);
 			font.draw(game.batch, "[Num 0]", pos + 9 * deltaa - 6, toolbarHeight);
 			font.draw(game.batch, "[Num 1]", pos + 10 * deltaa + 15, toolbarHeight);
 
-			font.draw(game.batch, "[Left click]\nPlace", width / 3, 150);
-			font.draw(game.batch, "[DEL]\nDelete", width / 3, 100);
+			font.draw(game.batch, "[Left click]\nPlace", width * uiCamera.zoom / 3, 150);
+			font.draw(game.batch, "[BACKSPACE]\nDelete", width * uiCamera.zoom / 3, 100);
 
-			font.draw(game.batch, "[R]\nRotate left", width * 5 / 12, 250);
-			font.draw(game.batch, "[Shift + R]\nRotate right", width * 5 / 12, 200);
-			font.draw(game.batch, "[T]\nMirror rotation", width * 5 / 12, 150);
-			font.draw(game.batch, "[Escape]\nUnselect", width * 5 / 12, 100);
+			font.draw(game.batch, "[R]\nRotate left", width * uiCamera.zoom * 5 / 12, 250);
+			font.draw(game.batch, "[Shift + R]\nRotate right", width * uiCamera.zoom * 5 / 12, 200);
+			font.draw(game.batch, "[T]\nMirror rotation", width * uiCamera.zoom * 5 / 12, 150);
+			font.draw(game.batch, "[Escape]\nUnselect", width * uiCamera.zoom * 5 / 12, 100);
 
-			font.draw(game.batch, "[Space]\nTo hub", width / 2, 400);
-			font.draw(game.batch, "[Right click + drag]\nMove", width / 2, 350);
-			font.draw(game.batch, "[Up]\nMove up", width / 2, 300);
-			font.draw(game.batch, "[Down]\nMove down", width / 2, 250);
-			font.draw(game.batch, "[Left]\nMove left", width / 2, 200);
-			font.draw(game.batch, "[Right]\nMove right", width / 2, 150);
-			font.draw(game.batch, "[Hold Shift]\nMove faster", width / 2, 100);
+			font.draw(game.batch, "[Space]\nTo hub", width * uiCamera.zoom / 2, 400);
+			font.draw(game.batch, "[Right click + drag]\nMove", width * uiCamera.zoom / 2, 350);
+			font.draw(game.batch, "[Up]\nMove up", width * uiCamera.zoom / 2, 300);
+			font.draw(game.batch, "[Down]\nMove down", width * uiCamera.zoom / 2, 250);
+			font.draw(game.batch, "[Left]\nMove left", width * uiCamera.zoom / 2, 200);
+			font.draw(game.batch, "[Right]\nMove right", width * uiCamera.zoom / 2, 150);
+			font.draw(game.batch, "[Hold Shift]\nMove faster", width * uiCamera.zoom / 2, 100);
 
-			font.draw(game.batch, "[Scroll]\nZoom", width * 7 / 12, 200);
-			font.draw(game.batch, "[Num +]\nZoom in", width * 7 / 12, 150);
-			font.draw(game.batch, "[Num -]\nZoom out", width * 7 / 12, 100);
+			font.draw(game.batch, "[Scroll]\nZoom", width * uiCamera.zoom * 7 / 12, 200);
+			font.draw(game.batch, "[Num +]\nZoom in", width * uiCamera.zoom * 7 / 12, 150);
+			font.draw(game.batch, "[Num -]\nZoom out", width * uiCamera.zoom * 7 / 12, 100);
 		}
 
-		font.draw(game.batch, String.format("camera coordinates (%d, %d)", x / Chunk.TILESIZE, y / Chunk.TILESIZE), width - 200, 30);
-		font.draw(game.batch, String.format("mouse coordinates (%d, %d)", screenToTileX(Gdx.input.getX()), screenToTileY(Gdx.input.getY())), width - 200, 40);
+		font.draw(game.batch, String.format("camera coordinates (%d, %d)", x / Chunk.TILESIZE, y / Chunk.TILESIZE), (width * uiCamera.zoom - 200), 30);
+		font.draw(game.batch, String.format("mouse coordinates (%d, %d)", screenToTileX(Gdx.input.getX()), screenToTileY(Gdx.input.getY())), (width * uiCamera.zoom - 200), 40);
 		for (UIElement uiElement : this.uiElements)
 			uiElement.render(game.batch, delta);
 
 		if (renderTooltip)
-			this.miniHoverPopup.render(game.batch, tooltipx, tooltipy, tooltipText);
+			this.miniHoverPopup.render(game.batch, (int) (tooltipx * uiCamera.zoom), (int) (tooltipy * uiCamera.zoom), tooltipText);
 
 		// Drawing an arrow pointing towards the hub
-		float arrowPositionDisapear = Math.min(width, height) * zoom;
+		float arrowPositionDisapear = Math.min(width * uiCamera.zoom, height * uiCamera.zoom) * zoom;
 		if (x > arrowPositionDisapear || x < -arrowPositionDisapear || y < -arrowPositionDisapear || y > arrowPositionDisapear) {
 			float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI) + 180;
 
@@ -530,11 +531,11 @@ public class GameScreen implements Screen
 			float cosX = (float) Math.cos(rad);
 			float cosY = (float) Math.sin(rad);
 
-			float posX = width / 2 + cosX * width;
-			float posY = height / 2 + cosY * height;
+			float posX = width * uiCamera.zoom / 2 + cosX * width * uiCamera.zoom;
+			float posY = height * uiCamera.zoom / 2 + cosY * height * uiCamera.zoom;
 
-			posX = (posX < 100) ? 100 : ((posX > width - 100) ? width - 100 : posX);
-			posY = (posY < 100) ? 100 : ((posY > height - 100) ? height - 100 : posY);
+			posX = (posX < 100) ? 100 : ((posX > width * uiCamera.zoom - 100) ? width * uiCamera.zoom - 100 : posX);
+			posY = (posY < 100) ? 100 : ((posY > height * uiCamera.zoom - 100) ? height * uiCamera.zoom - 100 : posY);
 
 			game.batch.draw(arrowTextureRegion, posX, posY, (float) arrowTexture.getWidth() / 2, (float) arrowTexture.getHeight() / 2, (float) arrowTexture.getWidth(), (float) arrowTexture.getHeight(), 1.f, 1.f, angle - 90);
 		}
@@ -577,6 +578,15 @@ public class GameScreen implements Screen
 	{
 		this.width = width;
 		this.height = height;
+		
+		// make it so the UI's scale adapts itself to the screen size
+		int smallestDim = Math.min(height, width);
+		if (smallestDim > 1400)
+			uiCamera.zoom = 0.25f;
+		else if (smallestDim > 700)
+			uiCamera.zoom = 0.5f;
+		else
+			uiCamera.zoom = 1.f;
 
 		mapCamera.setToOrtho(false, width, height);
 		uiCamera.setToOrtho(false, width, height);
@@ -585,7 +595,7 @@ public class GameScreen implements Screen
 		// changer l'écran pour les élements de l'interface afin qu'ils puissent se
 		// repositionner
 		for (UIElement clickable : this.uiElements)
-			clickable.setScreenSize(width, height);
+			clickable.setScreenSize((int) (width * uiCamera.zoom), (int) (height * uiCamera.zoom));
 	}
 
 	@Override

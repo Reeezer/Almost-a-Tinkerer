@@ -145,7 +145,7 @@ public class StoryContractDisplay implements UIElement
 	@Override
 	public boolean visible()
 	{
-		return true;
+		return currentContract != null && !currentContract.isFulfilled();
 	}
 
 }
