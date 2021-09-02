@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
+import ch.hearc.p2.aatinkerer.data.Scale;
 import ch.hearc.p2.aatinkerer.util.Input;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
@@ -33,7 +34,18 @@ public class AATinkererGame extends Game
 	public static final float VOLUME_HIGH = 0.4f;
 	public static final float VOLUME_LOW = 0.1f;
 
-	public static Difficulty difficulty;
+	public static Difficulty difficulty = Difficulty.REGULAR;
+	public static Scale scale = Scale.AUTO;
+
+	static {
+		buttonFontParam = new FreeTypeFontParameter();
+		buttonFontParam.size = 40;
+		buttonFontParam.padLeft = 8;
+		buttonFontParam.padRight = 8;
+
+		titleFontParam = new FreeTypeFontParameter();
+		titleFontParam.size = 80;
+	}
 
 	@Override
 	public void create()
@@ -48,16 +60,6 @@ public class AATinkererGame extends Game
 
 		// Initializations
 		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"));
-
-		buttonFontParam = new FreeTypeFontParameter();
-		buttonFontParam.size = 40;
-		buttonFontParam.padLeft = 8;
-		buttonFontParam.padRight = 8;
-
-		titleFontParam = new FreeTypeFontParameter();
-		titleFontParam.size = 80;
-
-		difficulty = Difficulty.REGULAR;
 
 		// Screens
 		splashScreen = new SplashScreen(this);
