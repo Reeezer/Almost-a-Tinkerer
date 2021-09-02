@@ -13,7 +13,7 @@ public class Extractor extends Building
 
 	public Extractor(TileMap tilemap, int x, int y, int direction, Ressource ressource)
 	{
-		super(tilemap, x, y, direction, 1, "Tile/Extractor/", 1, 8, FactoryType.EXTRACTOR);
+		super(tilemap, x, y, direction, 1, 1, FactoryType.EXTRACTOR);
 		this.ressource = ressource;
 		this.inputPositions = null;
 		this.outputPosition = new int[] { x, y, direction };
@@ -28,8 +28,7 @@ public class Extractor extends Building
 	public void extract()
 	{
 		// extract item if not already full
-		if (contentSize < maxSize && ressource.getExtractedItem() != ItemType.NONE)
-		{
+		if (contentSize < maxSize && ressource.getExtractedItem() != ItemType.NONE) {
 			Item item = new Item();
 			item.type = ressource.getExtractedItem();
 			items.add(item);
@@ -43,8 +42,7 @@ public class Extractor extends Building
 		super.update();
 
 		// extract items if it is the right time
-		if (extractTicks++ > extractTimeout)
-		{
+		if (extractTicks++ > extractTimeout) {
 			extract();
 			extractTicks = 0;
 		}

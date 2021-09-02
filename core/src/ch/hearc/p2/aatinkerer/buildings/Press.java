@@ -11,7 +11,7 @@ public class Press extends Building
 {
 	public Press(TileMap tilemap, int x, int y, int direction)
 	{
-		super(tilemap, x, y, direction, 1, "Tile/Press/", 1, 6, FactoryType.PRESS);
+		super(tilemap, x, y, direction, 1, 1, FactoryType.PRESS);
 		this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 } };
 		this.outputPosition = new int[] { x, y, direction };
 

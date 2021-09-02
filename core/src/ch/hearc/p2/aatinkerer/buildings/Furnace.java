@@ -11,7 +11,7 @@ public class Furnace extends Building
 {
 	public Furnace(TileMap tilemap, int x, int y, int direction, boolean mirrored)
 	{
-		super(tilemap, x, y, direction, 10, (mirrored ? "Tile/FurnaceMirror/" : "Tile/Furnace/"), 1, 8, FactoryType.FURNACE);
+		super(tilemap, x, y, direction, 10, 1, FactoryType.FURNACE);
 		if (!mirrored)
 			this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 }, { x, y, (direction + 3) % 4 } };
 		else
@@ -19,7 +19,7 @@ public class Furnace extends Building
 		this.outputPosition = new int[] { x, y, direction };
 
 		this.mirrored = mirrored;
-		
+
 		createRecipes();
 	}
 
