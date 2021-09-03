@@ -1,5 +1,9 @@
 package ch.hearc.p2.aatinkerer.world;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,9 +20,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Json;
 
 import ch.hearc.p2.aatinkerer.buildings.Assembler;
 import ch.hearc.p2.aatinkerer.buildings.Building;
+import ch.hearc.p2.aatinkerer.buildings.Building.Item;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
 import ch.hearc.p2.aatinkerer.buildings.Cutter;
 import ch.hearc.p2.aatinkerer.buildings.Extractor;
@@ -32,31 +38,46 @@ import ch.hearc.p2.aatinkerer.buildings.Trash;
 import ch.hearc.p2.aatinkerer.buildings.Tunnel;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.data.Recipe;
 import ch.hearc.p2.aatinkerer.data.Ressource;
 import ch.hearc.p2.aatinkerer.data.Tile;
 import ch.hearc.p2.aatinkerer.data.TileType;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 import ch.hearc.p2.aatinkerer.util.Util;
 
-public class TileMap
+public class TileMap implements Serializable
 {
+	private static final long serialVersionUID = 1L;
+
 	private Map<Long, Chunk> chunks;
 	private Set<Building> buildings;
 
-	private boolean isInputTunnel;
-
 	private Random random;
+
+<<<<<<< HEAD
+	private Random random;
+=======
+	private transient boolean isInputTunnel = false;
+>>>>>>> saves
 
 	public TileMap()
 	{
 		random = new Random();
-
-		isInputTunnel = false;
 		buildings = new HashSet<Building>();
-
 		chunks = new HashMap<Long, Chunk>();
 
+<<<<<<< HEAD
 		// generate the chunks around the center so we can place the hub
+=======
+		placeHub();
+	}
+
+	public void placeHub()
+	{
+		// generate the chunks around the center so we can place the hub
+		// the size of 20x20 is completely arbitrary and in theory any value larger than or equal to 2x2 should work (2x2 = minimal size to display the 4
+		// central chunks)
+>>>>>>> saves
 		cameraMovedToPosition(new Vector3(0, 0, 0), 20, 20);
 
 		// add the hub back
@@ -74,6 +95,80 @@ public class TileMap
 				setTileAt(TileType.RESSOURCE, x, y, Ressource.NONE);
 			}
 		}
+	}
+
+	private void writeObject(ObjectOutputStream oos) throws IOException
+	{
+		oos.defaultWriteObject();
+	}
+
+	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException
+	{
+		ois.defaultReadObject();
+
+		for (Map.Entry<Long, Chunk> entry : chunks.entrySet())
+		{
+			Chunk chunk = entry.getValue();
+
+			chunk.setRandom(this.random);
+			chunk.setTileMap(this);
+		}
+
+		// the buildings set needs to be cleared and all buildings placed back again for them to reconnect properly
+		Set<Building> temporaryBuildings = new HashSet<Building>(buildings);
+		buildings = new HashSet<Building>();
+
+		placeHub();
+
+		for (Building building : temporaryBuildings)
+		{
+			if (building.getType() != null)
+			{
+				List<Item> items = building.getItems();
+				Recipe recipe = building.activeRecipe();
+
+				if (building.getType() == FactoryType.CONVEYOR)
+				{
+					Conveyor conveyor = (Conveyor) building;
+
+					// custom method to replace only conveyors because they have annoying behavior after loading a saved game
+					replaceConveyor(building.getX(), building.getY(), conveyor.getInputDirection(), conveyor.getOutputDirection(), items);
+				}
+				else
+				{
+					ItemType type = ItemType.NONE;
+					boolean isInput = false;
+					
+					if (building.getType() == FactoryType.SPLITTER)
+					{
+						Splitter splitter = (Splitter) building;
+						type = splitter.splitType();
+					}
+					if (building.getType() == FactoryType.TUNNEL)
+					{
+						Tunnel tunnel = (Tunnel) building;
+						isInput = tunnel.isInput();
+						
+						System.out.format("loading tunnel, input : %s%n", isInput);
+					}
+
+					placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items, recipe, type, true, isInput);
+
+				}
+			}
+		}
+
+		// once all buildings have been placed, we need to iterate them one last time to reconnect the tunnels due to their
+		// connections being dependent on placement order
+		for (Building building : this.buildings)
+		{
+			if (building.getType() == FactoryType.TUNNEL)
+			{
+				Tunnel tunnel = (Tunnel) building;
+				tunnel.reloadConnection();
+			}
+		}
+
 	}
 
 	public Chunk chunkAtTile(int x, int y)
@@ -475,6 +570,12 @@ public class TileMap
 
 	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
+
+		return placeBuilding(x, y, direction, factoryType, mirrored, null, null, ItemType.NONE, false, false);
+	}
+
+	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, List<Item> items, Recipe recipe, ItemType split, boolean fromSave, boolean isInput)
+	{
 		int ret = 0;
 
 		System.out.format("placing new building of type %s at (%d,%d)%n", factoryType, x, y);
@@ -492,30 +593,35 @@ public class TileMap
 					Extractor extractor = new Extractor(this, x, y, direction, ressource);
 					setTileAt(TileType.FACTORY, x, y, extractor);
 					buildings.add(extractor);
+					// extractor.setItems(items);
 					break;
 
 				case CONVEYOR: // Making corners automatically
 					Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
 					setTileAt(TileType.CONVEYOR, x, y, conveyor);
 					buildings.add(conveyor);
+					// conveyor.setItems(items);
 					break;
 
 				case FURNACE:
 					Furnace furnace = new Furnace(this, x, y, direction, mirrored);
 					setTileAt(TileType.FACTORY, x, y, furnace);
 					buildings.add(furnace);
+					// furnace.setItems(items);
 					break;
 
 				case CUTTER:
 					Cutter cutter = new Cutter(this, x, y, direction);
 					setTileAt(TileType.FACTORY, x, y, cutter);
 					buildings.add(cutter);
+					// cutter.setItems(items);
 					break;
 
 				case PRESS:
 					Press press = new Press(this, x, y, direction);
 					setTileAt(TileType.FACTORY, x, y, press);
 					buildings.add(press);
+					// press.setItems(items);
 					break;
 
 				case MIXER:
@@ -529,6 +635,7 @@ public class TileMap
 					setTileAt(TileType.FACTORY, x2, y2, mixer);
 
 					buildings.add(mixer);
+					// mixer.setItems(items);
 
 					updateOutputs(x2, y2);
 					break;
@@ -547,6 +654,9 @@ public class TileMap
 					buildings.add(assembler);
 					updateOutputs(x2, y2);
 					updateOutputs(x3, y3);
+
+					// assembler.setItems(items);
+					assembler.setRecipe(recipe);
 					break;
 
 				case TRASH:
@@ -555,6 +665,7 @@ public class TileMap
 					setTileAt(TileType.FACTORY, x, y, trash);
 
 					buildings.add(trash);
+					// trash.setItems(items);
 					break;
 
 				case SPLITTER:
@@ -562,6 +673,8 @@ public class TileMap
 					setTileAt(TileType.FACTORY, x, y, splitter);
 
 					buildings.add(splitter);
+					// splitter.setItems(items);
+					splitter.setSplitType(split);
 					break;
 
 				case MERGER:
@@ -570,16 +683,25 @@ public class TileMap
 					setTileAt(TileType.FACTORY, x, y, merger);
 
 					buildings.add(merger);
+					// merger.setItems(items);
 					break;
 
 				case TUNNEL: // For the hover icons rotation
 					isInputTunnel = !isInputTunnel;
 					ret = isInputTunnel ? 1 : 2; // We do want to place an input tunnel and right after be able to place the output one
 
+					if (fromSave)
+					{
+						isInputTunnel = isInput;
+						if (!isInput)
+							direction = (direction + 2) % 4;
+					}
+
 					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
 					setTileAt(TileType.FACTORY, x, y, tunnel);
 
 					buildings.add(tunnel);
+					tunnel.setItems(items);
 					break;
 
 				default:
@@ -593,7 +715,21 @@ public class TileMap
 			Sounds.PLACING.play();
 		}
 		return ret;
+	}
 
+	private void replaceConveyor(int x, int y, int inputDirection, int outputDirection, List<Item> items)
+	{
+		if (isEmpty(x, y))
+		{
+			Conveyor conveyor = new Conveyor(this, x, y, new int[][] { { x, y, inputDirection }, { x, y, outputDirection } });
+			setTileAt(TileType.CONVEYOR, x, y, conveyor);
+			buildings.add(conveyor);
+			conveyor.setItems(items);
+
+			updateOutputs(x, y);
+
+			Sounds.PLACING.play();
+		}
 	}
 
 	public void deleteBuilding(int x, int y)

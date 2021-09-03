@@ -1,9 +1,10 @@
 package ch.hearc.p2.aatinkerer.data;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Recipe
+public class Recipe implements Serializable
 {
 	private Map<ItemType, Integer> ingredients;
 	private ItemType product;
@@ -44,5 +45,31 @@ public class Recipe
 	public int getAmount()
 	{
 		return amount;
+	}
+	
+	@Override
+	public boolean equals(Object object)
+	{
+		Recipe recipe = (Recipe) object;
+		
+		boolean same = true;
+		
+		for (Map.Entry<ItemType, Integer> entry : recipe.ingredients.entrySet())
+		{
+			ItemType type = entry.getKey();
+			int amount = entry.getValue();
+			
+			if (this.ingredients.containsKey(type))
+			{
+				if (this.ingredients.get(type) != amount)
+					same = false;
+			}
+			else
+			{
+				same = false;
+			}
+		}
+		
+		return same;
 	}
 }

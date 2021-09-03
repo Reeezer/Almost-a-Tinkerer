@@ -42,12 +42,17 @@ public class Contract
 
 	public void addProducedItem(ItemType type)
 	{
+		addProducedItem(type, 1);
+	}
+	
+	public void addProducedItem(ItemType type, int amount)
+	{
 		if (requestedItems.containsKey(type))
 		{
 			if (producedItems.containsKey(type))
-				producedItems.put(type, producedItems.get(type) + 1);
+				producedItems.put(type, producedItems.get(type) + amount);
 			else
-				producedItems.put(type, 1);
+				producedItems.put(type, amount);
 		}
 	}
 
