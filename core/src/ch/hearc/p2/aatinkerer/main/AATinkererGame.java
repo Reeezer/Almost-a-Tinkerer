@@ -5,6 +5,8 @@ import java.io.File;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Cursor;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
@@ -55,11 +57,17 @@ public class AATinkererGame extends Game
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
 
-		Sounds.MUSIC.setVolume(VOLUME_LOW);
-		Sounds.MUSIC.play();
+		// Custom cursor
+		Pixmap pixmap = new Pixmap(Gdx.files.internal("Ui/cursor.png"));
+		int xPos = pixmap.getWidth() / 2;
+		int yPos = pixmap.getHeight() / 2;
+		Cursor cursor = Gdx.graphics.newCursor(pixmap, 0, 0);
+		Gdx.graphics.setCursor(cursor);
 
 		// Initializations
 		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"));
+		Sounds.MUSIC.setVolume(VOLUME_LOW);
+		Sounds.MUSIC.play();
 
 		// Screens
 		splashScreen = new SplashScreen(this);
