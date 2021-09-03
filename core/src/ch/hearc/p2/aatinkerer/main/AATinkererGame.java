@@ -97,30 +97,40 @@ public class AATinkererGame extends Game
 		});
 	}
 
-	public void toPausedGameScreen()
+	public void setHoverCursor()
+	{
+		Gdx.graphics.setCursor(cursorHover);
+	}
+
+	public void setDefaultCursor()
 	{
 		Gdx.graphics.setCursor(cursor);
+	}
+
+	public void toPausedGameScreen()
+	{
+		setDefaultCursor();
 		gameScreen.resume();
 		toGameScreen();
 	}
 
 	public void toNewGameScreen()
 	{
-		Gdx.graphics.setCursor(cursor);
+		setDefaultCursor();
 		gameScreen = new GameScreen(this);
 		toGameScreen();
 	}
 
 	public void toDifficultyScreen()
 	{
-		Gdx.graphics.setCursor(cursor);
+		setDefaultCursor();
 		changeVolume(VOLUME_LOW);
 		setScreen(difficultyScreen);
 	}
 
 	public void toPauseScreen()
 	{
-		Gdx.graphics.setCursor(cursor);
+		setDefaultCursor();
 		gameScreen.pause();
 		changeVolume(VOLUME_LOW);
 		setScreen(pauseScreen);
@@ -128,14 +138,14 @@ public class AATinkererGame extends Game
 
 	public void toSaveScreen()
 	{
-		Gdx.graphics.setCursor(cursor);
+		setDefaultCursor();
 		changeVolume(VOLUME_LOW);
 		setScreen(saveScreen);
 	}
 
 	private void toGameScreen()
 	{
-		Gdx.graphics.setCursor(cursor);
+		setDefaultCursor();
 		changeVolume(VOLUME_HIGH);
 		setScreen(gameScreen);
 	}

@@ -284,6 +284,35 @@ public class GameScreen implements Screen
 		}
 		FactoryType factoryType = (FactoryType) factoryToolbar.getActiveItem();
 
+		// hover effect
+		int mx = (int) (Gdx.input.getX() * uiCamera.zoom);
+		int my = (int) ((height - Gdx.input.getY()) * uiCamera.zoom);
+		boolean isHover = false;
+		for (UIElement clickable : uiElements) {
+			if (!clickable.visible())
+				continue;
+
+			Rectangle bounds = clickable.getBounds();
+
+			if (bounds.contains(new Vector2(mx, my))) {
+				isHover = true;
+				game.setHoverCursor();
+			}
+		}
+		int tX = screenToTileX(Gdx.input.getX());
+		int tY = screenToTileY(Gdx.input.getY());
+		Building attContextualMenuBuilding = (Building) map.tileAt(TileType.FACTORY, tX, tY);
+		if (attContextualMenuBuilding != null && attContextualMenuBuilding instanceof Splitter) {
+			isHover = true;
+			game.setHoverCursor();
+		}
+		if (attContextualMenuBuilding != null && attContextualMenuBuilding.recipes() != null && attContextualMenuBuilding.canSelectRecipe()) {
+			isHover = true;
+			game.setHoverCursor();
+		}
+		if (!isHover)
+			game.setDefaultCursor();
+
 		// handle left mouse click
 		if (Gdx.input.isButtonPressed(Buttons.LEFT)) {
 			boolean mouseCaptured = false;
@@ -294,9 +323,6 @@ public class GameScreen implements Screen
 				// si l'élement est pas visible on ne le considère pas
 				if (!clickable.visible())
 					continue;
-
-				int mx = (int) (Gdx.input.getX() * uiCamera.zoom);
-				int my = (int) ((height - Gdx.input.getY()) * uiCamera.zoom);
 
 				Rectangle bounds = clickable.getBounds();
 
