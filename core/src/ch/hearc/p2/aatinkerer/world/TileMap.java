@@ -24,6 +24,7 @@ import com.badlogic.gdx.utils.Json;
 
 import ch.hearc.p2.aatinkerer.buildings.Assembler;
 import ch.hearc.p2.aatinkerer.buildings.Building;
+import ch.hearc.p2.aatinkerer.buildings.Building.Item;
 import ch.hearc.p2.aatinkerer.buildings.Conveyor;
 import ch.hearc.p2.aatinkerer.buildings.Cutter;
 import ch.hearc.p2.aatinkerer.buildings.Extractor;
@@ -117,18 +118,18 @@ public class TileMap implements Serializable
 		{
 			if (building.getType() != null)
 			{				
+				List<Item> items = building.getItems();
 				if (building.getType() == FactoryType.CONVEYOR)
 				{
 					Conveyor conveyor = (Conveyor) building;
 					
 					// custom method to replace only conveyors because they have annoying behavior after loading a saved game
-					replaceConveyor(building.getX(), building.getY(), conveyor.getInputDirection(), conveyor.getOutputDirection());
+					replaceConveyor(building.getX(), building.getY(), conveyor.getInputDirection(), conveyor.getOutputDirection(), items);
 				}
 				else
-					placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored());
+					placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items);				
 			}
 		}
-
 		
 	}
 
@@ -555,6 +556,11 @@ public class TileMap implements Serializable
 
 	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
+		return placeBuilding(x, y, direction, factoryType, mirrored, null);
+	}
+	
+	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, List<Item> items)
+	{
 		int ret = 0;
 
 		System.out.format("placing new building of type %s at (%d,%d)%n", factoryType, x, y);
@@ -574,30 +580,35 @@ public class TileMap implements Serializable
 					Extractor extractor = new Extractor(this, x, y, direction, ressource);
 					setTileAt(TileType.FACTORY, x, y, extractor);
 					buildings.add(extractor);
+					//extractor.setItems(items);
 					break;
 
 				case CONVEYOR: // Making corners automatically
 					Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
 					setTileAt(TileType.CONVEYOR, x, y, conveyor);
 					buildings.add(conveyor);
+					//conveyor.setItems(items);
 					break;
 
 				case FURNACE:
 					Furnace furnace = new Furnace(this, x, y, direction, mirrored);
 					setTileAt(TileType.FACTORY, x, y, furnace);
 					buildings.add(furnace);
+					//furnace.setItems(items);
 					break;
 
 				case CUTTER:
 					Cutter cutter = new Cutter(this, x, y, direction);
 					setTileAt(TileType.FACTORY, x, y, cutter);
 					buildings.add(cutter);
+					//cutter.setItems(items);
 					break;
 
 				case PRESS:
 					Press press = new Press(this, x, y, direction);
 					setTileAt(TileType.FACTORY, x, y, press);
 					buildings.add(press);
+					//press.setItems(items);
 					break;
 
 				case MIXER:
@@ -611,6 +622,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x2, y2, mixer);
 
 					buildings.add(mixer);
+					//mixer.setItems(items);
 
 					updateOutputs(x2, y2);
 					break;
@@ -629,6 +641,8 @@ public class TileMap implements Serializable
 					buildings.add(assembler);
 					updateOutputs(x2, y2);
 					updateOutputs(x3, y3);
+					
+					//assembler.setItems(items);
 					break;
 
 				case TRASH:
@@ -637,6 +651,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x, y, trash);
 
 					buildings.add(trash);
+					//trash.setItems(items);
 					break;
 
 				case SPLITTER:
@@ -644,6 +659,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x, y, splitter);
 
 					buildings.add(splitter);
+					//splitter.setItems(items);
 					break;
 
 				case MERGER:
@@ -652,6 +668,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x, y, merger);
 
 					buildings.add(merger);
+					//merger.setItems(items);
 					break;
 
 				case TUNNEL: // For the hover icons rotation
@@ -662,6 +679,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x, y, tunnel);
 
 					buildings.add(tunnel);
+					//tunnel.setItems(items);
 					break;
 
 				default:
@@ -677,13 +695,14 @@ public class TileMap implements Serializable
 		return ret;
 	}
 	
-	private void replaceConveyor(int x, int y, int inputDirection, int outputDirection)
+	private void replaceConveyor(int x, int y, int inputDirection, int outputDirection, List<Item> items)
 	{
 		if (isEmpty(x, y))
 		{
 			Conveyor conveyor = new Conveyor(this, x, y, new int[][] { { x, y, inputDirection }, { x, y, outputDirection } });
 			setTileAt(TileType.CONVEYOR, x, y, conveyor);
 			buildings.add(conveyor);
+			conveyor.setItems(items);
 			
 			updateOutputs(x, y);
 

@@ -336,5 +336,10 @@ public class Chunk implements Serializable
 	{
 		return key;
 	}
+	
+	public boolean isEmpty()
+	{
+		return this.buildings.isEmpty() && this.conveyors.isEmpty();
+	}
 
 }

@@ -26,7 +26,7 @@ public abstract class Building implements Tile, Serializable
 
 	public transient final TileType tiletype = TileType.FACTORY;
 
-	protected class Item implements Serializable
+	public class Item implements Serializable
 	{
 		public ItemType type;
 		public long ticksSpent;
@@ -52,6 +52,7 @@ public abstract class Building implements Tile, Serializable
 	protected int y;
 	protected FactoryType type;
 	protected boolean mirrored;
+	protected LinkedList<Item> items;
 
 	protected transient TileMap tilemap;
 
@@ -60,7 +61,6 @@ public abstract class Building implements Tile, Serializable
 
 	protected transient int contentSize;
 	protected transient int maxSize;
-	protected transient LinkedList<Item> items;
 	protected transient HashMap<ItemType, Integer> currentIngredients;
 
 	protected transient Building output;
@@ -94,6 +94,22 @@ public abstract class Building implements Tile, Serializable
 		this.mirrored = false;
 	}
 
+	public LinkedList<Item> getItems()
+	{
+		return items;
+	}
+	
+	public void setItems(List<Item> items)
+	{		
+		if (items != null)
+		{
+			this.items = new LinkedList<Item>();
+			
+			for (Item item : items)
+				addItem(item);
+		}
+	}
+	
 	public boolean canSelectRecipe()
 	{
 		return this.canSelectRecipe;

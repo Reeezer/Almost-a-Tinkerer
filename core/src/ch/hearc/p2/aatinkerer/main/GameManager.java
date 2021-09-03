@@ -23,7 +23,7 @@ public class GameManager
 	private List<ContractListener> contractListeners;
 	private List<MoneyListener> moneyListeners;
 
-	private Map<ItemType, Integer> producedItems;
+	private HashMap<ItemType, Integer> producedItems;
 	private int money;
 
 	// the int is an index for the two other arrays that are both of the same size
@@ -93,14 +93,14 @@ public class GameManager
 		storyMilestones.add(Milestone.UNLOCK_ASSEMBLERMERGER);
 
 		Contract splitterContract = new Contract("Now we can finally glue everything together to make furniture! Place an assembler to select what you want to make, click on it, select a recipe you want to make and it will display the required ingredients.");
-		splitterContract.addRequestedItem(ItemType.PENCIL, 500);
-		splitterContract.addRequestedItem(ItemType.DESK, 10);
-		splitterContract.addRequestedItem(ItemType.TABLE, 10);
-		splitterContract.addRequestedItem(ItemType.BED, 2);
-		splitterContract.addRequestedItem(ItemType.SHELF, 8);
-		splitterContract.addRequestedItem(ItemType.PLANT, 20);
-		splitterContract.addRequestedItem(ItemType.CHAIR, 30);
-		splitterContract.addRequestedItem(ItemType.LAMP, 10);
+		//splitterContract.addRequestedItem(ItemType.PENCIL, 500);
+		//splitterContract.addRequestedItem(ItemType.DESK, 10);
+		//splitterContract.addRequestedItem(ItemType.TABLE, 10);
+		//splitterContract.addRequestedItem(ItemType.BED, 2);
+		//splitterContract.addRequestedItem(ItemType.SHELF, 8);
+		//splitterContract.addRequestedItem(ItemType.PLANT, 20);
+		//splitterContract.addRequestedItem(ItemType.CHAIR, 30);
+		//splitterContract.addRequestedItem(ItemType.LAMP, 10);
 		splitterContract.addRequestedItem(ItemType.CARPET, 20);
 		storyContracts.add(splitterContract);
 		storyMilestones.add(Milestone.UNLOCK_SPLITTER);
@@ -109,7 +109,7 @@ public class GameManager
 		storyContracts.add(finalContract);
 		storyMilestones.add(Milestone.END_STORY);
 	}
-
+	
 	public void itemDelivered(ItemType type)
 	{
 		if (producedItems.containsKey(type))
@@ -119,12 +119,52 @@ public class GameManager
 
 		receiveMoney(type.value());
 
-		if (contractMilestoneIndex < storyMilestones.size()) {
+		if (contractMilestoneIndex < storyMilestones.size())
+		{
 			Contract ongoingStoryContract = storyContracts.get(contractMilestoneIndex);
 			ongoingStoryContract.addProducedItem(type);
 		}
 
 		// TODO mettre à jour les contrats secondaires
+	}
+
+	public HashMap<ItemType, Integer> getProducedItems()
+	{
+		return producedItems;
+	}
+
+	public int getContractMilestoneIndex()
+	{
+		return contractMilestoneIndex;
+	}
+
+	public void setProgress(int contractMilestoneIndex, HashMap<ItemType, Integer> producedItems)
+	{		
+		this.contractMilestoneIndex = contractMilestoneIndex;
+
+		for (int i = 0; i < contractMilestoneIndex; i++)
+		{
+			unlockMilestone(storyMilestones.get(i), false);
+		}
+
+		// update current's contract progress
+		if (contractMilestoneIndex < storyMilestones.size())
+		{
+			Contract currentContract = storyContracts.get(contractMilestoneIndex);
+			for (Map.Entry<ItemType, Integer> producedItemsEntry : producedItems.entrySet())
+			{
+				ItemType type = producedItemsEntry.getKey();
+				int amount = producedItemsEntry.getValue();
+				
+				System.out.format("Adding produced %d units of item %s to contract %s%n", amount, type, currentContract);
+
+				currentContract.addProducedItem(type, amount);
+			}
+			
+			unlockContract(currentContract, true, false);
+		}
+		
+		this.producedItems = new HashMap<ItemType, Integer>(producedItems);		
 	}
 
 	public void addMilestoneListener(MilestoneListener listener)
@@ -142,18 +182,18 @@ public class GameManager
 		moneyListeners.add(listener);
 	}
 
-	public void unlockContract(Contract contract, boolean isStory)
+	public void unlockContract(Contract contract, boolean isStory, boolean notify)
 	{
 		System.out.println("Adding new contract: " + contract);
 		for (ContractListener listener : contractListeners)
-			listener.contractAdded(contract, isStory);
+			listener.contractAdded(contract, isStory, notify);
 	}
 
-	public void unlockMilestone(Milestone milestone)
+	public void unlockMilestone(Milestone milestone, boolean notify)
 	{
 		System.out.println("Unlocking new milestone: " + milestone);
 		for (MilestoneListener listener : milestoneListeners)
-			listener.unlockMilestone(milestone);
+			listener.unlockMilestone(milestone, notify);
 	}
 
 	public void receiveMoney(int amount)
@@ -168,19 +208,21 @@ public class GameManager
 	public void tick()
 	{
 		// 1 - advance story contracts and unlock factories
-		if (contractMilestoneIndex < storyMilestones.size()) {
+		if (contractMilestoneIndex < storyMilestones.size())
+		{
 			Milestone currentAttemptedMilestone = storyMilestones.get(contractMilestoneIndex);
 			Contract ongoingStoryContract = storyContracts.get(contractMilestoneIndex);
 
-			if (ongoingStoryContract.isFulfilled()) {
+			if (ongoingStoryContract.isFulfilled())
+			{
 				// important : d'abord unlock la milestone, comme ça on a le texte des contrats
 				// dans les popups après
-				unlockMilestone(currentAttemptedMilestone);
+				unlockMilestone(currentAttemptedMilestone, true);
 				contractMilestoneIndex++;
 
 				// si il existe, définir le prochain contrat
 				if (contractMilestoneIndex < storyMilestones.size())
-					unlockContract(storyContracts.get(contractMilestoneIndex), true);
+					unlockContract(storyContracts.get(contractMilestoneIndex), true, true);
 
 				Sounds.ACHIEVE.play();
 			}

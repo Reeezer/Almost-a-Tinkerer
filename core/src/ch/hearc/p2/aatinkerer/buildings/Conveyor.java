@@ -23,7 +23,6 @@ public class Conveyor extends Building
 		outputDirection = inputOutputPosition[1][2];
 		inputDirection = inputOutputPosition[0][2];
 
-		System.out.println("dfsqlmkjdsfqmlkj " + Arrays.toString(inputOutputPosition[0]));
 		this.inputPositions = new int[][] { inputOutputPosition[0] };
 		this.outputPosition = inputOutputPosition[1];
 	}

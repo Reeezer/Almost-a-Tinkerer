@@ -1,5 +1,7 @@
 package ch.hearc.p2.aatinkerer.main;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -106,8 +109,6 @@ public class GameScreen implements Screen
 
 		uiElements = new ArrayList<UIElement>();
 
-		map = new TileMap();
-
 		x = 0;
 		y = 0;
 		width = 0;
@@ -155,7 +156,7 @@ public class GameScreen implements Screen
 
 		milestoneListener = new MilestoneListener() {
 			@Override
-			public void unlockMilestone(Milestone milestone)
+			public void unlockMilestone(Milestone milestone, boolean notify)
 			{
 				for (FactoryType factoryType : milestone.getUnlockedFactoryTypes())
 					factoryToolbar.setItemEnabled(factoryType, true);
@@ -169,13 +170,14 @@ public class GameScreen implements Screen
 				else
 					title = "Milestone Achieved";
 
-				notificationManager.displayPopup(new Notification(title, milestone.description(), 10.f));
+				if (notify)
+					notificationManager.displayPopup(new Notification(title, milestone.description(), 10.f));
 			}
 		};
 
 		contractListener = new ContractListener() {
 			@Override
-			public void contractAdded(Contract contract, boolean isStoryContract)
+			public void contractAdded(Contract contract, boolean isStoryContract, boolean notify)
 			{
 				contractDisplay.setContract(contract);
 			}
@@ -195,11 +197,15 @@ public class GameScreen implements Screen
 		try
 		{
 			FileInputStream fileInput = new FileInputStream(savefile);
-			ObjectInputStream objectInputStream = new ObjectInputStream(fileInput);
+			BufferedInputStream bis = new BufferedInputStream(fileInput);
+			ObjectInputStream objectInputStream = new ObjectInputStream(bis);
 
 			this.map = (TileMap) objectInputStream.readObject();
+			GameManager.getInstance().setProgress((Integer) objectInputStream.readObject(), (HashMap<ItemType, Integer>) objectInputStream.readObject());
+			
+			objectInputStream.close();
 		}
-		catch (IOException | ClassNotFoundException e)
+		catch (IOException | ClassNotFoundException | ClassCastException e)
 		{
 			e.printStackTrace();
 		}
@@ -213,8 +219,14 @@ public class GameScreen implements Screen
 		try
 		{
 			FileOutputStream fileOutput = new FileOutputStream(savefile);
-			ObjectOutputStream objectOutput = new ObjectOutputStream(fileOutput);
+			BufferedOutputStream bos = new BufferedOutputStream(fileOutput);
+			ObjectOutputStream objectOutput = new ObjectOutputStream(bos);
+			
 			objectOutput.writeObject(this.map);
+			objectOutput.writeObject(GameManager.getInstance().getContractMilestoneIndex());
+			objectOutput.writeObject(GameManager.getInstance().getProducedItems());
+			
+			objectOutput.close();
 
 		}
 		catch (IOException e)
@@ -227,11 +239,19 @@ public class GameScreen implements Screen
 	public void show()
 	{
 		Gdx.input.setInputProcessor(game.input);
+		
+		// happens if the game was not loaded from a save
+		if (this.map == null)
+			map = new TileMap();
 	}
 
 	@Override
 	public void render(float delta)
 	{
+		// wait for a map to be generated from show()
+		if (this.map == null)
+			return;
+		
 		long firstTime = TimeUtils.millis();
 		long passedTime = firstTime - lastTime;
 		lastTime = firstTime;
