@@ -13,7 +13,7 @@ public class DesktopLauncher
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 
 		config.width = 900;
-		config.height = 600;
+		config.height = 700;
 		config.resizable = true;
 		config.title = "Almost a Tinkerer";
 		config.fullscreen = false;

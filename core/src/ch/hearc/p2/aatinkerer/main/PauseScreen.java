@@ -1,23 +1,34 @@
 package ch.hearc.p2.aatinkerer.main;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ch.hearc.p2.aatinkerer.data.Scale;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
 public class PauseScreen implements Screen
@@ -39,6 +50,9 @@ public class PauseScreen implements Screen
 	private int frame2;
 
 	private Texture background;
+
+	private Label scaleLabel;
+	private List<TextButton> scaleButtons;
 
 	public PauseScreen(final AATinkererGame game)
 	{
@@ -64,11 +78,11 @@ public class PauseScreen implements Screen
 		int pad = 75;
 
 		// Title
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
-		labelStyle.fontColor = AATinkererGame.WHITE;
+		LabelStyle titleLabelStyle = new LabelStyle();
+		titleLabelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
+		titleLabelStyle.fontColor = AATinkererGame.WHITE;
 
-		Label title = new Label("Pause", labelStyle);
+		Label title = new Label("Pause", titleLabelStyle);
 
 		// Resume
 		ImageButtonStyle resumeButtonStyle = new ImageButtonStyle();
@@ -83,6 +97,7 @@ public class PauseScreen implements Screen
 				game.toPausedGameScreen();
 			};
 		});
+		game.addCursorListener(resumeButton);
 		buttonTable.add(resumeButton).pad(pad);
 
 		// Sound
@@ -105,6 +120,7 @@ public class PauseScreen implements Screen
 					Sounds.MUSIC.setVolume(AATinkererGame.VOLUME_LOW);
 			};
 		});
+		game.addCursorListener(muteButton);
 		buttonTable.add(muteButton).pad(pad);
 
 		// Save
@@ -120,6 +136,7 @@ public class PauseScreen implements Screen
 				// FIXME save the game
 			};
 		});
+		game.addCursorListener(saveButton);
 		buttonTable.add(saveButton).pad(pad);
 
 		// Back home
@@ -137,11 +154,62 @@ public class PauseScreen implements Screen
 				
 			};
 		});
+		game.addCursorListener(homeButton);
 		buttonTable.add(homeButton).pad(pad);
 
 		mainTable.add(title).padTop(50).padBottom(50);
 		mainTable.row();
 		mainTable.add(buttonTable);
+
+		// Scales
+		LabelStyle labelStyle = new LabelStyle();
+		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		labelStyle.fontColor = AATinkererGame.WHITE;
+
+		scaleLabel = new Label("Scale", labelStyle);
+		stage.addActor(scaleLabel);
+
+		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
+		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
+
+		TextButtonStyle textButtonStyle = new TextButtonStyle();
+		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		textButtonStyle.fontColor = AATinkererGame.WHITE;
+		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
+		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
+		textButtonStyle.checked = new NinePatchDrawable(textButtonHoverPatch);
+
+		scaleButtons = new ArrayList<TextButton>();
+
+		createScaleButtons(textButtonStyle, "Auto", Scale.AUTO);
+		createScaleButtons(textButtonStyle, "x1", Scale.X1);
+		createScaleButtons(textButtonStyle, "x2", Scale.X2);
+		createScaleButtons(textButtonStyle, "x4", Scale.X4);
+
+		ButtonGroup<TextButton> buttonGroup = new ButtonGroup<TextButton>();
+		for (TextButton button : scaleButtons)
+			buttonGroup.add(button);
+		buttonGroup.setMaxCheckCount(1);
+		buttonGroup.setMinCheckCount(1);
+		scaleButtons.get(0).toggle();
+	}
+
+	private void createScaleButtons(TextButtonStyle style, String text, final Scale scale)
+	{
+		TextButton button = new TextButton(text, style);
+		button.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				AATinkererGame.scale = scale;
+				game.resizeGameScreen();
+			};
+		});
+		game.addCursorListener(button);
+
+		button.setSize(100, button.getHeight());
+
+		scaleButtons.add(button);
+		stage.addActor(button);
 	}
 
 	@Override
@@ -205,6 +273,12 @@ public class PauseScreen implements Screen
 		camera.setToOrtho(false, width, height);
 		viewport.setWorldSize(width, height);
 		stage.getViewport().update(width, height, true);
+
+		float buttonWidth = scaleButtons.get(0).getWidth();
+
+		scaleLabel.setPosition(20, 20);
+		for (int i = 0; i < scaleButtons.size(); i++)
+			scaleButtons.get(i).setPosition(100 + (buttonWidth + 20) * i, 20);
 
 		this.width = width;
 		this.height = height;
