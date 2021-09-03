@@ -54,11 +54,7 @@ public class TileMap implements Serializable
 
 	private Random random;
 
-<<<<<<< HEAD
-	private Random random;
-=======
 	private transient boolean isInputTunnel = false;
->>>>>>> saves
 
 	public TileMap()
 	{
@@ -66,18 +62,15 @@ public class TileMap implements Serializable
 		buildings = new HashSet<Building>();
 		chunks = new HashMap<Long, Chunk>();
 
-<<<<<<< HEAD
 		// generate the chunks around the center so we can place the hub
-=======
 		placeHub();
 	}
 
 	public void placeHub()
 	{
-		// generate the chunks around the center so we can place the hub
+
 		// the size of 20x20 is completely arbitrary and in theory any value larger than or equal to 2x2 should work (2x2 = minimal size to display the 4
 		// central chunks)
->>>>>>> saves
 		cameraMovedToPosition(new Vector3(0, 0, 0), 20, 20);
 
 		// add the hub back

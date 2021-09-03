@@ -116,13 +116,9 @@ public class AATinkererGame extends Game
 
 	public void toNewGameScreen()
 	{
-<<<<<<< HEAD
 		gameScreen = new GameScreen(this, "C:\\Users\\Luca Davide Meyer\\Desktop\\AATsaves\\fichtre.dat");
 		// gameScreen = new GameScreen(this);
-=======
 		setDefaultCursor();
-		gameScreen = new GameScreen(this);
->>>>>>> e3430d0746c09ed4bc75e4d22e7d9ced63d249fd
 		toGameScreen();
 	}
 
@@ -143,13 +139,12 @@ public class AATinkererGame extends Game
 
 	public void toSaveScreen()
 	{
-<<<<<<< HEAD
 		// FIXME
 		if (gameScreen != null)
 			gameScreen.saveGame("C:\\Users\\Luca Davide Meyer\\Desktop\\AATsaves\\fichtre.dat");
-=======
+
 		setDefaultCursor();
->>>>>>> e3430d0746c09ed4bc75e4d22e7d9ced63d249fd
+
 		changeVolume(VOLUME_LOW);
 		setScreen(saveScreen);
 	}

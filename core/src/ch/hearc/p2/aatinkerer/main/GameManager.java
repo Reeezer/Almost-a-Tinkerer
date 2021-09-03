@@ -62,33 +62,18 @@ public class GameManager
 		storyContracts.add(new Contract()); // empty contract for the start
 		storyMilestones.add(Milestone.START);
 
-<<<<<<< HEAD
-		Contract cutterContract = new Contract(
-				"We need some wood! Place an extractor where there's wood and transport it all the way to the hub at the center of the map using conveyors. Hover the ressources on the map to know their names.");
-=======
 		Contract cutterContract = new Contract("We need some wood! Place an extractor where there's wood and transport it all the way to the hub at the center of the map using conveyors. Hover the ressources on the map to know their names.");
->>>>>>> saves
 		//cutterContract.addRequestedItem(ItemType.WOODLOG, 10);
 		storyContracts.add(cutterContract);
 		storyMilestones.add(Milestone.UNLOCK_CUTTERTUNNEL);
 
-<<<<<<< HEAD
-		Contract furnaceTrashContract = new Contract(
-				"Nice! Now please make some planks and sticks so we can make chairs, use a cutter to cut the logs into planks, and planks into sticks.");
-=======
 		Contract furnaceTrashContract = new Contract("Nice! Now please make some planks and sticks so we can make chairs, use a cutter to cut the logs into planks, and planks into sticks.");
->>>>>>> saves
 		//furnaceTrashContract.addRequestedItem(ItemType.PLANK, 10);
 		//furnaceTrashContract.addRequestedItem(ItemType.STICK, 10);
 		storyContracts.add(furnaceTrashContract);
 		storyMilestones.add(Milestone.UNLOCK_FURNACETRASH);
 
-<<<<<<< HEAD
-		Contract mixerContract = new Contract(
-				"I can finally sit! Now please make some iron and copper plates by smelting their ores using coal in a furnace. Once you're done, use a cutter to make iron rods and copper wire.");
-=======
 		Contract mixerContract = new Contract("I can finally sit! Now please make some iron and copper plates by smelting their ores using coal in a furnace. Once you're done, use a cutter to make iron rods and copper wire.");
->>>>>>> saves
 		//mixerContract.addRequestedItem(ItemType.IRONPLATE, 10);
 		//mixerContract.addRequestedItem(ItemType.IRONROD, 30);
 		//mixerContract.addRequestedItem(ItemType.COPPERPLATE, 10);
@@ -96,22 +81,13 @@ public class GameManager
 		storyContracts.add(mixerContract);
 		storyMilestones.add(Milestone.UNLOCK_MIXER);
 
-<<<<<<< HEAD
-		Contract pressContract = new Contract(
-				"Our company is starting to take off! Nice! We need a runway for planes, so please make concrete. You can use the mixer to mix stones and water, which will produce concrete.");
-=======
 		Contract pressContract = new Contract("Our company is starting to take off! Nice! We need a runway for planes, so please make concrete. You can use the mixer to mix stones and water, which will produce concrete.");
->>>>>>> saves
 		//pressContract.addRequestedItem(ItemType.CONCRETE, 10);
 		storyContracts.add(pressContract);
 		storyMilestones.add(Milestone.UNLOCK_PRESS);
 
-<<<<<<< HEAD
-		Contract assemblerMergerContract = new Contract(
-				"We want to make pencils, but also glue furniture together. That means we need graphite and glue, both can be made with the press, glue needs petroleum, graphite needs coal.");
-=======
+
 		Contract assemblerMergerContract = new Contract("We want to make pencils, but also glue furniture together. That means we need graphite and glue, both can be made with the press, glue needs petroleum, graphite needs coal.");
->>>>>>> saves
 		//assemblerMergerContract.addRequestedItem(ItemType.GLUE, 10);
 		//assemblerMergerContract.addRequestedItem(ItemType.GRAPHITE, 10);
 		storyContracts.add(assemblerMergerContract);

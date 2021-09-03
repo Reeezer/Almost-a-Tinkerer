@@ -529,12 +529,9 @@ public class GameScreen implements Screen
 		/* update */
 
 		// cap on fixed TPS
-<<<<<<< HEAD
-		while (unprocessedTime >= processingTimeCap) {
-=======
+
 		while (unprocessedTime >= processingTimeCap)
 		{
->>>>>>> saves
 			unprocessedTime -= processingTimeCap;
 			map.update();
 
@@ -639,13 +636,8 @@ public class GameScreen implements Screen
 			this.miniHoverPopup.render(game.batch, (int) (tooltipx * uiCamera.zoom), (int) (tooltipy * uiCamera.zoom), tooltipText);
 
 		// Drawing an arrow pointing towards the hub
-<<<<<<< HEAD
 		float arrowPositionDisapear = Math.min(width * uiCamera.zoom, height * uiCamera.zoom) * zoom;
 		if (x > arrowPositionDisapear || x < -arrowPositionDisapear || y < -arrowPositionDisapear || y > arrowPositionDisapear) {
-=======
-		if (x > 300 || x < -300 || y < -300 || y > 300)
-		{
->>>>>>> saves
 			float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI) + 180;
 
 			float rad = (float) (angle * (Math.PI / 180));
