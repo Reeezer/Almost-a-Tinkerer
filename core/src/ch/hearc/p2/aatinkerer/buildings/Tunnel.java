@@ -24,6 +24,12 @@ public class Tunnel extends Building
 	{
 		output = tunnel;
 	}
+	
+	public void reloadConnection()
+	{
+		if (!isInput)
+			tilemap.findInputTunnel(this, x, y, this.direction, DISTANCE);
+	}
 
 	public boolean isInput()
 	{

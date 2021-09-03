@@ -113,37 +113,56 @@ public class TileMap implements Serializable
 		buildings = new HashSet<Building>();
 
 		placeHub();
-		
-		// FIXME add back all the contained items
+
 		for (Building building : temporaryBuildings)
 		{
 			if (building.getType() != null)
-			{				
+			{
 				List<Item> items = building.getItems();
 				Recipe recipe = building.activeRecipe();
-				
+
 				if (building.getType() == FactoryType.CONVEYOR)
 				{
 					Conveyor conveyor = (Conveyor) building;
-					
+
 					// custom method to replace only conveyors because they have annoying behavior after loading a saved game
 					replaceConveyor(building.getX(), building.getY(), conveyor.getInputDirection(), conveyor.getOutputDirection(), items);
 				}
 				else
 				{
-					if (building.getType() != FactoryType.SPLITTER)
-					{
-						placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items, recipe, ItemType.NONE);
-					}
-					else
+					ItemType type = ItemType.NONE;
+					boolean isInput = false;
+					
+					if (building.getType() == FactoryType.SPLITTER)
 					{
 						Splitter splitter = (Splitter) building;
-						placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items, recipe, splitter.splitType());
+						type = splitter.splitType();
 					}
+					if (building.getType() == FactoryType.TUNNEL)
+					{
+						Tunnel tunnel = (Tunnel) building;
+						isInput = tunnel.isInput();
+						
+						System.out.format("loading tunnel, input : %s%n", isInput);
+					}
+
+					placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items, recipe, type, true, isInput);
+
 				}
 			}
 		}
-		
+
+		// once all buildings have been placed, we need to iterate them one last time to reconnect the tunnels due to their
+		// connections being dependent on placement order
+		for (Building building : this.buildings)
+		{
+			if (building.getType() == FactoryType.TUNNEL)
+			{
+				Tunnel tunnel = (Tunnel) building;
+				tunnel.reloadConnection();
+			}
+		}
+
 	}
 
 	public Chunk chunkAtTile(int x, int y)
@@ -569,10 +588,11 @@ public class TileMap implements Serializable
 
 	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
-		return placeBuilding(x, y, direction, factoryType, mirrored, null, null, ItemType.NONE);
+
+		return placeBuilding(x, y, direction, factoryType, mirrored, null, null, ItemType.NONE, false, false);
 	}
-	
-	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, List<Item> items, Recipe recipe, ItemType split)
+
+	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, List<Item> items, Recipe recipe, ItemType split, boolean fromSave, boolean isInput)
 	{
 		int ret = 0;
 
@@ -593,35 +613,35 @@ public class TileMap implements Serializable
 					Extractor extractor = new Extractor(this, x, y, direction, ressource);
 					setTileAt(TileType.FACTORY, x, y, extractor);
 					buildings.add(extractor);
-					//extractor.setItems(items);
+					// extractor.setItems(items);
 					break;
 
 				case CONVEYOR: // Making corners automatically
 					Conveyor conveyor = new Conveyor(this, x, y, connexion(x, y, direction));
 					setTileAt(TileType.CONVEYOR, x, y, conveyor);
 					buildings.add(conveyor);
-					//conveyor.setItems(items);
+					// conveyor.setItems(items);
 					break;
 
 				case FURNACE:
 					Furnace furnace = new Furnace(this, x, y, direction, mirrored);
 					setTileAt(TileType.FACTORY, x, y, furnace);
 					buildings.add(furnace);
-					//furnace.setItems(items);
+					// furnace.setItems(items);
 					break;
 
 				case CUTTER:
 					Cutter cutter = new Cutter(this, x, y, direction);
 					setTileAt(TileType.FACTORY, x, y, cutter);
 					buildings.add(cutter);
-					//cutter.setItems(items);
+					// cutter.setItems(items);
 					break;
 
 				case PRESS:
 					Press press = new Press(this, x, y, direction);
 					setTileAt(TileType.FACTORY, x, y, press);
 					buildings.add(press);
-					//press.setItems(items);
+					// press.setItems(items);
 					break;
 
 				case MIXER:
@@ -635,7 +655,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x2, y2, mixer);
 
 					buildings.add(mixer);
-					//mixer.setItems(items);
+					// mixer.setItems(items);
 
 					updateOutputs(x2, y2);
 					break;
@@ -654,8 +674,8 @@ public class TileMap implements Serializable
 					buildings.add(assembler);
 					updateOutputs(x2, y2);
 					updateOutputs(x3, y3);
-					
-					//assembler.setItems(items);
+
+					// assembler.setItems(items);
 					assembler.setRecipe(recipe);
 					break;
 
@@ -665,7 +685,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x, y, trash);
 
 					buildings.add(trash);
-					//trash.setItems(items);
+					// trash.setItems(items);
 					break;
 
 				case SPLITTER:
@@ -673,7 +693,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x, y, splitter);
 
 					buildings.add(splitter);
-					//splitter.setItems(items);
+					// splitter.setItems(items);
 					splitter.setSplitType(split);
 					break;
 
@@ -683,18 +703,21 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x, y, merger);
 
 					buildings.add(merger);
-					//merger.setItems(items);
+					// merger.setItems(items);
 					break;
 
 				case TUNNEL: // For the hover icons rotation
 					isInputTunnel = !isInputTunnel;
 					ret = isInputTunnel ? 1 : 2; // We do want to place an input tunnel and right after be able to place the output one
 
+					if (fromSave)
+						isInputTunnel = isInput;
+
 					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
 					setTileAt(TileType.FACTORY, x, y, tunnel);
 
 					buildings.add(tunnel);
-					//tunnel.setItems(items);
+					// tunnel.setItems(items);
 					break;
 
 				default:
@@ -709,7 +732,7 @@ public class TileMap implements Serializable
 		}
 		return ret;
 	}
-	
+
 	private void replaceConveyor(int x, int y, int inputDirection, int outputDirection, List<Item> items)
 	{
 		if (isEmpty(x, y))
@@ -718,7 +741,7 @@ public class TileMap implements Serializable
 			setTileAt(TileType.CONVEYOR, x, y, conveyor);
 			buildings.add(conveyor);
 			conveyor.setItems(items);
-			
+
 			updateOutputs(x, y);
 
 			Sounds.PLACING.play();

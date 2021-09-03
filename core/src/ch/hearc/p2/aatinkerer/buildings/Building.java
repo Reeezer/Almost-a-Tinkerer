@@ -54,6 +54,7 @@ public abstract class Building implements Tile, Serializable
 	protected boolean mirrored;
 	protected LinkedList<Item> items;
 	protected Recipe selectedRecipe;
+	protected boolean isInput;
 	
 	protected transient boolean canSelectRecipe;
 
@@ -73,7 +74,6 @@ public abstract class Building implements Tile, Serializable
 	protected transient static int ticks = 0;
 
 	protected transient List<Recipe> recipes;
-	protected boolean isInput;
 
 	public Building(TileMap tilemap, int x, int y, int direction, int size, int tiles, FactoryType type)
 	{
