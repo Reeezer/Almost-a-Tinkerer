@@ -721,7 +721,7 @@ public class TileMap implements Serializable
 					setTileAt(TileType.FACTORY, x, y, tunnel);
 
 					buildings.add(tunnel);
-					// tunnel.setItems(items);
+					tunnel.setItems(items);
 					break;
 
 				default:
