@@ -38,6 +38,7 @@ import ch.hearc.p2.aatinkerer.buildings.Trash;
 import ch.hearc.p2.aatinkerer.buildings.Tunnel;
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.data.Recipe;
 import ch.hearc.p2.aatinkerer.data.Ressource;
 import ch.hearc.p2.aatinkerer.data.Tile;
 import ch.hearc.p2.aatinkerer.data.TileType;
@@ -119,6 +120,8 @@ public class TileMap implements Serializable
 			if (building.getType() != null)
 			{				
 				List<Item> items = building.getItems();
+				Recipe recipe = building.activeRecipe();
+				
 				if (building.getType() == FactoryType.CONVEYOR)
 				{
 					Conveyor conveyor = (Conveyor) building;
@@ -127,7 +130,17 @@ public class TileMap implements Serializable
 					replaceConveyor(building.getX(), building.getY(), conveyor.getInputDirection(), conveyor.getOutputDirection(), items);
 				}
 				else
-					placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items);				
+				{
+					if (building.getType() != FactoryType.SPLITTER)
+					{
+						placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items, recipe, ItemType.NONE);
+					}
+					else
+					{
+						Splitter splitter = (Splitter) building;
+						placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items, recipe, splitter.splitType());
+					}
+				}
 			}
 		}
 		
@@ -556,10 +569,10 @@ public class TileMap implements Serializable
 
 	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored)
 	{
-		return placeBuilding(x, y, direction, factoryType, mirrored, null);
+		return placeBuilding(x, y, direction, factoryType, mirrored, null, null, ItemType.NONE);
 	}
 	
-	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, List<Item> items)
+	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, List<Item> items, Recipe recipe, ItemType split)
 	{
 		int ret = 0;
 
@@ -643,6 +656,7 @@ public class TileMap implements Serializable
 					updateOutputs(x3, y3);
 					
 					//assembler.setItems(items);
+					assembler.setRecipe(recipe);
 					break;
 
 				case TRASH:
@@ -660,6 +674,7 @@ public class TileMap implements Serializable
 
 					buildings.add(splitter);
 					//splitter.setItems(items);
+					splitter.setSplitType(split);
 					break;
 
 				case MERGER:
