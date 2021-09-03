@@ -199,6 +199,7 @@ public class SaveScreen implements Screen
 	public void show()
 	{
 		Gdx.input.setInputProcessor(stage);
+		displaySaves();
 	}
 
 	@Override

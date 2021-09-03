@@ -2,6 +2,7 @@ package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,13 +10,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
@@ -44,6 +49,11 @@ public class DifficultyScreen implements Screen
 
 	private Texture background;
 
+	public final static String WORLD_NAME = "World name";
+	private TextField nameTextField;
+	private TextFieldStyle textFieldStyle;
+	private Table textFieldTable;
+
 	public DifficultyScreen(final AATinkererGame game)
 	{
 		this.game = game;
@@ -65,12 +75,41 @@ public class DifficultyScreen implements Screen
 		frame1 = 0;
 		frame2 = -background.getWidth();
 
-		// Title
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
-		labelStyle.fontColor = AATinkererGame.WHITE;
+		// Return
+		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
+		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
 
-		Label title = new Label("Choose a difficulty", labelStyle);
+		TextButtonStyle textButtonStyle = new TextButtonStyle();
+		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		textButtonStyle.fontColor = AATinkererGame.WHITE;
+		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
+		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
+
+		exitButton = new TextButton("Return", textButtonStyle);
+		exitButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				Sounds.CLICK.play();
+				game.toSaveScreen();
+			};
+		});
+		stage.addActor(exitButton);
+
+		// Title
+		LabelStyle titleLabelStyle = new LabelStyle();
+		titleLabelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
+		titleLabelStyle.fontColor = AATinkererGame.WHITE;
+
+		Label title = new Label("Choose a difficulty", titleLabelStyle);
+
+		// World name
+		textFieldTable = new Table();
+
+		textFieldStyle = new TextFieldStyle();
+		textFieldStyle.background = new NinePatchDrawable(textButtonPatch);
+		textFieldStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		textFieldStyle.fontColor = AATinkererGame.WHITE;
+		textFieldStyle.cursor = new TextureRegionDrawable(new Texture("Ui/Buttons/cursor.png"));
 
 		// Difficulties
 		NinePatch regularPatch = new NinePatch(new Texture("Ui/Buttons/regular.png"), 2, 2, 2, 2);
@@ -96,29 +135,11 @@ public class DifficultyScreen implements Screen
 		createButton(goodLuckPatch, goodLuckHoverPatch, "Good luck", Difficulty.GOODLUCK);
 
 		// Positioning
-		mainTable.add(title).padBottom(25);
+		mainTable.add(title).padBottom(50);
+		mainTable.row();
+		mainTable.add(textFieldTable).padBottom(20).width(680);
 		mainTable.row();
 		mainTable.add(diffTable);
-
-		// Return
-		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
-		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
-
-		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
-		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
-		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
-
-		exitButton = new TextButton("Return", textButtonStyle);
-		exitButton.addListener(new ClickListener() {
-			public void clicked(InputEvent event, float x, float y)
-			{
-				Sounds.CLICK.play();
-				game.toSaveScreen();
-			};
-		});
-		stage.addActor(exitButton);
 	}
 
 	private void createButton(NinePatch ninePatch, NinePatch ninePatchHover, String title, final Difficulty difficulty)
@@ -147,6 +168,13 @@ public class DifficultyScreen implements Screen
 	public void show()
 	{
 		Gdx.input.setInputProcessor(stage);
+
+		// Didn't find another way to remove the focus of the textfield
+		nameTextField = new TextField("", textFieldStyle);
+		nameTextField.setMessageText(WORLD_NAME);
+
+		textFieldTable.clear();
+		textFieldTable.add(nameTextField).grow();
 	}
 
 	@Override
