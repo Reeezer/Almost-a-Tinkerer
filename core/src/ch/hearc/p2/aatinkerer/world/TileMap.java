@@ -711,7 +711,11 @@ public class TileMap implements Serializable
 					ret = isInputTunnel ? 1 : 2; // We do want to place an input tunnel and right after be able to place the output one
 
 					if (fromSave)
+					{
 						isInputTunnel = isInput;
+						if (!isInput)
+							direction = (direction + 2) % 4;
+					}
 
 					Tunnel tunnel = new Tunnel(this, x, y, direction, isInputTunnel);
 					setTileAt(TileType.FACTORY, x, y, tunnel);
