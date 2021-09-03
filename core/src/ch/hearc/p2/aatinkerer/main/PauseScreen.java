@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
@@ -96,6 +97,7 @@ public class PauseScreen implements Screen
 				game.toPausedGameScreen();
 			};
 		});
+		game.addCursorListener(resumeButton);
 		buttonTable.add(resumeButton).pad(pad);
 
 		// Sound
@@ -118,6 +120,7 @@ public class PauseScreen implements Screen
 					Sounds.MUSIC.setVolume(AATinkererGame.VOLUME_LOW);
 			};
 		});
+		game.addCursorListener(muteButton);
 		buttonTable.add(muteButton).pad(pad);
 
 		// Save
@@ -133,6 +136,7 @@ public class PauseScreen implements Screen
 				// FIXME save the game
 			};
 		});
+		game.addCursorListener(saveButton);
 		buttonTable.add(saveButton).pad(pad);
 
 		// Back home
@@ -148,6 +152,7 @@ public class PauseScreen implements Screen
 				game.toSaveScreen();
 			};
 		});
+		game.addCursorListener(homeButton);
 		buttonTable.add(homeButton).pad(pad);
 
 		mainTable.add(title).padTop(50).padBottom(50);
@@ -197,6 +202,7 @@ public class PauseScreen implements Screen
 				game.resizeGameScreen();
 			};
 		});
+		game.addCursorListener(button);
 
 		button.setSize(100, button.getHeight());
 

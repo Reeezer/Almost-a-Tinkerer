@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -54,6 +55,9 @@ public class SaveScreen implements Screen
 	private Table savesTable;
 	private List<Table> savesList;
 
+	private LabelStyle labelStyle;
+	private ScrollPaneStyle paneStyle;
+
 	public SaveScreen(final AATinkererGame game)
 	{
 		this.game = game;
@@ -76,12 +80,21 @@ public class SaveScreen implements Screen
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
-		// Title
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
+		// Initializations
+		labelStyle = new LabelStyle();
+		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
 		labelStyle.fontColor = AATinkererGame.WHITE;
 
-		Label title = new Label("Worlds", labelStyle);
+		paneStyle = new ScrollPaneStyle();
+		paneStyle.vScroll = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2));
+		paneStyle.vScrollKnob = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2));
+
+		// Title
+		LabelStyle titleLabelStyle = new LabelStyle();
+		titleLabelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
+		titleLabelStyle.fontColor = AATinkererGame.WHITE;
+
+		Label title = new Label("Worlds", titleLabelStyle);
 
 		// Buttons
 		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
@@ -104,6 +117,7 @@ public class SaveScreen implements Screen
 				// FIXME lancer la partie en fonction de ce qui est sélectionné
 			};
 		});
+		game.addCursorListener(loadButton);
 		buttonsTable.add(loadButton).padRight(200).padTop(50).padBottom(50);
 
 		TextButton newButton = new TextButton("New world", textButtonStyle);
@@ -114,6 +128,7 @@ public class SaveScreen implements Screen
 				game.toDifficultyScreen();
 			};
 		});
+		game.addCursorListener(newButton);
 		buttonsTable.add(newButton);
 
 		// Adding to the layout
@@ -130,14 +145,6 @@ public class SaveScreen implements Screen
 		saveSelected = -1;
 		loadButton.setTouchable(Touchable.disabled);
 		loadButton.setDisabled(true);
-
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
-		labelStyle.fontColor = AATinkererGame.WHITE;
-
-		ScrollPaneStyle paneStyle = new ScrollPaneStyle();
-		paneStyle.vScroll = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2));
-		paneStyle.vScrollKnob = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2));
 
 		savesList = new LinkedList<Table>();
 
@@ -184,6 +191,7 @@ public class SaveScreen implements Screen
 					line.setBackground(new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2)));
 				}
 			});
+			game.addCursorListener(line);
 
 			line.setBackground(new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2)));
 			line.add(nameLabel).width(350).fill();

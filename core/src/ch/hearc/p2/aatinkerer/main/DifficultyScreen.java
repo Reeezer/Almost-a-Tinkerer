@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -93,6 +94,7 @@ public class DifficultyScreen implements Screen
 				game.toSaveScreen();
 			};
 		});
+		game.addCursorListener(exitButton);
 		stage.addActor(exitButton);
 
 		// Title
@@ -162,6 +164,7 @@ public class DifficultyScreen implements Screen
 				game.toNewGameScreen();
 			};
 		});
+		game.addCursorListener(button);
 	}
 
 	@Override
@@ -172,6 +175,7 @@ public class DifficultyScreen implements Screen
 		// Didn't find another way to remove the focus of the textfield
 		nameTextField = new TextField("", textFieldStyle);
 		nameTextField.setMessageText(WORLD_NAME);
+		game.addCursorListener(nameTextField);
 
 		textFieldTable.clear();
 		textFieldTable.add(nameTextField).grow();

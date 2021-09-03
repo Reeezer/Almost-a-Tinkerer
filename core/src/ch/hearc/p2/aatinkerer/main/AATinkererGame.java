@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
 import ch.hearc.p2.aatinkerer.data.Scale;
@@ -26,6 +29,9 @@ public class AATinkererGame extends Game
 	private PauseScreen pauseScreen;
 	private DifficultyScreen difficultyScreen;
 	private SaveScreen saveScreen;
+
+	private Cursor cursor;
+	private Cursor cursorHover;
 
 	public static final Color BLUE = new Color(31.f / 255, 33.f / 255, 59.f / 255, 1);
 	public static final Color WHITE = new Color(246.f / 255, 246.f / 255, 246.f / 255, 1);
@@ -58,10 +64,8 @@ public class AATinkererGame extends Game
 		Gdx.input.setInputProcessor(input);
 
 		// Custom cursor
-		Pixmap pixmap = new Pixmap(Gdx.files.internal("Ui/cursor.png"));
-		int xPos = pixmap.getWidth() / 2;
-		int yPos = pixmap.getHeight() / 2;
-		Cursor cursor = Gdx.graphics.newCursor(pixmap, 0, 0);
+		cursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("Ui/cursor.png")), 6, 0);
+		cursorHover = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("Ui/cursorhover.png")), 6, 0);
 		Gdx.graphics.setCursor(cursor);
 
 		// Initializations
@@ -78,26 +82,45 @@ public class AATinkererGame extends Game
 		setScreen(splashScreen);
 	}
 
+	public void addCursorListener(Actor actor)
+	{
+		actor.addListener(new ClickListener() {
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor)
+			{
+				Gdx.graphics.setCursor(cursorHover);
+			}
+
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor)
+			{
+				Gdx.graphics.setCursor(cursor);
+			}
+		});
+	}
+
 	public void toPausedGameScreen()
 	{
+		Gdx.graphics.setCursor(cursor);
 		gameScreen.resume();
 		toGameScreen();
 	}
 
 	public void toNewGameScreen()
 	{
+		Gdx.graphics.setCursor(cursor);
 		gameScreen = new GameScreen(this);
 		toGameScreen();
 	}
 
 	public void toDifficultyScreen()
 	{
+		Gdx.graphics.setCursor(cursor);
 		changeVolume(VOLUME_LOW);
 		setScreen(difficultyScreen);
 	}
 
 	public void toPauseScreen()
 	{
+		Gdx.graphics.setCursor(cursor);
 		gameScreen.pause();
 		changeVolume(VOLUME_LOW);
 		setScreen(pauseScreen);
@@ -105,12 +128,14 @@ public class AATinkererGame extends Game
 
 	public void toSaveScreen()
 	{
+		Gdx.graphics.setCursor(cursor);
 		changeVolume(VOLUME_LOW);
 		setScreen(saveScreen);
 	}
 
 	private void toGameScreen()
 	{
+		Gdx.graphics.setCursor(cursor);
 		changeVolume(VOLUME_HIGH);
 		setScreen(gameScreen);
 	}
