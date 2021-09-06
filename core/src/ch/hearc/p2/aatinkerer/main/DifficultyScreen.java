@@ -67,7 +67,7 @@ public class DifficultyScreen implements Screen
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
 		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = game.getButtonHoverPatch();
+		textButtonStyle.up = game.getButtonPatch();
 		textButtonStyle.over = game.getButtonHoverPatch();
 
 		exitButton = new TextButton("Return", textButtonStyle);
