@@ -100,7 +100,7 @@ public class Chunk implements Serializable
 			int neighbourX = TileMap.chunkKeyToX(neighbour.key);
 			int neighbourY = TileMap.chunkKeyToY(neighbour.key);
 
-			System.out.format("chunk at (%d, %d) is reading cached ressources from its neighbour (%d, %d)%n", chunkX, chunkY, neighbourX, neighbourY);
+			//System.out.format("chunk at (%d, %d) is reading cached ressources from its neighbour (%d, %d)%n", chunkX, chunkY, neighbourX, neighbourY);
 
 			int coordsOffsetX = (neighbourX - chunkX) * CHUNKSIZE;
 			int coordsOffsetY = (neighbourY - chunkY) * CHUNKSIZE;
@@ -121,7 +121,7 @@ public class Chunk implements Serializable
 
 				if (ressourceX >= 0 && ressourceX < CHUNKSIZE && ressourceY >= 0 && ressourceY < CHUNKSIZE)
 				{
-					System.out.format(" - read new cached ressource %s neighbour's local coords (%d, %d) converted to chunk local (%d,%d)%n", ressource.toString(), neighbourRessourceX, neighbourRessourceY, ressourceX, ressourceY);
+					//System.out.format(" - read new cached ressource %s neighbour's local coords (%d, %d) converted to chunk local (%d,%d)%n", ressource.toString(), neighbourRessourceX, neighbourRessourceY, ressourceX, ressourceY);
 
 					setLocalTile(TileType.RESSOURCE, ressourceX, ressourceY, ressource);
 					toDeleteRessourceKeys.add(ressourceKey);

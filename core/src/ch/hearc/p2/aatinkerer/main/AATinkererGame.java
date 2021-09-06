@@ -44,6 +44,8 @@ public class AATinkererGame extends Game
 
 	public static Difficulty difficulty = Difficulty.REGULAR;
 	public static Scale scale = Scale.AUTO;
+	
+	private String saveDirBasePath;
 
 	static {
 		buttonFontParam = new FreeTypeFontParameter();
@@ -78,8 +80,29 @@ public class AATinkererGame extends Game
 		pauseScreen = new PauseScreen(this);
 		saveScreen = new SaveScreen(this);
 		difficultyScreen = new DifficultyScreen(this);
+		
 
+		String systemName = System.getProperty("os.name").toLowerCase();
+		
+		
+		// two options : either windows or unix (might not work on macOS, we don't have it to try)
+		if (systemName.contains("windows"))
+			saveDirBasePath = Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").file().getAbsolutePath();
+		else
+			saveDirBasePath = Gdx.files.external(".config/almost-a-tinkerer/").file().getAbsolutePath();
+		
+		// Create directory if doesn't exists
+		if (!Gdx.files.absolute(saveDirBasePath).exists())
+			Gdx.files.absolute(saveDirBasePath).mkdirs();
+		
+		System.out.format("detected OS: %s, using save path '%s'%n", systemName, saveDirBasePath);
+		
 		setScreen(splashScreen);
+	}
+	
+	public String saveDirBasePath()
+	{
+		return this.saveDirBasePath;
 	}
 
 	public void addCursorListener(Actor actor)
@@ -114,10 +137,16 @@ public class AATinkererGame extends Game
 		toGameScreen();
 	}
 
-	public void toNewGameScreen()
+	public void toNewGameScreenFromSave(String name, String savepath)
 	{
-		gameScreen = new GameScreen(this, "C:\\Users\\Luca Davide Meyer\\Desktop\\AATsaves\\fichtre.dat");
-		// gameScreen = new GameScreen(this);
+		gameScreen = new GameScreen(this, name, savepath);
+		setDefaultCursor();
+		toGameScreen();
+	}
+	
+	public void toNewGameScreen(String name)
+	{
+		gameScreen = new GameScreen(this, name);
 		setDefaultCursor();
 		toGameScreen();
 	}
@@ -141,7 +170,7 @@ public class AATinkererGame extends Game
 	{
 		// FIXME
 		if (gameScreen != null)
-			gameScreen.saveGame("C:\\Users\\Luca Davide Meyer\\Desktop\\AATsaves\\fichtre.dat");
+			gameScreen.saveGame();
 
 		setDefaultCursor();
 
@@ -178,7 +207,9 @@ public class AATinkererGame extends Game
 	@Override
 	public void dispose()
 	{
-		gameScreen.dispose();
+		if (gameScreen != null)
+			gameScreen.dispose();
+		
 		batch.dispose();
 	}
 }
