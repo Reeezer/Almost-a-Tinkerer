@@ -61,10 +61,10 @@ public class AATinkererGame extends Game
 
 	static
 	{
-		buttonFontParam = new FreeTypeFontParameter();
-		buttonFontParam.size = 40;
-		buttonFontParam.padLeft = 8;
-		buttonFontParam.padRight = 8;
+		normalFontParam = new FreeTypeFontParameter();
+		normalFontParam.size = 40;
+		normalFontParam.padLeft = 8;
+		normalFontParam.padRight = 8;
 
 		titleFontParam = new FreeTypeFontParameter();
 		titleFontParam.size = 80;
