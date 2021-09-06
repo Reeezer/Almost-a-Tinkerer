@@ -48,8 +48,6 @@ public class WorldNameScreen implements Screen
 	private TextField nameField;
 	private Table textFieldTable;
 
-	private TextFieldStyle textFieldStyle;
-
 	private String savePath;
 
 	public WorldNameScreen(final AATinkererGame game)
@@ -68,25 +66,8 @@ public class WorldNameScreen implements Screen
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
-		// Styles
-		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
-		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = game.getButtonPatch();
-		textButtonStyle.over = game.getButtonHoverPatch();
-
-		textFieldStyle = new TextFieldStyle();
-		textFieldStyle.background = game.getButtonPatch();
-		textFieldStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
-		textFieldStyle.fontColor = AATinkererGame.WHITE;
-		textFieldStyle.cursor = new TextureRegionDrawable(new Texture("Ui/Buttons/cursor.png"));
-
-		LabelStyle titleLabelStyle = new LabelStyle();
-		titleLabelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
-		titleLabelStyle.fontColor = AATinkererGame.WHITE;
-
 		// Return
-		exitButton = new TextButton("Return", textButtonStyle);
+		exitButton = new TextButton("Return", AATinkererGame.textButtonStyle);
 		exitButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -98,10 +79,10 @@ public class WorldNameScreen implements Screen
 		stage.addActor(exitButton);
 
 		// Title
-		Label title = new Label("World name", titleLabelStyle);
+		Label title = new Label("World name", AATinkererGame.titleLabelStyle);
 
 		// Rename
-		TextButton renameButton = new TextButton("Rename", textButtonStyle);
+		TextButton renameButton = new TextButton("Rename", AATinkererGame.textButtonStyle);
 		renameButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -172,7 +153,7 @@ public class WorldNameScreen implements Screen
 		Gdx.input.setInputProcessor(stage);
 
 		// World name
-		nameField = new TextField("", textFieldStyle);
+		nameField = new TextField("", AATinkererGame.textFieldStyle);
 		game.addCursorHoverEffect(nameField);
 
 		textFieldTable.clear();

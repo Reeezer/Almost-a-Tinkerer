@@ -9,23 +9,16 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -55,7 +48,6 @@ public class SaveScreen implements Screen
 	private Table savesTable;
 	private List<Table> savesList;
 
-	private LabelStyle labelStyle;
 	private ScrollPaneStyle paneStyle;
 
 	public SaveScreen(final AATinkererGame game)
@@ -74,32 +66,17 @@ public class SaveScreen implements Screen
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
-		// Styles
-		labelStyle = new LabelStyle();
-		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
-		labelStyle.fontColor = AATinkererGame.WHITE;
-
+		// Style
 		paneStyle = new ScrollPaneStyle();
-		paneStyle.vScroll = game.getButtonPatch();
-		paneStyle.vScrollKnob = game.getButtonHoverPatch();
-
-		LabelStyle titleLabelStyle = new LabelStyle();
-		titleLabelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
-		titleLabelStyle.fontColor = AATinkererGame.WHITE;
-
-		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
-		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = game.getButtonPatch();
-		textButtonStyle.over = game.getButtonHoverPatch();
-		textButtonStyle.disabled = game.getButtonDisabledPatch();
+		paneStyle.vScroll = AATinkererGame.normalPatch;
+		paneStyle.vScrollKnob = AATinkererGame.hoverPatch;
 
 		// Title
-		Label title = new Label("Worlds", titleLabelStyle);
+		Label title = new Label("Worlds", AATinkererGame.titleLabelStyle);
 
 		int buttonPad = 111;
 		// Load button
-		loadButton = new TextButton("Load world", textButtonStyle);
+		loadButton = new TextButton("Load world", AATinkererGame.textButtonStyle);
 		loadButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -114,7 +91,7 @@ public class SaveScreen implements Screen
 		buttonsTable.add(loadButton).padRight(buttonPad).padTop(50).padBottom(50);
 
 		// Edit button
-		editButton = new TextButton("Edit", textButtonStyle);
+		editButton = new TextButton("Edit", AATinkererGame.textButtonStyle);
 		editButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -127,7 +104,7 @@ public class SaveScreen implements Screen
 		buttonsTable.add(editButton).padRight(buttonPad);
 
 		// Delete button
-		deleteButton = new TextButton("Delete", textButtonStyle);
+		deleteButton = new TextButton("Delete", AATinkererGame.textButtonStyle);
 		deleteButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -142,7 +119,7 @@ public class SaveScreen implements Screen
 		buttonsTable.add(deleteButton).padRight(buttonPad);
 
 		// New button
-		TextButton newButton = new TextButton("New world", textButtonStyle);
+		TextButton newButton = new TextButton("New world", AATinkererGame.textButtonStyle);
 		newButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -211,8 +188,8 @@ public class SaveScreen implements Screen
 			final String difficultyString = json.getString("difficulty").toLowerCase();
 			final Difficulty difficulty = Difficulty.valueOf(difficultyString.toUpperCase());
 
-			Label nameLabel = new Label(json.getString("name"), labelStyle);
-			Label dateLabel = new Label(json.getString("date"), labelStyle);
+			Label nameLabel = new Label(json.getString("name"), AATinkererGame.normalLabelStyle);
+			Label dateLabel = new Label(json.getString("date"), AATinkererGame.normalLabelStyle);
 			Image difficultyImage = new Image(new Texture("Ui/Buttons/" + difficultyString + "hover.png"));
 
 			// Create a table for each row
@@ -239,13 +216,13 @@ public class SaveScreen implements Screen
 
 					for (Table otherLine : savesList)
 						if (otherLine != line)
-							otherLine.setBackground(game.getButtonPatch());
-					line.setBackground(game.getButtonHoverPatch());
+							otherLine.setBackground(AATinkererGame.normalPatch);
+					line.setBackground(AATinkererGame.hoverPatch);
 				}
 			});
 			game.addCursorHoverEffect(line);
 
-			line.setBackground(game.getButtonPatch());
+			line.setBackground(AATinkererGame.normalPatch);
 			line.add(nameLabel).width(350).fill();
 			line.add(dateLabel).width(250).fill();
 			line.add(difficultyImage).width(150).height(150).fill();

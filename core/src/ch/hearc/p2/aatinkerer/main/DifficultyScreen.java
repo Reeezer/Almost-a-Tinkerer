@@ -1,19 +1,15 @@
 package ch.hearc.p2.aatinkerer.main;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.loaders.AssetLoader;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
@@ -21,7 +17,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
@@ -42,11 +37,11 @@ public class DifficultyScreen implements Screen
 	private int width;
 	private int height;
 
-	public final static String WORLD_NAME = "World name";
 	private TextField nameTextField;
-	private TextFieldStyle textFieldStyle;
 	private Table textFieldTable;
+
 	private final static String NEW_WOLRD = "New world";
+	private final static String WORLD_NAME = "World name";
 
 	public DifficultyScreen(final AATinkererGame game)
 	{
@@ -56,6 +51,7 @@ public class DifficultyScreen implements Screen
 		this.viewport = new FitViewport(0, 0, camera);
 
 		difficultiesTable = new Table();
+		textFieldTable = new Table();
 		Table mainTable = new Table();
 		mainTable.setFillParent(true);
 
@@ -64,13 +60,7 @@ public class DifficultyScreen implements Screen
 		stage.addActor(mainTable);
 
 		// Return
-		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
-		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = game.getButtonPatch();
-		textButtonStyle.over = game.getButtonHoverPatch();
-
-		exitButton = new TextButton("Return", textButtonStyle);
+		exitButton = new TextButton("Return", AATinkererGame.textButtonStyle);
 		exitButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -82,20 +72,7 @@ public class DifficultyScreen implements Screen
 		stage.addActor(exitButton);
 
 		// Title
-		LabelStyle titleLabelStyle = new LabelStyle();
-		titleLabelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
-		titleLabelStyle.fontColor = AATinkererGame.WHITE;
-
-		Label title = new Label("Choose a difficulty", titleLabelStyle);
-
-		// World name
-		textFieldTable = new Table();
-
-		textFieldStyle = new TextFieldStyle();
-		textFieldStyle.background = game.getButtonPatch();
-		textFieldStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
-		textFieldStyle.fontColor = AATinkererGame.WHITE;
-		textFieldStyle.cursor = new TextureRegionDrawable(new Texture("Ui/Buttons/cursor.png"));
+		Label title = new Label("Choose a difficulty", AATinkererGame.titleLabelStyle);
 
 		// Difficulties
 		Texture regularTexture = new Texture("Ui/Buttons/regular.png");
@@ -159,7 +136,7 @@ public class DifficultyScreen implements Screen
 		Gdx.input.setInputProcessor(stage);
 
 		// Didn't find another way to remove the focus of the textfield when moving between the screens
-		nameTextField = new TextField("", textFieldStyle);
+		nameTextField = new TextField("", AATinkererGame.textFieldStyle);
 		nameTextField.setMessageText(WORLD_NAME);
 		game.addCursorHoverEffect(nameTextField);
 

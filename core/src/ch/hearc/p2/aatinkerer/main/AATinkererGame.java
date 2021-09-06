@@ -12,8 +12,12 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
 import ch.hearc.p2.aatinkerer.data.Scale;
@@ -35,13 +39,18 @@ public class AATinkererGame extends Game
 	private Cursor cursor;
 	private Cursor cursorHover;
 
-	private NinePatchDrawable textButtonPatch;
-	private NinePatchDrawable textButtonHoverPatch;
-	private NinePatchDrawable textButtonDisabledPatch;
+	public static NinePatchDrawable normalPatch;
+	public static NinePatchDrawable hoverPatch;
+	public static NinePatchDrawable disabledPatch;
+
+	public static TextButtonStyle textButtonStyle;
+	public static TextFieldStyle textFieldStyle;
+	public static LabelStyle normalLabelStyle;
+	public static LabelStyle titleLabelStyle;
 
 	private Texture menusBackground;
-	private float passedTime;
 	private final static float ANIMATION_TIME = 0.5f;
+	private float passedTime;
 	private int xPosBackground1;
 	private int xPosBackground2;
 
@@ -60,17 +69,6 @@ public class AATinkererGame extends Game
 
 	private String saveDirBasePath;
 
-	static
-	{
-		normalFontParam = new FreeTypeFontParameter();
-		normalFontParam.size = 40;
-		normalFontParam.padLeft = 8;
-		normalFontParam.padRight = 8;
-
-		titleFontParam = new FreeTypeFontParameter();
-		titleFontParam.size = 80;
-	}
-
 	@Override
 	public void create()
 	{
@@ -79,13 +77,44 @@ public class AATinkererGame extends Game
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
 
-		// Buttons
-		textButtonPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2));
-		textButtonHoverPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2));
-		textButtonDisabledPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttondisabled.png"), 2, 2, 2, 2));
+		// Initializations
+		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"));
+
+		menusBackground = new Texture("Menus/menu_background.png");
+		normalPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2));
+		hoverPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2));
+		disabledPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttondisabled.png"), 2, 2, 2, 2));
+
+		normalFontParam = new FreeTypeFontParameter();
+		normalFontParam.size = 40;
+		normalFontParam.padLeft = 8;
+		normalFontParam.padRight = 8;
+
+		titleFontParam = new FreeTypeFontParameter();
+		titleFontParam.size = 80;
+
+		textButtonStyle = new TextButtonStyle();
+		textButtonStyle.font = font.generateFont(normalFontParam);
+		textButtonStyle.fontColor = WHITE;
+		textButtonStyle.up = normalPatch;
+		textButtonStyle.over = hoverPatch;
+		textButtonStyle.disabled = disabledPatch;
+
+		titleLabelStyle = new LabelStyle();
+		titleLabelStyle.font = font.generateFont(titleFontParam);
+		titleLabelStyle.fontColor = WHITE;
+
+		textFieldStyle = new TextFieldStyle();
+		textFieldStyle.background = normalPatch;
+		textFieldStyle.font = font.generateFont(normalFontParam);
+		textFieldStyle.fontColor = WHITE;
+		textFieldStyle.cursor = new TextureRegionDrawable(new Texture("Ui/Buttons/cursor.png"));
+
+		normalLabelStyle = new LabelStyle();
+		normalLabelStyle.font = font.generateFont(normalFontParam);
+		normalLabelStyle.fontColor = WHITE;
 
 		// Menus background animation
-		menusBackground = new Texture("Menus/menu_background.png");
 		passedTime = 0.f;
 		xPosBackground1 = 0;
 		xPosBackground1 = -menusBackground.getWidth();
@@ -96,7 +125,6 @@ public class AATinkererGame extends Game
 		Gdx.graphics.setCursor(cursor);
 
 		// Font
-		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"));
 
 		// Music
 		Sounds.MUSIC.setVolume(VOLUME_LOW);
@@ -151,21 +179,6 @@ public class AATinkererGame extends Game
 		// FIXME
 		if (gameScreen != null)
 			gameScreen.saveGame();
-	}
-
-	public NinePatchDrawable getButtonPatch()
-	{
-		return textButtonPatch;
-	}
-
-	public NinePatchDrawable getButtonHoverPatch()
-	{
-		return textButtonHoverPatch;
-	}
-
-	public NinePatchDrawable getButtonDisabledPatch()
-	{
-		return textButtonDisabledPatch;
 	}
 
 	public void setHoverCursor()
