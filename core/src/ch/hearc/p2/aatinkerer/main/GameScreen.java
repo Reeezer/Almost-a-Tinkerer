@@ -193,6 +193,7 @@ public class GameScreen implements Screen
 			}
 		};
 
+		factoryToolbar.reset();
 		GameManager.getInstance().reset();
 
 		GameManager.getInstance().addMilestoneListener(milestoneListener);
