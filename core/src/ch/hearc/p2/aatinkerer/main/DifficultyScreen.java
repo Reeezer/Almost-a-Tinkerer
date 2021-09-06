@@ -54,6 +54,7 @@ public class DifficultyScreen implements Screen
 	private TextField nameTextField;
 	private TextFieldStyle textFieldStyle;
 	private Table textFieldTable;
+	private final static String NEW_WOLRD = "New world";
 
 	public DifficultyScreen(final AATinkererGame game)
 	{
@@ -161,7 +162,8 @@ public class DifficultyScreen implements Screen
 			{
 				Sounds.CLICK.play();
 				AATinkererGame.difficulty = difficulty;
-				game.toNewGameScreen(nameTextField.getText());
+				String name = nameTextField.getText().isEmpty() ? NEW_WOLRD : nameTextField.getText();
+				game.toNewGameScreen(name);
 			};
 		});
 		game.addCursorListener(button);
@@ -210,8 +212,10 @@ public class DifficultyScreen implements Screen
 		stage.act(delta);
 		stage.draw();
 
-		if (passedTime >= TIME) {
-			while (passedTime >= TIME) {
+		if (passedTime >= TIME)
+		{
+			while (passedTime >= TIME)
+			{
 				passedTime -= TIME;
 
 				frame1++;
