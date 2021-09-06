@@ -119,7 +119,7 @@ public class PauseScreen implements Screen
 			public void clicked(InputEvent event, float x, float y)
 			{
 				Sounds.CLICK.play();
-				// FIXME save the game
+				game.save();
 			};
 		});
 		game.addCursorHoverEffect(saveButton);
@@ -136,7 +136,6 @@ public class PauseScreen implements Screen
 			{
 				Sounds.CLICK.play();
 				game.toSaveScreen();
-
 			};
 		});
 		game.addCursorHoverEffect(homeButton);
