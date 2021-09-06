@@ -55,7 +55,7 @@ public abstract class Building implements Tile, Serializable
 	protected LinkedList<Item> items;
 	protected Recipe selectedRecipe;
 	protected boolean isInput;
-	
+
 	protected transient boolean canSelectRecipe;
 
 	protected transient TileMap tilemap;
@@ -99,18 +99,18 @@ public abstract class Building implements Tile, Serializable
 	{
 		return items;
 	}
-	
+
 	public void setItems(List<Item> items)
-	{		
+	{
 		if (items != null)
 		{
 			this.items = new LinkedList<Item>();
-			
+
 			for (Item item : items)
 				addItem(item);
 		}
 	}
-	
+
 	public boolean canSelectRecipe()
 	{
 		return this.canSelectRecipe;
@@ -118,12 +118,14 @@ public abstract class Building implements Tile, Serializable
 
 	public void render(SpriteBatch batch, int dx, int dy)
 	{
-		for (int i = 0; i < tilecount; i++) {
+		for (int i = 0; i < tilecount; i++)
+		{
 			int tx = (direction % 2 == 0) ? ((direction == 0) ? x + i : x - i) : x;
 			int ty = (direction % 2 != 0) ? ((direction == 1) ? y + i : y - i) : y;
 
 			AnimationType animationType = AnimationType.NONE;
-			if (type == FactoryType.CONVEYOR) {
+			if (type == FactoryType.CONVEYOR)
+			{
 				int inputDirection = inputPositions[0][2];
 				int outputDirection = direction;
 
@@ -134,7 +136,8 @@ public abstract class Building implements Tile, Serializable
 				else if (outputDirection == (inputDirection + 3) % 4)
 					animationType = AnimationType.LEFT;
 			}
-			else if (type == FactoryType.TUNNEL) {
+			else if (type == FactoryType.TUNNEL)
+			{
 				animationType = isInput ? AnimationType.IN : AnimationType.OUT;
 			}
 
@@ -192,20 +195,27 @@ public abstract class Building implements Tile, Serializable
 			return true;
 
 		// We do want to be able to store multiple itemtype in multiple amount
-		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER) {
+		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER)
+		{
 			if (!currentIngredients.containsKey(item.type))
 				return false;
 			else
 				return currentIngredients.get(item.type) >= maxSize;
 		}
-		else
+		else {
+			// don't tell predecessor that items can be transfered if the following conveyor isn't at least halfway done transfering to prevent the bunching animation bug
+			if (output != null && output.getItems() != null && output.getItems().peek() != null && output.getItems().peek().ticksSpent < Math.ceil(this.type.transferTimeout() / 2.f))
+				return true;
+			
 			return contentSize >= maxSize;
+		}
 	}
 
 	public void addItem(Item item)
 	{
 		// Called by the building who gives the item to insert in this building the item
-		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER) {
+		if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER)
+		{
 			if (currentIngredients.containsKey(item.type))
 				currentIngredients.put(item.type, currentIngredients.get(item.type) + 1);
 			else
@@ -223,13 +233,17 @@ public abstract class Building implements Tile, Serializable
 		Item itemToTransfer = items.peek();
 		// Check if the building can make a recipe or otherwise if it has an item to
 		// transfer
-		if (output != null && contentSize > 0) {
-			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER) {
+		if (output != null && contentSize > 0)
+		{
+			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS || type == FactoryType.MERGER)
+			{
 				checkRecipes();
 			}
-			else {
+			else
+			{
 				System.out.println(output.type + " - " + output.currentIngredients.get(itemToTransfer.type));
-				if (!output.isFull(itemToTransfer) && !itemToTransfer.justTransfered) {
+				if (!output.isFull(itemToTransfer) && !itemToTransfer.justTransfered)
+				{
 					Item item = items.poll();
 					contentSize--;
 					output.addItem(item);
@@ -243,29 +257,34 @@ public abstract class Building implements Tile, Serializable
 		// Check if there are enough items for the recipe
 		boolean makeIt = true;
 		Map<ItemType, Integer> ingredients = recipe.getIngredients();
-		for (ItemType item : ingredients.keySet()) {
-			if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item)) {
+		for (ItemType item : ingredients.keySet())
+		{
+			if (!currentIngredients.containsKey(item) || currentIngredients.get(item) < ingredients.get(item))
+			{
 				makeIt = false; // if there is not enough item for this recipe
 				break;
 			}
 		}
 
 		// if we have enough ingredients to make the recipe
-		if (makeIt) {
+		if (makeIt)
+		{
 			Item product = new Item();
 			product.type = recipe.getProduct();
 			if (output.isFull(product))
 				return;
 
 			// Make the recipe by decreasing the amount of all the ingredients
-			for (ItemType item : ingredients.keySet()) {
+			for (ItemType item : ingredients.keySet())
+			{
 				int nb = ingredients.get(item);
 				currentIngredients.put(item, currentIngredients.get(item) - nb);
 				contentSize -= nb;
 			}
 
 			// Adding the item produced
-			for (int i = 0; i < recipe.getAmount(); i++) {
+			for (int i = 0; i < recipe.getAmount(); i++)
+			{
 				Item item = new Item();
 				item.type = recipe.getProduct();
 				if (!output.isFull(item))
@@ -276,12 +295,15 @@ public abstract class Building implements Tile, Serializable
 
 	protected void checkRecipes()
 	{
-		if (this.selectedRecipe == null) {
-			for (Recipe recipe : recipes) {
+		if (this.selectedRecipe == null)
+		{
+			for (Recipe recipe : recipes)
+			{
 				checkRecipe(recipe);
 			}
 		}
-		else {
+		else
+		{
 			checkRecipe(this.selectedRecipe);
 		}
 	}
@@ -299,7 +321,8 @@ public abstract class Building implements Tile, Serializable
 
 	public void setRecipeTarget(ItemType type)
 	{
-		for (Recipe recipe : this.recipes) {
+		for (Recipe recipe : this.recipes)
+		{
 			if (recipe.getProduct() == type)
 				setRecipe(recipe);
 		}
@@ -313,15 +336,19 @@ public abstract class Building implements Tile, Serializable
 	public void update()
 	{
 		// transfer item if it is the right time
-		if (type != null) {
-			if (type.getTransferTicks() == type.getTransferTimeout()) {
+		if (type != null)
+		{
+			if (type.getTransferTicks() == type.getTransferTimeout())
+			{
 				transferItem();
 			}
 		}
 
 		// update items
-		for (Item item : items) {
-			if (item.ticksSpent < type.getTransferTimeout()) {
+		for (Item item : items)
+		{
+			if (item.ticksSpent < type.getTransferTimeout())
+			{
 				item.ticksSpent++;
 				item.justTransfered = false;
 			}
