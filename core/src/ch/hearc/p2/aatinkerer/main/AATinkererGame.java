@@ -44,10 +44,11 @@ public class AATinkererGame extends Game
 
 	public static Difficulty difficulty = Difficulty.REGULAR;
 	public static Scale scale = Scale.AUTO;
-	
+
 	private String saveDirBasePath;
 
-	static {
+	static
+	{
 		buttonFontParam = new FreeTypeFontParameter();
 		buttonFontParam.size = 40;
 		buttonFontParam.padLeft = 8;
@@ -80,26 +81,24 @@ public class AATinkererGame extends Game
 		pauseScreen = new PauseScreen(this);
 		saveScreen = new SaveScreen(this);
 		difficultyScreen = new DifficultyScreen(this);
-		
 
 		String systemName = System.getProperty("os.name").toLowerCase();
-		
-		
+
 		// two options : either windows or unix (might not work on macOS, we don't have it to try)
 		if (systemName.contains("windows"))
 			saveDirBasePath = Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").file().getAbsolutePath();
 		else
 			saveDirBasePath = Gdx.files.external(".config/almost-a-tinkerer/").file().getAbsolutePath();
-		
+
 		// Create directory if doesn't exists
 		if (!Gdx.files.absolute(saveDirBasePath).exists())
 			Gdx.files.absolute(saveDirBasePath).mkdirs();
-		
+
 		System.out.format("detected OS: %s, using save path '%s'%n", systemName, saveDirBasePath);
-		
+
 		setScreen(splashScreen);
 	}
-	
+
 	public String saveDirBasePath()
 	{
 		return this.saveDirBasePath;
@@ -118,6 +117,13 @@ public class AATinkererGame extends Game
 				Gdx.graphics.setCursor(cursor);
 			}
 		});
+	}
+
+	public void save()
+	{
+		// FIXME
+		if (gameScreen != null)
+			gameScreen.saveGame();
 	}
 
 	public void setHoverCursor()
@@ -143,7 +149,7 @@ public class AATinkererGame extends Game
 		setDefaultCursor();
 		toGameScreen();
 	}
-	
+
 	public void toNewGameScreen(String name)
 	{
 		gameScreen = new GameScreen(this, name);
@@ -168,12 +174,8 @@ public class AATinkererGame extends Game
 
 	public void toSaveScreen()
 	{
-		// FIXME
-		if (gameScreen != null)
-			gameScreen.saveGame();
-
+		save();
 		setDefaultCursor();
-
 		changeVolume(VOLUME_LOW);
 		setScreen(saveScreen);
 	}
@@ -209,7 +211,7 @@ public class AATinkererGame extends Game
 	{
 		if (gameScreen != null)
 			gameScreen.dispose();
-		
+
 		batch.dispose();
 	}
 }

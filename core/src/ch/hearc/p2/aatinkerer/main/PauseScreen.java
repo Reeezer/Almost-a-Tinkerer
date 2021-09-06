@@ -133,7 +133,7 @@ public class PauseScreen implements Screen
 			public void clicked(InputEvent event, float x, float y)
 			{
 				Sounds.CLICK.play();
-				// FIXME save the game
+				game.save();
 			};
 		});
 		game.addCursorListener(saveButton);
@@ -150,8 +150,6 @@ public class PauseScreen implements Screen
 			{
 				Sounds.CLICK.play();
 				game.toSaveScreen();
-
-				
 			};
 		});
 		game.addCursorListener(homeButton);
@@ -247,8 +245,10 @@ public class PauseScreen implements Screen
 		stage.act(delta);
 		stage.draw();
 
-		if (passedTime >= TIME) {
-			while (passedTime >= TIME) {
+		if (passedTime >= TIME)
+		{
+			while (passedTime >= TIME)
+			{
 				passedTime -= TIME;
 
 				frame1++;
