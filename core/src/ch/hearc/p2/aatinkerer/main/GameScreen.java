@@ -220,7 +220,7 @@ public class GameScreen implements Screen
 
 			this.map = (TileMap) objectInputStream.readObject();
 			GameManager.getInstance().setProgress((Integer) objectInputStream.readObject(), (HashMap<ItemType, Integer>) objectInputStream.readObject());
-			
+
 			objectInputStream.close();
 		}
 		catch (IOException | ClassNotFoundException | ClassCastException e)
@@ -260,11 +260,11 @@ public class GameScreen implements Screen
 			FileOutputStream fileOutput = new FileOutputStream(savefile);
 			BufferedOutputStream bos = new BufferedOutputStream(fileOutput);
 			ObjectOutputStream objectOutput = new ObjectOutputStream(bos);
-			
+
 			objectOutput.writeObject(this.map);
 			objectOutput.writeObject(GameManager.getInstance().getContractMilestoneIndex());
 			objectOutput.writeObject(GameManager.getInstance().getProducedItems());
-			
+
 			objectOutput.close();
 
 		}
@@ -307,7 +307,7 @@ public class GameScreen implements Screen
 	public void show()
 	{
 		Gdx.input.setInputProcessor(game.input);
-		
+
 		// happens if the game was not loaded from a save
 		if (this.map == null)
 			map = new TileMap();
@@ -319,7 +319,7 @@ public class GameScreen implements Screen
 		// wait for a map to be generated from show()
 		if (this.map == null)
 			return;
-		
+
 		long firstTime = TimeUtils.millis();
 		long passedTime = firstTime - lastTime;
 		lastTime = firstTime;
@@ -412,9 +412,8 @@ public class GameScreen implements Screen
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 		{
 			if (factoryToolbar.getActiveItem() == null)
-			{
 				game.toPauseScreen();
-			}
+
 			factoryToolbar.setActiveItem(-1);
 			buildingRecipeDisplay.setBuilding(null);
 			itemDropdownMenu.setItems(null);
@@ -426,30 +425,28 @@ public class GameScreen implements Screen
 		int mx = (int) (Gdx.input.getX() * uiCamera.zoom);
 		int my = (int) ((height - Gdx.input.getY()) * uiCamera.zoom);
 		boolean isHover = false;
-		for (UIElement clickable : uiElements) {
+		for (UIElement clickable : uiElements)
+		{
 			if (!clickable.visible())
 				continue;
 
 			Rectangle bounds = clickable.getBounds();
 
-			if (bounds.contains(new Vector2(mx, my))) {
+			if (bounds.contains(new Vector2(mx, my)))
 				isHover = true;
-				game.setHoverCursor();
-			}
 		}
 		int tX = screenToTileX(Gdx.input.getX());
 		int tY = screenToTileY(Gdx.input.getY());
 		Building attContextualMenuBuilding = (Building) map.tileAt(TileType.FACTORY, tX, tY);
-		if (attContextualMenuBuilding != null && attContextualMenuBuilding instanceof Splitter) {
+		if (attContextualMenuBuilding != null && attContextualMenuBuilding instanceof Splitter)
 			isHover = true;
-			game.setHoverCursor();
-		}
-		if (attContextualMenuBuilding != null && attContextualMenuBuilding.recipes() != null && attContextualMenuBuilding.canSelectRecipe()) {
+		if (attContextualMenuBuilding != null && attContextualMenuBuilding.recipes() != null && attContextualMenuBuilding.canSelectRecipe())
 			isHover = true;
-			game.setHoverCursor();
-		}
+
 		if (!isHover)
 			game.setDefaultCursor();
+		else
+			game.setHoverCursor();
 
 		// handle left mouse click
 		if (Gdx.input.isButtonPressed(Buttons.LEFT))
@@ -522,7 +519,8 @@ public class GameScreen implements Screen
 					if (direction == 1 || direction == 3)
 						map.placeBuilding(initialx, tileY, direction, factoryType, mirrored);
 				}
-				else {
+				else
+				{
 					Building attemptContextualMenuBuilding = (Building) map.tileAt(TileType.FACTORY, tileX, tileY);
 
 					if (attemptContextualMenuBuilding != null && attemptContextualMenuBuilding instanceof Splitter)
@@ -575,7 +573,8 @@ public class GameScreen implements Screen
 			tooltipy = (height - Gdx.input.getY()) + 3;
 
 			Tile itemTile = map.tileAt(TileType.RESSOURCE, x, y);
-			if (itemTile != null) {
+			if (itemTile != null)
+			{
 				ItemType item = ((Ressource) map.tileAt(TileType.RESSOURCE, x, y)).getExtractedItem();
 
 				// FIXME check for null too
@@ -584,7 +583,8 @@ public class GameScreen implements Screen
 
 				// FIXME maybe still display the ressources if the hovered building is an extractor?
 				// only display on ressources tiles that don't have a building on top
-				if ((building == null || (building != null && building.getType() == FactoryType.EXTRACTOR)) && conveyor == null && item != null && item != ItemType.NONE) {
+				if ((building == null || (building != null && building.getType() == FactoryType.EXTRACTOR)) && conveyor == null && item != null && item != ItemType.NONE)
+				{
 					tooltipText = item.fullname();
 					renderTooltip = true;
 				}
@@ -705,7 +705,8 @@ public class GameScreen implements Screen
 
 		// Drawing an arrow pointing towards the hub
 		float arrowPositionDisapear = Math.min(width * uiCamera.zoom, height * uiCamera.zoom) * zoom;
-		if (x > arrowPositionDisapear || x < -arrowPositionDisapear || y < -arrowPositionDisapear || y > arrowPositionDisapear) {
+		if (x > arrowPositionDisapear || x < -arrowPositionDisapear || y < -arrowPositionDisapear || y > arrowPositionDisapear)
+		{
 			float angle = (float) (Math.atan2(mapCamera.position.y, mapCamera.position.x) * 180 / Math.PI) + 180;
 
 			float rad = (float) (angle * (Math.PI / 180));
@@ -761,7 +762,8 @@ public class GameScreen implements Screen
 		this.height = height;
 
 		// make it so the UI's scale adapts itself to the screen size
-		switch (AATinkererGame.scale) {
+		switch (AATinkererGame.scale)
+		{
 			case AUTO:
 				if (height > 2000 && width > 3000)
 					uiCamera.zoom = 0.25f;
