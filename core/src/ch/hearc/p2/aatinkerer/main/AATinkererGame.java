@@ -6,12 +6,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Cursor;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
 import ch.hearc.p2.aatinkerer.data.Scale;
@@ -32,6 +34,10 @@ public class AATinkererGame extends Game
 	private Cursor cursor;
 	private Cursor cursorHover;
 
+	private NinePatchDrawable textButtonPatch;
+	private NinePatchDrawable textButtonHoverPatch;
+	private NinePatchDrawable textButtonDisabledPatch;
+
 	private Texture menusBackground;
 	private float passedTime;
 	private final static float ANIMATION_TIME = 0.5f;
@@ -44,6 +50,7 @@ public class AATinkererGame extends Game
 	public static FreeTypeFontGenerator font;
 	public static FreeTypeFontParameter titleFontParam;
 	public static FreeTypeFontParameter normalFontParam;
+
 	public static final float VOLUME_HIGH = 0.4f;
 	public static final float VOLUME_LOW = 0.1f;
 
@@ -68,7 +75,12 @@ public class AATinkererGame extends Game
 		input = new Input();
 		Gdx.input.setInputProcessor(input);
 
-		// Menus backgroung animation
+		// Buttons
+		textButtonPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2));
+		textButtonHoverPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2));
+		textButtonDisabledPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttondisabled.png"), 2, 2, 2, 2));
+
+		// Menus background animation
 		menusBackground = new Texture("Menus/menu_background.png");
 		passedTime = 0.f;
 		xPosBackground1 = 0;
@@ -79,8 +91,10 @@ public class AATinkererGame extends Game
 		cursorHover = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("Ui/cursorhover.png")), 6, 0);
 		Gdx.graphics.setCursor(cursor);
 
-		// Initializations
+		// Font
 		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"));
+
+		// Music
 		Sounds.MUSIC.setVolume(VOLUME_LOW);
 		Sounds.MUSIC.play();
 
@@ -106,6 +120,21 @@ public class AATinkererGame extends Game
 				Gdx.graphics.setCursor(cursor);
 			}
 		});
+	}
+
+	public NinePatchDrawable getButtonPatch()
+	{
+		return textButtonPatch;
+	}
+
+	public NinePatchDrawable getButtonHoverPatch()
+	{
+		return textButtonHoverPatch;
+	}
+
+	public NinePatchDrawable getButtonDisabledPatch()
+	{
+		return textButtonDisabledPatch;
 	}
 
 	public void setHoverCursor()
