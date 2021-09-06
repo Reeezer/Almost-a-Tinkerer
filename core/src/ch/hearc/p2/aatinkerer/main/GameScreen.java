@@ -285,7 +285,7 @@ public class GameScreen implements Screen
 		LocalDateTime now = LocalDateTime.now();
 		
 		json.writeValue("date", dtf.format(now));
-		json.writeValue("difficulty", game.difficulty.toString().toLowerCase());
+		json.writeValue("difficulty", AATinkererGame.difficulty.toString().toLowerCase());
 		json.writeValue("name", this.name);
 		
 		json.writeObjectEnd();

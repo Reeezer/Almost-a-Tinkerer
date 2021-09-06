@@ -30,6 +30,7 @@ public class AATinkererGame extends Game
 	private PauseScreen pauseScreen;
 	private DifficultyScreen difficultyScreen;
 	private SaveScreen saveScreen;
+	private WorldNameScreen worldNameScreen;
 
 	private Cursor cursor;
 	private Cursor cursorHover;
@@ -106,6 +107,7 @@ public class AATinkererGame extends Game
 		pauseScreen = new PauseScreen(this);
 		saveScreen = new SaveScreen(this);
 		difficultyScreen = new DifficultyScreen(this);
+		worldNameScreen = new WorldNameScreen(this);
 
 		String systemName = System.getProperty("os.name").toLowerCase();
 
@@ -150,6 +152,7 @@ public class AATinkererGame extends Game
 		if (gameScreen != null)
 			gameScreen.saveGame();
 	}
+
 	public NinePatchDrawable getButtonPatch()
 	{
 		return textButtonPatch;
@@ -175,6 +178,14 @@ public class AATinkererGame extends Game
 		Gdx.graphics.setCursor(cursor);
 	}
 
+	public void toWorldNameScreen(String worldName, String savePath)
+	{
+		setDefaultCursor();
+		changeVolume(VOLUME_LOW);
+		setScreen(worldNameScreen);
+		worldNameScreen.setName(worldName, savePath);
+	}
+
 	public void toPausedGameScreen()
 	{
 		setDefaultCursor();
@@ -185,14 +196,12 @@ public class AATinkererGame extends Game
 	public void toNewGameScreenFromSave(String name, String savepath)
 	{
 		gameScreen = new GameScreen(this, name, savepath);
-		setDefaultCursor();
 		toGameScreen();
 	}
 
 	public void toNewGameScreen(String name)
 	{
 		gameScreen = new GameScreen(this, name);
-		setDefaultCursor();
 		toGameScreen();
 	}
 
@@ -256,8 +265,10 @@ public class AATinkererGame extends Game
 	{
 		super.render();
 
-		if (passedTime >= ANIMATION_TIME) {
-			while (passedTime >= ANIMATION_TIME) {
+		if (passedTime >= ANIMATION_TIME)
+		{
+			while (passedTime >= ANIMATION_TIME)
+			{
 				passedTime -= ANIMATION_TIME;
 
 				xPosBackground1++;

@@ -120,7 +120,7 @@ public class SaveScreen implements Screen
 			{
 				Sounds.CLICK.play();
 
-				System.out.println("EDIIIIIIIIIIIIIIIIIITTTTTTT");
+				game.toWorldNameScreen(selectedWorldName, selectedSaveDirName);
 			};
 		});
 		game.addCursorHoverEffect(editButton);
