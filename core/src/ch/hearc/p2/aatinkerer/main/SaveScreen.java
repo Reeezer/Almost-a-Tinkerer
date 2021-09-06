@@ -1,5 +1,6 @@
 package ch.hearc.p2.aatinkerer.main;
 
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ch.hearc.p2.aatinkerer.data.Difficulty;
 import ch.hearc.p2.aatinkerer.util.AutoFocusScrollPane;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
@@ -41,8 +43,9 @@ public class SaveScreen implements Screen
 	private int height;
 
 	private Stage stage;
-
-	private int saveSelected;
+	
+	private String selectedSaveDirName;
+	private String selectedWorldName;
 
 	private TextButton loadButton;
 	private Table savesTable;
@@ -96,8 +99,10 @@ public class SaveScreen implements Screen
 			public void clicked(InputEvent event, float x, float y)
 			{
 				Sounds.CLICK.play();
-				System.out.format("%s%02d%s", "AppData/Roaming/almost-a-tinkerer/save", saveSelected, "/\n");
-				// FIXME lancer la partie en fonction de ce qui est sélectionné
+				System.out.format("launching save file at: %s%n", selectedSaveDirName);
+				
+				if (!selectedSaveDirName.isEmpty() && Gdx.files.absolute(game.saveDirBasePath() + "/" + selectedSaveDirName).exists())
+					game.toNewGameScreenFromSave(selectedWorldName, selectedSaveDirName);
 			};
 		});
 		game.addCursorHoverEffect(loadButton);
@@ -125,7 +130,7 @@ public class SaveScreen implements Screen
 	public void displaySaves()
 	{
 		savesTable.clear();
-		saveSelected = -1;
+		selectedSaveDirName = "";
 		loadButton.setTouchable(Touchable.disabled);
 		loadButton.setDisabled(true);
 
@@ -138,21 +143,38 @@ public class SaveScreen implements Screen
 		pane.setScrollbarsVisible(true);
 		pane.setFadeScrollBars(false);
 
-		// Create directory if doesn't exists
-		if (!Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").exists())
-			Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").mkdirs();
-
 		// Read all files 1 by 1
 		JsonReader jsonReader = new JsonReader();
-		FileHandle[] files = Gdx.files.external("AppData/Roaming/almost-a-tinkerer/").list();
-		for (FileHandle file : files) {
-			System.out.println(file.path());
-			JsonValue json = jsonReader.parse(Gdx.files.external(file.path() + "/gamedata.json"));
+
+		FileHandle[] files = Gdx.files.absolute(game.saveDirBasePath()).list();
+
+		for (FileHandle file : files)
+		{
+			final String currentSaveDirName = file.name();
+			final String currentSaveDirPath = game.saveDirBasePath() + "/" + currentSaveDirName;
+			
+			JsonValue json;
+			
+			System.out.format("found new save directory at %s%n", currentSaveDirPath);
+			try {
+				json = jsonReader.parse(Gdx.files.absolute(currentSaveDirPath + "/gamedata.json"));
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				continue;
+			}
+			
 			System.out.println(json);
 
+			
+			final String name = json.getString("name");
+			final String difficultyString = json.getString("difficulty").toLowerCase();
+			final Difficulty difficulty = Difficulty.valueOf(difficultyString.toUpperCase());
+			
 			Label nameLabel = new Label(json.getString("name"), labelStyle);
 			Label dateLabel = new Label(json.getString("date"), labelStyle);
-			Image difficultyImage = new Image(new Texture("Ui/Buttons/" + json.getString("difficulty").toLowerCase() + "hover.png"));
+			Image difficultyImage = new Image(new Texture("Ui/Buttons/" + difficultyString + "hover.png"));
 
 			// Create a table for each row
 			table.row().padBottom(10).padTop(10);
@@ -161,9 +183,13 @@ public class SaveScreen implements Screen
 			line.addListener(new ClickListener() {
 				public void clicked(InputEvent event, float x, float y)
 				{
-					saveSelected = savesList.indexOf(line) + 1;
+					selectedSaveDirName =  currentSaveDirName;
+					selectedWorldName = name;
+					
+					AATinkererGame.difficulty = difficulty;
 
-					if (loadButton.isDisabled()) {
+					if (loadButton.isDisabled())
+					{
 						loadButton.setDisabled(false);
 						loadButton.setTouchable(Touchable.enabled);
 					}

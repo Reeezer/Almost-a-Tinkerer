@@ -145,7 +145,7 @@ public class DifficultyScreen implements Screen
 			{
 				Sounds.CLICK.play();
 				AATinkererGame.difficulty = difficulty;
-				game.toNewGameScreen();
+				game.toNewGameScreen(nameTextField.getText());
 			};
 		});
 		game.addCursorHoverEffect(button);

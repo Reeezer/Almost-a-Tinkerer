@@ -6,12 +6,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;   
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -26,6 +30,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonWriter;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import ch.hearc.p2.aatinkerer.buildings.Building;
@@ -97,11 +103,15 @@ public class GameScreen implements Screen
 
 	private Texture arrowTexture;
 	private TextureRegion arrowTextureRegion;
+	
+	private String saveDirName;
+	private String name;
 
-	public GameScreen(AATinkererGame game)
+	public GameScreen(AATinkererGame game, String name)
 	{
 		this.game = game;
-
+		this.name = name;
+		
 		mapCamera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
 		uiCamera.zoom = 1.f;
@@ -189,11 +199,19 @@ public class GameScreen implements Screen
 		GameManager.getInstance().addContractListener(contractListener);
 	}
 
-	public GameScreen(AATinkererGame game, String savepath)
+	public GameScreen(AATinkererGame game, String name, String saveDirName)
 	{
-		this(game);
+		this(game, name);
+		
+		this.saveDirName = saveDirName;
+		
+		String saveDirPath = game.saveDirBasePath() + "/" + this.saveDirName;
+		String datFilePath = saveDirPath + "/save.dat";
+		
+		System.out.format("gamescreen: loading game from directory '%s'%n", saveDirPath);
+		System.out.format("gamescreen: loading save data from file '%s'%n", datFilePath);
 
-		File savefile = new File(savepath);
+		File savefile = new File(datFilePath);
 		try
 		{
 			FileInputStream fileInput = new FileInputStream(savefile);
@@ -212,10 +230,31 @@ public class GameScreen implements Screen
 
 	}
 
-	public void saveGame(String savepath)
+	public void saveGame()
 	{
-
-		File savefile = new File(savepath);
+		// if this is a fresh save, then saveDirName will be null, generate one that doesn't exist
+		if (this.saveDirName == null)
+		{
+			if (!this.name.isEmpty())
+				this.saveDirName = this.name;
+			else
+				this.saveDirName = "_"; // if the player never chooses a name, all saves directories will simply be underscores which kind of looks like an empty string
+			
+			// hopefully that won't last forever
+			while (Gdx.files.absolute(game.saveDirBasePath() + "/" + this.saveDirName).exists())
+				this.saveDirName = this.saveDirName + "_";
+			
+			Gdx.files.absolute(game.saveDirBasePath() + "/" + this.saveDirName).mkdirs();
+		}
+		
+		String saveDirPath = game.saveDirBasePath() + "/" + this.saveDirName;
+		
+		String datFilePath = saveDirPath + "/save.dat";
+		String jsonFilePath = saveDirPath + "/gamedata.json";
+		
+		System.out.format("saving game to '%s'%n", datFilePath);
+		
+		File savefile = new File(datFilePath);
 		try
 		{
 			FileOutputStream fileOutput = new FileOutputStream(savefile);
@@ -228,6 +267,35 @@ public class GameScreen implements Screen
 
 			objectOutput.close();
 
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		
+		Json json = new Json();
+		StringWriter stringWriter = new StringWriter();
+		JsonWriter writer = new JsonWriter(stringWriter);
+		json.setWriter(writer);
+		
+		json.writeObjectStart();
+		
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
+		LocalDateTime now = LocalDateTime.now();
+		
+		json.writeValue("date", dtf.format(now));
+		json.writeValue("difficulty", game.difficulty.toString().toLowerCase());
+		json.writeValue("name", this.name);
+		
+		json.writeObjectEnd();
+		
+
+		try
+		{
+			FileWriter jsonFileWriter = new FileWriter(jsonFilePath);
+			jsonFileWriter.write(json.getWriter().getWriter().toString());
+			jsonFileWriter.close();
 		}
 		catch (IOException e)
 		{
