@@ -40,16 +40,9 @@ public class SaveScreen implements Screen
 	private int width;
 	private int height;
 
-	private float passedTime;
-	private final static float TIME = 0.005f;
-
 	private Stage stage;
 
-	private int frame1;
-	private int frame2;
 	private int saveSelected;
-
-	private Texture background;
 
 	private TextButton loadButton;
 	private Table savesTable;
@@ -70,19 +63,13 @@ public class SaveScreen implements Screen
 		savesTable = new Table();
 		mainTable.setFillParent(true);
 
-		background = new Texture("Menus/menu_background.png");
-
-		passedTime = 0.f;
-		frame1 = 0;
-		frame2 = -background.getWidth();
-
 		stage = new Stage();
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
 		// Initializations
 		labelStyle = new LabelStyle();
-		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		labelStyle.fontColor = AATinkererGame.WHITE;
 
 		paneStyle = new ScrollPaneStyle();
@@ -102,7 +89,7 @@ public class SaveScreen implements Screen
 		NinePatch textButtonDisabledPatch = new NinePatch(new Texture("Ui/Buttons/textbuttondisabled.png"), 2, 2, 2, 2);
 
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
 		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
 		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
@@ -117,7 +104,7 @@ public class SaveScreen implements Screen
 				// FIXME lancer la partie en fonction de ce qui est sélectionné
 			};
 		});
-		game.addCursorListener(loadButton);
+		game.addCursorHoverEffect(loadButton);
 		buttonsTable.add(loadButton).padRight(200).padTop(50).padBottom(50);
 
 		TextButton newButton = new TextButton("New world", textButtonStyle);
@@ -128,7 +115,7 @@ public class SaveScreen implements Screen
 				game.toDifficultyScreen();
 			};
 		});
-		game.addCursorListener(newButton);
+		game.addCursorHoverEffect(newButton);
 		buttonsTable.add(newButton);
 
 		// Adding to the layout
@@ -191,7 +178,7 @@ public class SaveScreen implements Screen
 					line.setBackground(new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2)));
 				}
 			});
-			game.addCursorListener(line);
+			game.addCursorHoverEffect(line);
 
 			line.setBackground(new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2)));
 			line.add(nameLabel).width(350).fill();
@@ -221,36 +208,13 @@ public class SaveScreen implements Screen
 		camera.update();
 		game.batch.setProjectionMatrix(camera.combined);
 
-		// Background
-		float widthRatio = this.width / (float) background.getWidth();
-		float heightRatio = this.height / (float) background.getHeight();
-		float bestRatio = Math.max(widthRatio, heightRatio);
-
-		float newHeight = background.getHeight() * bestRatio;
-
-		game.batch.draw(background, frame1, (height - newHeight) / 2, background.getWidth(), background.getHeight());
-		game.batch.draw(background, frame2, (height - newHeight) / 2, background.getWidth(), background.getHeight());
+		// Draw background
+		game.drawAnimatedBackground(width, height);
 
 		game.batch.end();
 
 		stage.act(delta);
 		stage.draw();
-
-		if (passedTime >= TIME) {
-			while (passedTime >= TIME) {
-				passedTime -= TIME;
-
-				frame1++;
-				if (frame1 == background.getWidth())
-					frame1 = -background.getWidth();
-
-				frame2++;
-				if (frame2 == background.getWidth())
-					frame2 = -background.getWidth();
-			}
-		}
-		else
-			passedTime += delta;
 	}
 
 	@Override

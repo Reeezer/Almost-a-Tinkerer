@@ -41,15 +41,7 @@ public class PauseScreen implements Screen
 	private int width;
 	private int height;
 
-	private float passedTime;
-	private final static float TIME = 0.005f;
-
 	private Stage stage;
-
-	private int frame1;
-	private int frame2;
-
-	private Texture background;
 
 	private Label scaleLabel;
 	private List<TextButton> scaleButtons;
@@ -68,12 +60,6 @@ public class PauseScreen implements Screen
 		stage = new Stage();
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
-
-		background = new Texture("Menus/menu_background.png");
-
-		passedTime = 0.f;
-		frame1 = 0;
-		frame2 = -background.getWidth();
 
 		int pad = 75;
 
@@ -97,7 +83,7 @@ public class PauseScreen implements Screen
 				game.toPausedGameScreen();
 			};
 		});
-		game.addCursorListener(resumeButton);
+		game.addCursorHoverEffect(resumeButton);
 		buttonTable.add(resumeButton).pad(pad);
 
 		// Sound
@@ -120,7 +106,7 @@ public class PauseScreen implements Screen
 					Sounds.MUSIC.setVolume(AATinkererGame.VOLUME_LOW);
 			};
 		});
-		game.addCursorListener(muteButton);
+		game.addCursorHoverEffect(muteButton);
 		buttonTable.add(muteButton).pad(pad);
 
 		// Save
@@ -136,7 +122,7 @@ public class PauseScreen implements Screen
 				// FIXME save the game
 			};
 		});
-		game.addCursorListener(saveButton);
+		game.addCursorHoverEffect(saveButton);
 		buttonTable.add(saveButton).pad(pad);
 
 		// Back home
@@ -151,10 +137,9 @@ public class PauseScreen implements Screen
 				Sounds.CLICK.play();
 				game.toSaveScreen();
 
-				
 			};
 		});
-		game.addCursorListener(homeButton);
+		game.addCursorHoverEffect(homeButton);
 		buttonTable.add(homeButton).pad(pad);
 
 		mainTable.add(title).padTop(50).padBottom(50);
@@ -163,7 +148,7 @@ public class PauseScreen implements Screen
 
 		// Scales
 		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		labelStyle.fontColor = AATinkererGame.WHITE;
 
 		scaleLabel = new Label("Scale", labelStyle);
@@ -173,7 +158,7 @@ public class PauseScreen implements Screen
 		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
 
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
 		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
 		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
@@ -204,7 +189,7 @@ public class PauseScreen implements Screen
 				game.resizeGameScreen();
 			};
 		});
-		game.addCursorListener(button);
+		game.addCursorHoverEffect(button);
 
 		button.setSize(100, button.getHeight());
 
@@ -232,36 +217,13 @@ public class PauseScreen implements Screen
 		camera.update();
 		game.batch.setProjectionMatrix(camera.combined);
 
-		// Background
-		float widthRatio = this.width / (float) background.getWidth();
-		float heightRatio = this.height / (float) background.getHeight();
-		float bestRatio = Math.max(widthRatio, heightRatio);
-
-		float newHeight = background.getHeight() * bestRatio;
-
-		game.batch.draw(background, frame1, (height - newHeight) / 2, background.getWidth(), background.getHeight());
-		game.batch.draw(background, frame2, (height - newHeight) / 2, background.getWidth(), background.getHeight());
+		// Draw background
+		game.drawAnimatedBackground(width, height);
 
 		game.batch.end();
 
 		stage.act(delta);
 		stage.draw();
-
-		if (passedTime >= TIME) {
-			while (passedTime >= TIME) {
-				passedTime -= TIME;
-
-				frame1++;
-				if (frame1 == background.getWidth())
-					frame1 = -background.getWidth();
-
-				frame2++;
-				if (frame2 == background.getWidth())
-					frame2 = -background.getWidth();
-			}
-		}
-		else
-			passedTime += delta;
 
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			game.toPausedGameScreen();

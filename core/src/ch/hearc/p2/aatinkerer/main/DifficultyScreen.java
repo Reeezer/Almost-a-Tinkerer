@@ -42,14 +42,6 @@ public class DifficultyScreen implements Screen
 	private int width;
 	private int height;
 
-	private float passedTime;
-	private final static float TIME = 0.005f;
-
-	private int frame1;
-	private int frame2;
-
-	private Texture background;
-
 	public final static String WORLD_NAME = "World name";
 	private TextField nameTextField;
 	private TextFieldStyle textFieldStyle;
@@ -70,18 +62,12 @@ public class DifficultyScreen implements Screen
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
-		background = new Texture("Menus/menu_background.png");
-
-		passedTime = 0.f;
-		frame1 = 0;
-		frame2 = -background.getWidth();
-
 		// Return
 		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
 		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
 
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
 		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
 		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
@@ -94,7 +80,7 @@ public class DifficultyScreen implements Screen
 				game.toSaveScreen();
 			};
 		});
-		game.addCursorListener(exitButton);
+		game.addCursorHoverEffect(exitButton);
 		stage.addActor(exitButton);
 
 		// Title
@@ -109,7 +95,7 @@ public class DifficultyScreen implements Screen
 
 		textFieldStyle = new TextFieldStyle();
 		textFieldStyle.background = new NinePatchDrawable(textButtonPatch);
-		textFieldStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		textFieldStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		textFieldStyle.fontColor = AATinkererGame.WHITE;
 		textFieldStyle.cursor = new TextureRegionDrawable(new Texture("Ui/Buttons/cursor.png"));
 
@@ -146,8 +132,9 @@ public class DifficultyScreen implements Screen
 
 	private void createButton(NinePatch ninePatch, NinePatch ninePatchHover, String title, final Difficulty difficulty)
 	{
+		// Create a new style for each button (background and foreground image)
 		TextButtonStyle buttonStyle = new TextButtonStyle();
-		buttonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.buttonFontParam);
+		buttonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		buttonStyle.overFontColor = AATinkererGame.TRANSPARENT;
 		buttonStyle.fontColor = AATinkererGame.WHITE;
 		buttonStyle.up = new NinePatchDrawable(ninePatch);
@@ -164,7 +151,7 @@ public class DifficultyScreen implements Screen
 				game.toNewGameScreen();
 			};
 		});
-		game.addCursorListener(button);
+		game.addCursorHoverEffect(button);
 	}
 
 	@Override
@@ -172,10 +159,10 @@ public class DifficultyScreen implements Screen
 	{
 		Gdx.input.setInputProcessor(stage);
 
-		// Didn't find another way to remove the focus of the textfield
+		// Didn't find another way to remove the focus of the textfield when moving between the screens
 		nameTextField = new TextField("", textFieldStyle);
 		nameTextField.setMessageText(WORLD_NAME);
-		game.addCursorListener(nameTextField);
+		game.addCursorHoverEffect(nameTextField);
 
 		textFieldTable.clear();
 		textFieldTable.add(nameTextField).grow();
@@ -195,36 +182,13 @@ public class DifficultyScreen implements Screen
 		camera.update();
 		game.batch.setProjectionMatrix(camera.combined);
 
-		// Background
-		float widthRatio = this.width / (float) background.getWidth();
-		float heightRatio = this.height / (float) background.getHeight();
-		float bestRatio = Math.max(widthRatio, heightRatio);
-
-		float newHeight = background.getHeight() * bestRatio;
-
-		game.batch.draw(background, frame1, (height - newHeight) / 2, background.getWidth(), background.getHeight());
-		game.batch.draw(background, frame2, (height - newHeight) / 2, background.getWidth(), background.getHeight());
+		// Draw background
+		game.drawAnimatedBackground(width, height);
 
 		game.batch.end();
 
 		stage.act(delta);
 		stage.draw();
-
-		if (passedTime >= TIME) {
-			while (passedTime >= TIME) {
-				passedTime -= TIME;
-
-				frame1++;
-				if (frame1 == background.getWidth())
-					frame1 = -background.getWidth();
-
-				frame2++;
-				if (frame2 == background.getWidth())
-					frame2 = -background.getWidth();
-			}
-		}
-		else
-			passedTime += delta;
 
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			game.toSaveScreen();
