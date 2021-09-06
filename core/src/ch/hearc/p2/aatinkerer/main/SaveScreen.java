@@ -43,7 +43,6 @@ public class SaveScreen implements Screen
 	private int height;
 
 	private Stage stage;
-
 	
 	private String selectedSaveDirName;
 	private String selectedWorldName;
