@@ -28,6 +28,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import ch.hearc.p2.aatinkerer.data.Difficulty;
 import ch.hearc.p2.aatinkerer.util.AutoFocusScrollPane;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
@@ -186,10 +187,12 @@ public class SaveScreen implements Screen
 
 			
 			final String name = json.getString("name");
+			final String difficultyString = json.getString("difficulty").toLowerCase();
+			final Difficulty difficulty = Difficulty.valueOf(difficultyString.toUpperCase());
 			
 			Label nameLabel = new Label(json.getString("name"), labelStyle);
 			Label dateLabel = new Label(json.getString("date"), labelStyle);
-			Image difficultyImage = new Image(new Texture("Ui/Buttons/" + json.getString("difficulty").toLowerCase() + "hover.png"));
+			Image difficultyImage = new Image(new Texture("Ui/Buttons/" + difficultyString + "hover.png"));
 
 			// Create a table for each row
 			table.row().padBottom(10).padTop(10);
@@ -200,6 +203,8 @@ public class SaveScreen implements Screen
 				{
 					selectedSaveDirName =  currentSaveDirName;
 					selectedWorldName = name;
+					
+					AATinkererGame.difficulty = difficulty;
 
 					if (loadButton.isDisabled())
 					{
