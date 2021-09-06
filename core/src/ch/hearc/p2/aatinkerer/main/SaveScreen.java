@@ -67,34 +67,30 @@ public class SaveScreen implements Screen
 		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
-		// Initializations
+		// Styles
 		labelStyle = new LabelStyle();
 		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		labelStyle.fontColor = AATinkererGame.WHITE;
 
 		paneStyle = new ScrollPaneStyle();
-		paneStyle.vScroll = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2));
-		paneStyle.vScrollKnob = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2));
+		paneStyle.vScroll = game.getButtonPatch();
+		paneStyle.vScrollKnob = game.getButtonHoverPatch();
 
-		// Title
 		LabelStyle titleLabelStyle = new LabelStyle();
 		titleLabelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
 		titleLabelStyle.fontColor = AATinkererGame.WHITE;
 
-		Label title = new Label("Worlds", titleLabelStyle);
-
-		// Buttons
-		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
-		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
-		NinePatch textButtonDisabledPatch = new NinePatch(new Texture("Ui/Buttons/textbuttondisabled.png"), 2, 2, 2, 2);
-
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
 		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
-		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
-		textButtonStyle.disabled = new NinePatchDrawable(textButtonDisabledPatch);
+		textButtonStyle.up = game.getButtonPatch();
+		textButtonStyle.over = game.getButtonHoverPatch();
+		textButtonStyle.disabled = game.getButtonDisabledPatch();
 
+		// Title
+		Label title = new Label("Worlds", titleLabelStyle);
+
+		// Buttons
 		loadButton = new TextButton("Load world", textButtonStyle);
 		loadButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)

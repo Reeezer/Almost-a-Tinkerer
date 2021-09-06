@@ -154,15 +154,12 @@ public class PauseScreen implements Screen
 		scaleLabel = new Label("Scale", labelStyle);
 		stage.addActor(scaleLabel);
 
-		NinePatch textButtonPatch = new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2);
-		NinePatch textButtonHoverPatch = new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2);
-
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
 		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = new NinePatchDrawable(textButtonPatch);
-		textButtonStyle.over = new NinePatchDrawable(textButtonHoverPatch);
-		textButtonStyle.checked = new NinePatchDrawable(textButtonHoverPatch);
+		textButtonStyle.up = game.getButtonPatch();
+		textButtonStyle.over = game.getButtonHoverPatch();
+		textButtonStyle.checked = game.getButtonHoverPatch();
 
 		scaleButtons = new ArrayList<TextButton>();
 
