@@ -8,10 +8,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
 
+import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 import ch.hearc.p2.aatinkerer.ui.Notification;
 import ch.hearc.p2.aatinkerer.ui.UIElement;
 import ch.hearc.p2.aatinkerer.util.Sounds;
@@ -34,20 +34,20 @@ public class NotificationManager implements UIElement
 	public NotificationManager()
 	{
 		queuedPopups = new LinkedList<Notification>();
-		notificationTexture = new Texture(Gdx.files.internal("Ui/notification_popup.png"));
+		notificationTexture = new Texture(Gdx.files.internal("ui/notification_popup.png"));
 
 		// public domain font https://grafxkid.itch.io/at01
 		FreeTypeFontParameter descriptionFontParameter = new FreeTypeFontParameter();
 		descriptionFontParameter.size = 16;
 		descriptionFontParameter.color = Color.BLACK;
-		descriptionFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
+		descriptionFont = AATinkererGame.font.generateFont(descriptionFontParameter);
 
 		FreeTypeFontParameter titleFontParameter = new FreeTypeFontParameter();
 		titleFontParameter.size = 16;
 		titleFontParameter.color = Color.BLACK;
 		titleFontParameter.borderColor = Color.WHITE;
 		titleFontParameter.borderWidth = 1;
-		titleFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(titleFontParameter);
+		titleFont = AATinkererGame.font.generateFont(titleFontParameter);
 
 		timeDisplayed = 0.f;
 
@@ -69,22 +69,27 @@ public class NotificationManager implements UIElement
 		if (queuedPopups.size() > 0 && currentlyDisplayedNotification == null)
 			currentlyDisplayedNotification = queuedPopups.poll();
 
-		if (currentlyDisplayedNotification != null) {
+		if (currentlyDisplayedNotification != null)
+		{
 			int animationOffset = 0;
 
 			// make the notification appear
-			if (this.timeDisplayed < 1.f) {
+			if (this.timeDisplayed < 1.f)
+			{
 				animationOffset = 0 - 10 - 256 + (int) ((10 + 256) * ease_in_out(Math.min(this.timeDisplayed, 1.f)));
-				if (maximising) {
+				if (maximising)
+				{
 					maximising = false;
 					Sounds.MAXIMISE.play();
 				}
 			}
 
 			// make it disappear
-			if (this.timeDisplayed >= this.currentlyDisplayedNotification.duration() - 1.f) {
+			if (this.timeDisplayed >= this.currentlyDisplayedNotification.duration() - 1.f)
+			{
 				animationOffset = 0 - 10 - 256 + (int) ((10 + 256) * ease_in_out(Math.min(this.currentlyDisplayedNotification.duration() - this.timeDisplayed, 1.f)));
-				if (!maximising) {
+				if (!maximising)
+				{
 					maximising = true;
 					Sounds.MINIMISE.play();
 				}
@@ -104,7 +109,8 @@ public class NotificationManager implements UIElement
 			descriptionFont.draw(batch, currentlyDisplayedNotification.description(), xCorner + 8, yCorner + 92 - 22, 0, currentlyDisplayedNotification.description().length(), 241.f, -1, true);
 
 			this.timeDisplayed += delta;
-			if (this.timeDisplayed >= this.currentlyDisplayedNotification.duration()) {
+			if (this.timeDisplayed >= this.currentlyDisplayedNotification.duration())
+			{
 				currentlyDisplayedNotification = null;
 				this.timeDisplayed = 0.f;
 			}
@@ -113,7 +119,7 @@ public class NotificationManager implements UIElement
 
 	public static float ease_in_out(float x)
 	{
-		final float a = 3; 
+		final float a = 3;
 
 		float numerator = (float) Math.pow(x, a);
 		float denominator = numerator + (float) Math.pow(1 - x, a);

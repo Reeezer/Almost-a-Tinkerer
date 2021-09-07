@@ -52,33 +52,32 @@ public class Chunk implements Serializable
 	private void writeObject(ObjectOutputStream oos) throws IOException
 	{
 		oos.defaultWriteObject();
-		
+
 		Tile[][] ressources = tiles.get(TileType.RESSOURCE);
-		
+
 		oos.writeObject(ressources);
 	}
 
 	private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException
 	{
 		ois.defaultReadObject();
-		
+
 		createStorageMembers();
-		
+
 		Tile[][] ressources = (Tile[][]) ois.readObject();
 		tiles.put(TileType.RESSOURCE, ressources);
 	}
 
 	public Chunk(Random random, TileMap tilemap, long key)
-	{		
+	{
 		createStorageMembers();
 		tiles.put(TileType.RESSOURCE, new Ressource[CHUNKSIZE][CHUNKSIZE]);
-		
+
 		this.random = random;
 		this.tilemap = tilemap;
 		this.key = key;
 
 		// - all the tile layers
-		
 
 		this.cachedGenerationRessources = new HashMap<Long, Ressource>();
 
@@ -100,7 +99,7 @@ public class Chunk implements Serializable
 			int neighbourX = TileMap.chunkKeyToX(neighbour.key);
 			int neighbourY = TileMap.chunkKeyToY(neighbour.key);
 
-			//System.out.format("chunk at (%d, %d) is reading cached ressources from its neighbour (%d, %d)%n", chunkX, chunkY, neighbourX, neighbourY);
+			// System.out.format("chunk at (%d, %d) is reading cached ressources from its neighbour (%d, %d)%n", chunkX, chunkY, neighbourX, neighbourY);
 
 			int coordsOffsetX = (neighbourX - chunkX) * CHUNKSIZE;
 			int coordsOffsetY = (neighbourY - chunkY) * CHUNKSIZE;
@@ -121,7 +120,8 @@ public class Chunk implements Serializable
 
 				if (ressourceX >= 0 && ressourceX < CHUNKSIZE && ressourceY >= 0 && ressourceY < CHUNKSIZE)
 				{
-					//System.out.format(" - read new cached ressource %s neighbour's local coords (%d, %d) converted to chunk local (%d,%d)%n", ressource.toString(), neighbourRessourceX, neighbourRessourceY, ressourceX, ressourceY);
+					// System.out.format(" - read new cached ressource %s neighbour's local coords (%d, %d) converted to chunk local (%d,%d)%n", ressource.toString(),
+					// neighbourRessourceX, neighbourRessourceY, ressourceX, ressourceY);
 
 					setLocalTile(TileType.RESSOURCE, ressourceX, ressourceY, ressource);
 					toDeleteRessourceKeys.add(ressourceKey);
@@ -152,12 +152,12 @@ public class Chunk implements Serializable
 	{
 		conveyors = new LinkedList<Conveyor>();
 		buildings = new LinkedList<Building>();
-		
+
 		tiles = new HashMap<TileType, Tile[][]>();
 		tiles.put(TileType.FACTORY, new Building[CHUNKSIZE][CHUNKSIZE]);
 		tiles.put(TileType.CONVEYOR, new Building[CHUNKSIZE][CHUNKSIZE]);
 	}
-	
+
 	// - returns the tile based on local coordinates, also works if the coordinates are outside the chunk since
 	// it first goes through the tilemap to determine what chunk the tile is in
 	// - checking if the coordinates are local is necessary because redirection may not work in the constructor otherwise
@@ -336,7 +336,7 @@ public class Chunk implements Serializable
 	{
 		return key;
 	}
-	
+
 	public boolean isEmpty()
 	{
 		return this.buildings.isEmpty() && this.conveyors.isEmpty();

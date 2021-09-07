@@ -78,12 +78,12 @@ public class AATinkererGame extends Game
 		Gdx.input.setInputProcessor(input);
 
 		// Initializations
-		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf"));
+		font = new FreeTypeFontGenerator(Gdx.files.internal("font/at01.ttf"));
 
-		menusBackground = new Texture("Menus/menu_background.png");
-		normalPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbutton.png"), 2, 2, 2, 2));
-		hoverPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttonhover.png"), 2, 2, 2, 2));
-		disabledPatch = new NinePatchDrawable(new NinePatch(new Texture("Ui/Buttons/textbuttondisabled.png"), 2, 2, 2, 2));
+		menusBackground = new Texture("ui/menu_background.png");
+		normalPatch = new NinePatchDrawable(new NinePatch(new Texture("ui/buttons/textbutton.png"), 2, 2, 2, 2));
+		hoverPatch = new NinePatchDrawable(new NinePatch(new Texture("ui/buttons/textbuttonhover.png"), 2, 2, 2, 2));
+		disabledPatch = new NinePatchDrawable(new NinePatch(new Texture("ui/buttons/textbuttondisabled.png"), 2, 2, 2, 2));
 
 		normalFontParam = new FreeTypeFontParameter();
 		normalFontParam.size = 40;
@@ -108,7 +108,7 @@ public class AATinkererGame extends Game
 		textFieldStyle.background = normalPatch;
 		textFieldStyle.font = font.generateFont(normalFontParam);
 		textFieldStyle.fontColor = WHITE;
-		textFieldStyle.cursor = new TextureRegionDrawable(new Texture("Ui/Buttons/cursor.png"));
+		textFieldStyle.cursor = new TextureRegionDrawable(new Texture("ui/buttons/cursor.png"));
 
 		normalLabelStyle = new LabelStyle();
 		normalLabelStyle.font = font.generateFont(normalFontParam);
@@ -120,8 +120,8 @@ public class AATinkererGame extends Game
 		xPosBackground1 = -menusBackground.getWidth();
 
 		// Custom cursor
-		cursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("Ui/cursor.png")), 6, 0);
-		cursorHover = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("Ui/cursorhover.png")), 6, 0);
+		cursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("ui/cursor.png")), 6, 0);
+		cursorHover = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("ui/cursorhover.png")), 6, 0);
 		Gdx.graphics.setCursor(cursor);
 
 		// Music

@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -19,6 +18,7 @@ import ch.hearc.p2.aatinkerer.buildings.Building;
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.data.Recipe;
 import ch.hearc.p2.aatinkerer.listeners.ItemDropdownListener;
+import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 import ch.hearc.p2.aatinkerer.ui.UIElement;
 
 public class BuildingRecipeDisplay implements UIElement
@@ -43,7 +43,7 @@ public class BuildingRecipeDisplay implements UIElement
 
 	public BuildingRecipeDisplay(ItemDropdownMenu dropdownMenu)
 	{
-		this.spritesheet = new Texture(Gdx.files.internal("Ui/recipes_menu.png"));
+		this.spritesheet = new Texture(Gdx.files.internal("ui/recipes_menu.png"));
 
 		this.popupRegion = new TextureRegion(this.spritesheet, 0, 0, 320, 117);
 		this.itemFrameRegion = new TextureRegion(this.spritesheet, 3, 122, 32, 32);
@@ -51,17 +51,17 @@ public class BuildingRecipeDisplay implements UIElement
 		FreeTypeFontParameter whiteDescriptionFontParameter = new FreeTypeFontParameter();
 		whiteDescriptionFontParameter.size = 16;
 		whiteDescriptionFontParameter.color = Color.WHITE;
-		whiteFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(whiteDescriptionFontParameter);
+		whiteFont = AATinkererGame.font.generateFont(whiteDescriptionFontParameter);
 
 		FreeTypeFontParameter largeWhiteDescriptionFontParameter = new FreeTypeFontParameter();
 		largeWhiteDescriptionFontParameter.size = 32;
 		largeWhiteDescriptionFontParameter.color = Color.WHITE;
-		largeWhiteFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(largeWhiteDescriptionFontParameter);
+		largeWhiteFont = AATinkererGame.font.generateFont(largeWhiteDescriptionFontParameter);
 
 		FreeTypeFontParameter blackDescriptionFontParameter = new FreeTypeFontParameter();
 		blackDescriptionFontParameter.size = 16;
 		blackDescriptionFontParameter.color = Color.BLACK;
-		blackFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(blackDescriptionFontParameter);
+		blackFont = AATinkererGame.font.generateFont(blackDescriptionFontParameter);
 
 		this.bounds = new Rectangle();
 		this.bounds.width = this.popupRegion.getRegionWidth();

@@ -7,8 +7,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+
+import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 
 public class MiniHoverPopup
 {
@@ -23,7 +24,7 @@ public class MiniHoverPopup
 
 	public MiniHoverPopup()
 	{
-		this.spritesheet = new Texture(Gdx.files.internal("Ui/mini_popup.png"));
+		this.spritesheet = new Texture(Gdx.files.internal("ui/mini_popup.png"));
 
 		this.leftBorderRegion = new TextureRegion(this.spritesheet, 0, 0, 7, 32);
 		this.rightBorderRegion = new TextureRegion(this.spritesheet, 10, 0, 7, 32);
@@ -32,7 +33,7 @@ public class MiniHoverPopup
 		FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();
 		fontParameter.size = 32;
 		fontParameter.color = Color.WHITE;
-		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(fontParameter);
+		font = AATinkererGame.font.generateFont(fontParameter);
 	}
 
 	public void render(SpriteBatch batch, int x, int y, String text)

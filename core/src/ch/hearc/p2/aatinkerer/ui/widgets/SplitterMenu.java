@@ -31,7 +31,7 @@ public class SplitterMenu implements UIElement
 
 	public SplitterMenu()
 	{
-		this.spritesheet = new Texture(Gdx.files.internal("Ui/splitter_menu.png"));
+		this.spritesheet = new Texture(Gdx.files.internal("ui/splitter_menu.png"));
 
 		this.widgetRegion = new TextureRegion(this.spritesheet, 0, 0, 256, 224);
 		this.itemUnselectedBorderRegion = new TextureRegion(this.spritesheet, 0, 224, 32, 32);

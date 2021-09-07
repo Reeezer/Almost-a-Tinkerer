@@ -1,7 +1,6 @@
 package ch.hearc.p2.aatinkerer.data;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -9,25 +8,25 @@ import ch.hearc.p2.aatinkerer.world.Chunk;
 
 public enum Ressource implements Tile
 {
-	NONE("Tile/Grid.png", ItemType.NONE),
-	COAL("Tile/CoalTile.png", ItemType.COAL),
-	WOOD("Tile/WoodTile.png", ItemType.WOODLOG),
-	STONE("Tile/RockTile.png", ItemType.STONE),
-	IRON("Tile/IronTile.png", ItemType.IRONORE),
-	COPPER("Tile/CopperTile.png", ItemType.COPPERORE),
-	OIL("Tile/OilTile.png", ItemType.OIL),
-	WATER("Tile/WaterTile.png", ItemType.WATER),
-	COTTON("Tile/CottonTile.png", ItemType.COTTON);
+	NONE("tile/grid.png", ItemType.NONE),
+	COAL("tile/coaltile.png", ItemType.COAL),
+	WOOD("tile/woodtile.png", ItemType.WOODLOG),
+	STONE("tile/rocktile.png", ItemType.STONE),
+	IRON("tile/irontile.png", ItemType.IRONORE),
+	COPPER("tile/coppertile.png", ItemType.COPPERORE),
+	OIL("tile/oiltile.png", ItemType.OIL),
+	WATER("tile/watertile.png", ItemType.WATER),
+	COTTON("tile/cottontile.png", ItemType.COTTON);
 
 	private final TileType tiletype = TileType.RESSOURCE;
-	
+
 	private Texture texture;
 	private ItemType itemType;
 
 	private Ressource(String texturePath, ItemType item)
 	{
 		texture = new Texture(Gdx.files.internal(texturePath));
-		itemType = item;		
+		itemType = item;
 	}
 
 	public Texture texture()

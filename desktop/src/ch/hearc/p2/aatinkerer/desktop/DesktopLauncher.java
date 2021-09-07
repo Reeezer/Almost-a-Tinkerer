@@ -17,7 +17,7 @@ public class DesktopLauncher
 		config.resizable = true;
 		config.title = "Almost a Tinkerer";
 		config.fullscreen = false;
-		config.addIcon("Ui/appicon.png", Files.FileType.Internal);
+		config.addIcon("ui/appicon.png", Files.FileType.Internal);
 
 		new LwjglApplication(new AATinkererGame(), config);
 	}

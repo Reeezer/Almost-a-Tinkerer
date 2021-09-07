@@ -24,13 +24,17 @@ public class Merger extends Building
 	{
 		Item itemToTransfer = toggle ? items.peekLast() : items.peekFirst();
 
-		if (output != null && contentSize > 0) {
-			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS) {
+		if (output != null && contentSize > 0)
+		{
+			if (type == FactoryType.ASSEMBLER || type == FactoryType.CUTTER || type == FactoryType.FURNACE || type == FactoryType.MIXER || type == FactoryType.PRESS)
+			{
 				if (!output.isFull(itemToTransfer))
 					checkRecipes();
 			}
-			else {
-				if (!output.isFull(itemToTransfer) && !itemToTransfer.justTransfered) {
+			else
+			{
+				if (!output.isFull(itemToTransfer) && !itemToTransfer.justTransfered)
+				{
 					Item item = toggle ? items.pollLast() : items.pollFirst();
 					currentIngredients.put(item.type, currentIngredients.get(item.type) - 1);
 					toggle = !toggle;

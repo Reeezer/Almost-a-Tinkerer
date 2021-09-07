@@ -3,17 +3,14 @@ package ch.hearc.p2.aatinkerer.main;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.TimeUtils;
 
 public class SplashScreen implements Screen
 {
@@ -44,8 +41,8 @@ public class SplashScreen implements Screen
 		camera.position.y = 0;
 		camera.zoom = 1;
 
-		background = new Texture("Menus/splash.png");
-		hearcLogo = new Texture("Menus/pixel_arc.png");
+		background = new Texture("ui/splash.png");
+		hearcLogo = new Texture("ui/pixel_arc.png");
 
 		passedTime = 0;
 
@@ -56,7 +53,7 @@ public class SplashScreen implements Screen
 		FreeTypeFontParameter veryLargeFontParameter = new FreeTypeFontParameter();
 		veryLargeFontParameter.size = 96;
 		veryLargeFontParameter.color = AATinkererGame.WHITE;
-		veryLargeFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/ThaleahFat.ttf")).generateFont(veryLargeFontParameter);
+		veryLargeFont = new FreeTypeFontGenerator(Gdx.files.internal("font/ThaleahFat.ttf")).generateFont(veryLargeFontParameter);
 
 		// public domain font https://grafxkid.itch.io/at01
 		FreeTypeFontParameter fontParameter = new FreeTypeFontParameter();

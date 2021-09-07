@@ -1,7 +1,5 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
-import java.util.Arrays;
-
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import ch.hearc.p2.aatinkerer.data.FactoryType;
@@ -30,7 +28,8 @@ public class Conveyor extends Building
 	public void renderItems(SpriteBatch batch, int dx, int dy)
 	{
 		int index = -1;
-		for (Item item : items) {
+		for (Item item : items)
+		{
 			// move item on conveyor depends on time spent on it
 			index++;
 			int xOrientation = (direction == 2 || direction == 0) ? ((direction == 2) ? -1 : 1) : 0;

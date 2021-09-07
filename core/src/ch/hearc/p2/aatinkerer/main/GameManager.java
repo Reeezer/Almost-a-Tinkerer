@@ -86,7 +86,6 @@ public class GameManager
 		storyContracts.add(pressContract);
 		storyMilestones.add(Milestone.UNLOCK_PRESS);
 
-
 		Contract assemblerMergerContract = new Contract("We want to make pencils, but also glue furniture together. That means we need graphite and glue, both can be made with the press, glue needs petroleum, graphite needs coal.");
 		assemblerMergerContract.addRequestedItem(ItemType.GLUE, 10);
 		assemblerMergerContract.addRequestedItem(ItemType.GRAPHITE, 10);
@@ -110,7 +109,7 @@ public class GameManager
 		storyContracts.add(finalContract);
 		storyMilestones.add(Milestone.END_STORY);
 	}
-	
+
 	public void itemDelivered(ItemType type)
 	{
 		if (producedItems.containsKey(type))
@@ -140,7 +139,7 @@ public class GameManager
 	}
 
 	public void setProgress(int contractMilestoneIndex, HashMap<ItemType, Integer> producedItems)
-	{		
+	{
 		this.contractMilestoneIndex = contractMilestoneIndex;
 
 		for (int i = 0; i < contractMilestoneIndex; i++)
@@ -156,16 +155,16 @@ public class GameManager
 			{
 				ItemType type = producedItemsEntry.getKey();
 				int amount = producedItemsEntry.getValue();
-				
+
 				System.out.format("Adding produced %d units of item %s to contract %s%n", amount, type, currentContract);
 
 				currentContract.addProducedItem(type, amount);
 			}
-			
+
 			unlockContract(currentContract, true, false);
 		}
-		
-		this.producedItems = new HashMap<ItemType, Integer>(producedItems);		
+
+		this.producedItems = new HashMap<ItemType, Integer>(producedItems);
 	}
 
 	public void addMilestoneListener(MilestoneListener listener)

@@ -100,7 +100,7 @@ public class GameScreen implements Screen
 	private boolean justClicked;
 	private int initialx;
 	private int initialy;
-	
+
 	private boolean fixedx;
 	private boolean fixedy;
 
@@ -137,7 +137,7 @@ public class GameScreen implements Screen
 		fixedx = false;
 		fixedy = false;
 
-		arrowTexture = new Texture("Ui/Arrow.png");
+		arrowTexture = new Texture("ui/arrow.png");
 		arrowTextureRegion = new TextureRegion(arrowTexture);
 
 		lastTime = TimeUtils.millis();
@@ -249,7 +249,7 @@ public class GameScreen implements Screen
 
 			// no special chars in save names please
 			this.saveDirName = this.saveDirName.replaceAll("[^a-zA-Z0-9\\s]", "_");
-			
+
 			// hopefully that won't last forever
 			while (Gdx.files.absolute(game.saveDirBasePath() + "/" + this.saveDirName).exists())
 				this.saveDirName = this.saveDirName + "_";
@@ -609,7 +609,7 @@ public class GameScreen implements Screen
 		// catch up on max 1 second (and also makes sure there's at least about 1FPS)
 		if (unprocessedTime > 1000)
 			unprocessedTime = 1000;
-		
+
 		while (unprocessedTime >= processingTimeCap)
 		{
 			unprocessedTime -= processingTimeCap;

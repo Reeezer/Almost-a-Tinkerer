@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Locale.IsoCountryCode;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -202,11 +201,13 @@ public abstract class Building implements Tile, Serializable
 			else
 				return currentIngredients.get(item.type) >= maxSize;
 		}
-		else {
-			// don't tell predecessor that items can be transfered if the following conveyor isn't at least halfway done transfering to prevent the bunching animation bug
+		else
+		{
+			// don't tell predecessor that items can be transfered if the following conveyor isn't at least halfway done transfering to prevent the bunching
+			// animation bug
 			if (output != null && output.getItems() != null && output.getItems().peek() != null && output.getItems().peek().ticksSpent < Math.ceil(this.type.transferTimeout() / 2.f))
 				return true;
-			
+
 			return contentSize >= maxSize;
 		}
 	}
@@ -298,9 +299,7 @@ public abstract class Building implements Tile, Serializable
 		if (this.selectedRecipe == null)
 		{
 			for (Recipe recipe : recipes)
-			{
 				checkRecipe(recipe);
-			}
 		}
 		else
 		{
@@ -322,10 +321,8 @@ public abstract class Building implements Tile, Serializable
 	public void setRecipeTarget(ItemType type)
 	{
 		for (Recipe recipe : this.recipes)
-		{
 			if (recipe.getProduct() == type)
 				setRecipe(recipe);
-		}
 	}
 
 	public Recipe activeRecipe()
@@ -337,12 +334,8 @@ public abstract class Building implements Tile, Serializable
 	{
 		// transfer item if it is the right time
 		if (type != null)
-		{
 			if (type.getTransferTicks() == type.getTransferTimeout())
-			{
 				transferItem();
-			}
-		}
 
 		// update items
 		for (Item item : items)

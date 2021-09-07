@@ -1,7 +1,5 @@
 package ch.hearc.p2.aatinkerer.buildings;
 
-import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
-
 import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.world.TileMap;
@@ -42,7 +40,8 @@ public class Splitter extends Building
 	{
 		Item itemToTransfer = items.peek();
 
-		if (itemToTransfer != null && this.splitType == itemToTransfer.type && secondOutput != null && !secondOutput.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered) {
+		if (itemToTransfer != null && this.splitType == itemToTransfer.type && secondOutput != null && !secondOutput.isFull(itemToTransfer) && contentSize > 0 && !items.peek().justTransfered)
+		{
 			Item item = items.poll();
 			contentSize--;
 			secondOutput.addItem(item);

@@ -1,10 +1,7 @@
 package ch.hearc.p2.aatinkerer.data;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 public class Contract
 {
@@ -44,7 +41,7 @@ public class Contract
 	{
 		addProducedItem(type, 1);
 	}
-	
+
 	public void addProducedItem(ItemType type, int amount)
 	{
 		if (requestedItems.containsKey(type))

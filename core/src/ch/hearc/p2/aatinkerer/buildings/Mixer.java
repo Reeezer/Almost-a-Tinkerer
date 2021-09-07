@@ -17,7 +17,7 @@ public class Mixer extends Building
 		else
 			this.inputPositions = new int[][] { { x, y, (direction + 2) % 4 }, { x2, y2, (direction + 1) % 4 } };
 		this.outputPosition = new int[] { x2, y2, direction };
-		
+
 		this.mirrored = mirrored;
 
 		createRecipes();
