@@ -100,6 +100,9 @@ public class GameScreen implements Screen
 	private boolean justClicked;
 	private int initialx;
 	private int initialy;
+	
+	private boolean fixedx;
+	private boolean fixedy;
 
 	private Texture arrowTexture;
 	private TextureRegion arrowTextureRegion;
@@ -129,8 +132,10 @@ public class GameScreen implements Screen
 		isInputTunnel = false;
 
 		justClicked = true;
-		initialx = -1;
-		initialy = -1;
+		initialx = 0;
+		initialy = 0;
+		fixedx = false;
+		fixedy = false;
 
 		arrowTexture = new Texture("Ui/Arrow.png");
 		arrowTextureRegion = new TextureRegion(arrowTexture);
@@ -506,15 +511,15 @@ public class GameScreen implements Screen
 				else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a
 																// line
 				{
-					if ((direction == 0 || direction == 2) && initialy == -1)
+					if ((direction == 0 || direction == 2) && !fixedy)
 					{
 						initialy = tileY;
-						initialx = -1;
+						fixedy = true;
 					}
-					if ((direction == 1 || direction == 3) && initialx == -1)
+					if ((direction == 1 || direction == 3) && !fixedx)
 					{
 						initialx = tileX;
-						initialy = -1;
+						fixedx = true;
 					}
 
 					if (direction == 0 || direction == 2)
@@ -549,8 +554,10 @@ public class GameScreen implements Screen
 		else
 		{
 			justClicked = true;
-			initialx = -1;
-			initialy = -1;
+			initialx = 0;
+			initialy = 0;
+			fixedx = false;
+			fixedy = false;
 		}
 
 		// delete building
