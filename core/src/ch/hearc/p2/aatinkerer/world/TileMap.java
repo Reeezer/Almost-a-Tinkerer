@@ -536,7 +536,6 @@ public class TileMap implements Serializable
 			int posX = x + dx * i;
 			int posY = y + dy * i;
 
-			// If there is no building on the tile FIXME wrong comment
 			if (chunkAtTile(posX, posY) == null)
 				continue;
 

@@ -225,7 +225,7 @@ public class GameManager
 				if (contractMilestoneIndex < storyMilestones.size())
 					unlockContract(storyContracts.get(contractMilestoneIndex), true, true);
 
-				// FIXME Sounds.ACHIEVE.play();
+				Sounds.ACHIEVE.play();
 			}
 		}
 

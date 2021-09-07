@@ -175,7 +175,6 @@ public class AATinkererGame extends Game
 
 	public void save()
 	{
-		// FIXME
 		if (gameScreen != null)
 			gameScreen.saveGame();
 	}

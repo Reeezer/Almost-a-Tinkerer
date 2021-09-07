@@ -587,11 +587,9 @@ public class GameScreen implements Screen
 			{
 				ItemType item = ((Ressource) map.tileAt(TileType.RESSOURCE, x, y)).getExtractedItem();
 
-				// FIXME check for null too
 				Building building = (Building) map.tileAt(TileType.FACTORY, x, y);
 				Building conveyor = (Building) map.tileAt(TileType.CONVEYOR, x, y);
 
-				// FIXME maybe still display the ressources if the hovered building is an extractor?
 				// only display on ressources tiles that don't have a building on top
 				if ((building == null || (building != null && building.getType() == FactoryType.EXTRACTOR)) && conveyor == null && item != null && item != ItemType.NONE)
 				{
