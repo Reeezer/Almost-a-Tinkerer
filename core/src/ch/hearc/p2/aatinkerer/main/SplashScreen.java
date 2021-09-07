@@ -20,7 +20,6 @@ public class SplashScreen implements Screen
 
 	private AATinkererGame game;
 	private Texture background;
-	private Texture hearcLogo;
 
 	private int width;
 	private int height;
@@ -42,7 +41,6 @@ public class SplashScreen implements Screen
 		camera.zoom = 1;
 
 		background = new Texture("ui/splash.png");
-		hearcLogo = new Texture("ui/pixel_arc.png");
 
 		passedTime = 0;
 
@@ -111,15 +109,8 @@ public class SplashScreen implements Screen
 		if (passedTime <= (SplashScreen.MAX_TIME / 2.f))
 			largeFont.draw(game.batch, "Press space to start", (width - startTextLayout.width) / 2.f, ((2.f * height / 3.f) + startTextLayout.height) / 2.f);
 
-		// hearc logo
-		largeFont.draw(game.batch, "haute ecole", 10, 90);
-		smallFont.draw(game.batch, "neuchatel berne jura", 10, 50);
-		game.batch.draw(hearcLogo, 210, 0, hearcLogo.getWidth() * 2, hearcLogo.getHeight() * 2);
-		largeFont.draw(game.batch, "ingenierie", 470, 90);
-		smallFont.draw(game.batch, "www.he-arc.ch", 470, 50);
-
 		// tout droits reservés
-		smallFont.draw(game.batch, "Tous droits reserves - Muller Leon, Meyer Luca - HE-Arc Ingenierie", 10, height - 10);
+		smallFont.draw(game.batch, "All rights reserved - Reezer & frostblue", 10, height - 10);
 
 		game.batch.end();
 
