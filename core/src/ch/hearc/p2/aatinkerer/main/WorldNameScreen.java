@@ -65,7 +65,7 @@ public class WorldNameScreen extends MenuScreen
 		// Positioning
 		mainTable.add(title).padBottom(50);
 		mainTable.row();
-		mainTable.add(textFieldTable).width(200).padBottom(20);
+		mainTable.add(textFieldTable).width(300).padBottom(20);
 		mainTable.row();
 		mainTable.add(renameButton);
 	}
@@ -122,6 +122,7 @@ public class WorldNameScreen extends MenuScreen
 
 		// World name
 		nameField = new TextField("", AATinkererGame.textFieldStyle);
+		nameField.setMaxLength(20);
 		game.addCursorHoverEffect(nameField);
 
 		textFieldTable.clear();

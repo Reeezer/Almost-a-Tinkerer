@@ -65,7 +65,7 @@ public class SaveScreen extends MenuScreen
 		// Title
 		Label title = new Label("Worlds", AATinkererGame.titleLabelStyle);
 
-		int buttonPad = 111;
+		int buttonPad = 107;
 		// Load button
 		loadButton = new TextButton("Load world", AATinkererGame.textButtonStyle);
 		loadButton.addListener(new ClickListener() {
@@ -82,7 +82,7 @@ public class SaveScreen extends MenuScreen
 		buttonsTable.add(loadButton).padRight(buttonPad).padTop(50).padBottom(50);
 
 		// Edit button
-		editButton = new TextButton("Edit", AATinkererGame.textButtonStyle);
+		editButton = new TextButton("Rename", AATinkererGame.textButtonStyle);
 		editButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
