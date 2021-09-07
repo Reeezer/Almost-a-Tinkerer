@@ -112,6 +112,7 @@ public class DifficultyScreen extends MenuScreen
 		// World name
 		nameTextField = new TextField("", AATinkererGame.textFieldStyle);
 		nameTextField.setMessageText(WORLD_NAME);
+		nameTextField.setMaxLength(20);
 		game.addCursorHoverEffect(nameTextField);
 
 		textFieldTable.clear();
