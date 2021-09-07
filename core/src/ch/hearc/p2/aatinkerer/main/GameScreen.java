@@ -4,18 +4,17 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.StringWriter;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.time.format.DateTimeFormatter;  
-import java.time.LocalDateTime;   
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Buttons;
@@ -79,6 +78,7 @@ public class GameScreen implements Screen
 	private long lastTime;
 	private long unprocessedTime;
 	private final long processingTimeCap = 10L; // 100TPS
+	private long tick;
 
 	private Toolbar factoryToolbar;
 
@@ -103,7 +103,7 @@ public class GameScreen implements Screen
 
 	private Texture arrowTexture;
 	private TextureRegion arrowTextureRegion;
-	
+
 	private String saveDirName;
 	private String name;
 
@@ -111,7 +111,7 @@ public class GameScreen implements Screen
 	{
 		this.game = game;
 		this.name = name;
-		
+
 		mapCamera = new OrthographicCamera();
 		uiCamera = new OrthographicCamera();
 		uiCamera.zoom = 1.f;
@@ -137,6 +137,7 @@ public class GameScreen implements Screen
 
 		lastTime = TimeUtils.millis();
 		unprocessedTime = 0;
+		tick = 0;
 
 		factoryToolbar = new Toolbar(FactoryType.values());
 		uiElements.add(factoryToolbar);
@@ -203,12 +204,12 @@ public class GameScreen implements Screen
 	public GameScreen(AATinkererGame game, String name, String saveDirName)
 	{
 		this(game, name);
-		
+
 		this.saveDirName = saveDirName;
-		
+
 		String saveDirPath = game.saveDirBasePath() + "/" + this.saveDirName;
 		String datFilePath = saveDirPath + "/save.dat";
-		
+
 		System.out.format("gamescreen: loading game from directory '%s'%n", saveDirPath);
 		System.out.format("gamescreen: loading save data from file '%s'%n", datFilePath);
 
@@ -240,21 +241,21 @@ public class GameScreen implements Screen
 				this.saveDirName = this.name;
 			else
 				this.saveDirName = "_"; // if the player never chooses a name, all saves directories will simply be underscores which kind of looks like an empty string
-			
+
 			// hopefully that won't last forever
 			while (Gdx.files.absolute(game.saveDirBasePath() + "/" + this.saveDirName).exists())
 				this.saveDirName = this.saveDirName + "_";
-			
+
 			Gdx.files.absolute(game.saveDirBasePath() + "/" + this.saveDirName).mkdirs();
 		}
-		
+
 		String saveDirPath = game.saveDirBasePath() + "/" + this.saveDirName;
-		
+
 		String datFilePath = saveDirPath + "/save.dat";
 		String jsonFilePath = saveDirPath + "/gamedata.json";
-		
+
 		System.out.format("saving game to '%s'%n", datFilePath);
-		
+
 		File savefile = new File(datFilePath);
 		try
 		{
@@ -273,24 +274,22 @@ public class GameScreen implements Screen
 		{
 			e.printStackTrace();
 		}
-		
-		
+
 		Json json = new Json();
 		StringWriter stringWriter = new StringWriter();
 		JsonWriter writer = new JsonWriter(stringWriter);
 		json.setWriter(writer);
-		
+
 		json.writeObjectStart();
-		
-		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
+
+		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		LocalDateTime now = LocalDateTime.now();
-		
+
 		json.writeValue("date", dtf.format(now));
-		json.writeValue("difficulty", game.difficulty.toString().toLowerCase());
+		json.writeValue("difficulty", AATinkererGame.difficulty.toString().toLowerCase());
 		json.writeValue("name", this.name);
-		
+
 		json.writeObjectEnd();
-		
 
 		try
 		{
@@ -607,6 +606,13 @@ public class GameScreen implements Screen
 		{
 			unprocessedTime -= processingTimeCap;
 			map.update();
+
+			tick++;
+			if (tick >= 20000)
+			{
+				game.save();
+				tick = 0;
+			}
 
 			GameManager.getInstance().tick();
 		}

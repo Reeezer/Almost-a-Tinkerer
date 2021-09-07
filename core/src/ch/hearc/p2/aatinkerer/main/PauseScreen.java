@@ -1,74 +1,53 @@
 package ch.hearc.p2.aatinkerer.main;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton.ImageButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ch.hearc.p2.aatinkerer.data.Scale;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
-public class PauseScreen implements Screen
+public class PauseScreen extends MenuScreen
 {
-	private AATinkererGame game;
-
-	private OrthographicCamera camera;
-	private FitViewport viewport;
-
-	private int width;
-	private int height;
-
-	private Stage stage;
-
 	private Label scaleLabel;
 	private List<TextButton> scaleButtons;
 
 	public PauseScreen(final AATinkererGame game)
 	{
-		this.game = game;
-
-		this.camera = new OrthographicCamera();
-		this.viewport = new FitViewport(0, 0, camera);
+		super(game);
 
 		Table mainTable = new Table();
 		Table buttonTable = new Table();
 		mainTable.setFillParent(true);
 
-		stage = new Stage();
-		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
 		int pad = 75;
 
-		// Title
-		LabelStyle titleLabelStyle = new LabelStyle();
-		titleLabelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.titleFontParam);
-		titleLabelStyle.fontColor = AATinkererGame.WHITE;
+		exitButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				Sounds.CLICK.play();
+				game.toPausedGameScreen();
+			};
+		});
 
-		Label title = new Label("Pause", titleLabelStyle);
+		// Title
+		Label title = new Label("Pause", AATinkererGame.titleLabelStyle);
 
 		// Resume
 		ImageButtonStyle resumeButtonStyle = new ImageButtonStyle();
@@ -146,26 +125,22 @@ public class PauseScreen implements Screen
 		mainTable.add(buttonTable);
 
 		// Scales
-		LabelStyle labelStyle = new LabelStyle();
-		labelStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
-		labelStyle.fontColor = AATinkererGame.WHITE;
-
-		scaleLabel = new Label("Scale", labelStyle);
-		stage.addActor(scaleLabel);
-
 		TextButtonStyle textButtonStyle = new TextButtonStyle();
 		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
 		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = game.getButtonPatch();
-		textButtonStyle.over = game.getButtonHoverPatch();
-		textButtonStyle.checked = game.getButtonHoverPatch();
+		textButtonStyle.up = AATinkererGame.normalPatch;
+		textButtonStyle.over = AATinkererGame.hoverPatch;
+		textButtonStyle.checked = AATinkererGame.hoverPatch;
+
+		scaleLabel = new Label("Scale", AATinkererGame.normalLabelStyle);
+		stage.addActor(scaleLabel);
 
 		scaleButtons = new ArrayList<TextButton>();
 
-		createScaleButtons(textButtonStyle, "Auto", Scale.AUTO);
-		createScaleButtons(textButtonStyle, "x1", Scale.X1);
-		createScaleButtons(textButtonStyle, "x2", Scale.X2);
-		createScaleButtons(textButtonStyle, "x4", Scale.X4);
+		createScaleButtons("Auto", Scale.AUTO);
+		createScaleButtons("x1", Scale.X1);
+		createScaleButtons("x2", Scale.X2);
+		createScaleButtons("x4", Scale.X4);
 
 		ButtonGroup<TextButton> buttonGroup = new ButtonGroup<TextButton>();
 		for (TextButton button : scaleButtons)
@@ -175,9 +150,9 @@ public class PauseScreen implements Screen
 		scaleButtons.get(0).toggle();
 	}
 
-	private void createScaleButtons(TextButtonStyle style, String text, final Scale scale)
+	private void createScaleButtons(String text, final Scale scale)
 	{
-		TextButton button = new TextButton(text, style);
+		TextButton button = new TextButton(text, AATinkererGame.textButtonStyle);
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -194,32 +169,9 @@ public class PauseScreen implements Screen
 	}
 
 	@Override
-	public void show()
-	{
-		Gdx.input.setInputProcessor(stage);
-	}
-
-	@Override
 	public void render(float delta)
 	{
-		Gdx.gl.glClearColor(AATinkererGame.BLUE.r, AATinkererGame.BLUE.g, AATinkererGame.BLUE.b, AATinkererGame.BLUE.a);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-		stage.act(delta);
-		stage.draw();
-
-		game.batch.begin();
-
-		camera.update();
-		game.batch.setProjectionMatrix(camera.combined);
-
-		// Draw background
-		game.drawAnimatedBackground(width, height);
-
-		game.batch.end();
-
-		stage.act(delta);
-		stage.draw();
+		super.render(delta);
 
 		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
 			game.toPausedGameScreen();
@@ -228,41 +180,12 @@ public class PauseScreen implements Screen
 	@Override
 	public void resize(int width, int height)
 	{
-		camera.setToOrtho(false, width, height);
-		viewport.setWorldSize(width, height);
-		stage.getViewport().update(width, height, true);
+		super.resize(width, height);
 
 		float buttonWidth = scaleButtons.get(0).getWidth();
 
 		scaleLabel.setPosition(20, 20);
 		for (int i = 0; i < scaleButtons.size(); i++)
 			scaleButtons.get(i).setPosition(100 + (buttonWidth + 20) * i, 20);
-
-		this.width = width;
-		this.height = height;
-	}
-
-	@Override
-	public void pause()
-	{
-
-	}
-
-	@Override
-	public void resume()
-	{
-
-	}
-
-	@Override
-	public void hide()
-	{
-		Gdx.input.setInputProcessor(null);
-	}
-
-	@Override
-	public void dispose()
-	{
-		stage.dispose();
 	}
 }
