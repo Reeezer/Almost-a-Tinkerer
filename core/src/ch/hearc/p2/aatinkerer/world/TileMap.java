@@ -705,7 +705,8 @@ public class TileMap implements Serializable
 			// Check for link buildings already placed
 			updateOutputs(x, y);
 
-			Sounds.PLACING.play();
+			if (!fromSave)
+				Sounds.PLACING.play();
 		}
 		return ret;
 	}
@@ -720,8 +721,6 @@ public class TileMap implements Serializable
 			conveyor.setItems(items);
 
 			updateOutputs(x, y);
-
-			Sounds.PLACING.play();
 		}
 	}
 
