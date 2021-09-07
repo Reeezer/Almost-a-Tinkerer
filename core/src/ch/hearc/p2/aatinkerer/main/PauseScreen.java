@@ -25,6 +25,7 @@ public class PauseScreen extends MenuScreen
 {
 	private Label scaleLabel;
 	private List<TextButton> scaleButtons;
+	private TextButtonStyle scaleButtonStyle;
 
 	public PauseScreen(final AATinkererGame game)
 	{
@@ -125,12 +126,12 @@ public class PauseScreen extends MenuScreen
 		mainTable.add(buttonTable);
 
 		// Scales
-		TextButtonStyle textButtonStyle = new TextButtonStyle();
-		textButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
-		textButtonStyle.fontColor = AATinkererGame.WHITE;
-		textButtonStyle.up = AATinkererGame.normalPatch;
-		textButtonStyle.over = AATinkererGame.hoverPatch;
-		textButtonStyle.checked = AATinkererGame.hoverPatch;
+		scaleButtonStyle = new TextButtonStyle();
+		scaleButtonStyle.font = AATinkererGame.font.generateFont(AATinkererGame.normalFontParam);
+		scaleButtonStyle.fontColor = AATinkererGame.WHITE;
+		scaleButtonStyle.up = AATinkererGame.normalPatch;
+		scaleButtonStyle.over = AATinkererGame.hoverPatch;
+		scaleButtonStyle.checked = AATinkererGame.hoverPatch;
 
 		scaleLabel = new Label("Scale", AATinkererGame.normalLabelStyle);
 		stage.addActor(scaleLabel);
@@ -152,7 +153,7 @@ public class PauseScreen extends MenuScreen
 
 	private void createScaleButtons(String text, final Scale scale)
 	{
-		TextButton button = new TextButton(text, AATinkererGame.textButtonStyle);
+		TextButton button = new TextButton(text, scaleButtonStyle);
 		button.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{

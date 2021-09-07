@@ -681,11 +681,11 @@ public class GameScreen implements Screen
 			font.draw(game.batch, "[Num 1]", pos + 10 * deltaa + 15, toolbarHeight);
 
 			font.draw(game.batch, "[Left click]\nPlace", width * uiCamera.zoom / 3, 150);
-			font.draw(game.batch, "[BACKSPACE]\nDelete", width * uiCamera.zoom / 3, 100);
+			font.draw(game.batch, "[Backspace]\nDelete", width * uiCamera.zoom / 3, 100);
 
 			font.draw(game.batch, "[R]\nRotate left", width * uiCamera.zoom * 5 / 12, 250);
 			font.draw(game.batch, "[Shift + R]\nRotate right", width * uiCamera.zoom * 5 / 12, 200);
-			font.draw(game.batch, "[T]\nMirror rotation", width * uiCamera.zoom * 5 / 12, 150);
+			font.draw(game.batch, "[T]\nMirror\nrotation", width * uiCamera.zoom * 5 / 12, 150);
 			font.draw(game.batch, "[Escape]\nUnselect", width * uiCamera.zoom * 5 / 12, 100);
 
 			font.draw(game.batch, "[Space]\nTo hub", width * uiCamera.zoom / 2, 400);

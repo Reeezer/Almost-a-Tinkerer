@@ -124,11 +124,10 @@ public class AATinkererGame extends Game
 		cursorHover = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("Ui/cursorhover.png")), 6, 0);
 		Gdx.graphics.setCursor(cursor);
 
-		// Font
-
 		// Music
 		Sounds.MUSIC.setVolume(VOLUME_LOW);
 		Sounds.MUSIC.play();
+		Sounds.MUSIC.setLooping(true);
 
 		// Screens
 		splashScreen = new SplashScreen(this);
