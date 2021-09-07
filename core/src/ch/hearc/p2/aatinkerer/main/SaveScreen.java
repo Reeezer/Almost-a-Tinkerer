@@ -4,41 +4,28 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane.ScrollPaneStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
-import ch.hearc.p2.aatinkerer.util.AutoFocusScrollPane;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
-public class SaveScreen implements Screen
+public class SaveScreen extends MenuScreen
 {
-	private AATinkererGame game;
-
-	private OrthographicCamera camera;
-	private FitViewport viewport;
-
-	private int width;
-	private int height;
-
-	private Stage stage;
-
 	private String selectedSaveDirName;
 	private String selectedWorldName;
 
@@ -49,22 +36,26 @@ public class SaveScreen implements Screen
 	private List<Table> savesList;
 
 	private ScrollPaneStyle paneStyle;
+	private ScrollPane pane;
 
 	public SaveScreen(final AATinkererGame game)
 	{
-		this.game = game;
-
-		this.camera = new OrthographicCamera();
-		this.viewport = new FitViewport(0, 0, camera);
+		super(game);
 
 		Table mainTable = new Table();
 		Table buttonsTable = new Table();
 		savesTable = new Table();
 		mainTable.setFillParent(true);
 
-		stage = new Stage();
-		stage.setViewport(viewport);
 		stage.addActor(mainTable);
+
+		exitButton.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y)
+			{
+				Sounds.CLICK.play();
+				game.toSplashScreen();
+			};
+		});
 
 		// Style
 		paneStyle = new ScrollPaneStyle();
@@ -155,7 +146,18 @@ public class SaveScreen implements Screen
 		Table table = new Table();
 
 		// Scroll pane which takes directly the mouse scroll when entering the mouse into its bounds
-		AutoFocusScrollPane pane = new AutoFocusScrollPane(table, paneStyle);
+		pane = new ScrollPane(table, paneStyle);
+		pane.addListener(new InputListener() {
+			public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor)
+			{
+				stage.setScrollFocus(pane);
+			}
+
+			public void exit(InputEvent event, float x, float y, int pointer, Actor toActor)
+			{
+				stage.setScrollFocus(null);
+			}
+		});
 		pane.setScrollbarsVisible(true);
 		pane.setFadeScrollBars(false);
 
@@ -235,62 +237,16 @@ public class SaveScreen implements Screen
 	@Override
 	public void show()
 	{
-		Gdx.input.setInputProcessor(stage);
+		super.show();
 		displaySaves();
 	}
 
 	@Override
 	public void render(float delta)
 	{
-		Gdx.gl.glClearColor(AATinkererGame.BLUE.r, AATinkererGame.BLUE.g, AATinkererGame.BLUE.b, AATinkererGame.BLUE.a);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		super.render(delta);
 
-		game.batch.begin();
-
-		camera.update();
-		game.batch.setProjectionMatrix(camera.combined);
-
-		// Draw background
-		game.drawAnimatedBackground(width, height);
-
-		game.batch.end();
-
-		stage.act(delta);
-		stage.draw();
-	}
-
-	@Override
-	public void resize(int width, int height)
-	{
-		camera.setToOrtho(false, width, height);
-		viewport.setWorldSize(width, height);
-		stage.getViewport().update(width, height, true);
-
-		this.width = width;
-		this.height = height;
-	}
-
-	@Override
-	public void pause()
-	{
-
-	}
-
-	@Override
-	public void resume()
-	{
-
-	}
-
-	@Override
-	public void hide()
-	{
-		Gdx.input.setInputProcessor(null);
-	}
-
-	@Override
-	public void dispose()
-	{
-		stage.dispose();
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+			game.toSplashScreen();
 	}
 }

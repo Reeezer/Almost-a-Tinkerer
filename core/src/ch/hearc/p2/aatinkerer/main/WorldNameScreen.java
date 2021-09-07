@@ -3,48 +3,25 @@ package ch.hearc.p2.aatinkerer.main;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.JsonWriter;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 
 import ch.hearc.p2.aatinkerer.data.Difficulty;
 import ch.hearc.p2.aatinkerer.util.Sounds;
 
-public class WorldNameScreen implements Screen
+public class WorldNameScreen extends MenuScreen
 {
-	private AATinkererGame game;
-
-	private OrthographicCamera camera;
-	private FitViewport viewport;
-
-	private Stage stage;
-
-	private int width;
-	private int height;
-
-	private TextButton exitButton;
 	private TextField nameField;
 	private Table textFieldTable;
 
@@ -52,22 +29,15 @@ public class WorldNameScreen implements Screen
 
 	public WorldNameScreen(final AATinkererGame game)
 	{
-		this.game = game;
-
-		this.camera = new OrthographicCamera();
-		this.viewport = new FitViewport(0, 0, camera);
+		super(game);
 
 		Table mainTable = new Table();
 		mainTable.setFillParent(true);
 
 		textFieldTable = new Table();
 
-		stage = new Stage();
-		stage.setViewport(viewport);
 		stage.addActor(mainTable);
 
-		// Return
-		exitButton = new TextButton("Return", AATinkererGame.textButtonStyle);
 		exitButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y)
 			{
@@ -75,8 +45,6 @@ public class WorldNameScreen implements Screen
 				game.toSaveScreen();
 			};
 		});
-		game.addCursorHoverEffect(exitButton);
-		stage.addActor(exitButton);
 
 		// Title
 		Label title = new Label("World name", AATinkererGame.titleLabelStyle);
@@ -150,7 +118,7 @@ public class WorldNameScreen implements Screen
 	@Override
 	public void show()
 	{
-		Gdx.input.setInputProcessor(stage);
+		super.show();
 
 		// World name
 		nameField = new TextField("", AATinkererGame.textFieldStyle);
@@ -163,60 +131,9 @@ public class WorldNameScreen implements Screen
 	@Override
 	public void render(float delta)
 	{
-		Gdx.gl.glClearColor(AATinkererGame.BLUE.r, AATinkererGame.BLUE.g, AATinkererGame.BLUE.b, AATinkererGame.BLUE.a);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		super.render(delta);
 
-		stage.act(delta);
-		stage.draw();
-
-		game.batch.begin();
-
-		camera.update();
-		game.batch.setProjectionMatrix(camera.combined);
-
-		// Draw background
-		game.drawAnimatedBackground(width, height);
-
-		game.batch.end();
-
-		stage.act(delta);
-		stage.draw();
-	}
-
-	@Override
-	public void resize(int width, int height)
-	{
-		camera.setToOrtho(false, width, height);
-		viewport.setWorldSize(width, height);
-		stage.getViewport().update(width, height, true);
-
-		exitButton.setPosition(20, height - 20 - exitButton.getHeight());
-
-		this.width = width;
-		this.height = height;
-	}
-
-	@Override
-	public void pause()
-	{
-
-	}
-
-	@Override
-	public void resume()
-	{
-
-	}
-
-	@Override
-	public void hide()
-	{
-		Gdx.input.setInputProcessor(null);
-	}
-
-	@Override
-	public void dispose()
-	{
-		stage.dispose();
+		if (Gdx.input.isKeyJustPressed(Keys.ESCAPE))
+			game.toSaveScreen();
 	}
 }

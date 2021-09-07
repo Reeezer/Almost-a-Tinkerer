@@ -241,6 +241,13 @@ public class AATinkererGame extends Game
 		setScreen(saveScreen);
 	}
 
+	public void toSplashScreen()
+	{
+		setDefaultCursor();
+		changeVolume(VOLUME_LOW);
+		setScreen(splashScreen);
+	}
+
 	private void toGameScreen()
 	{
 		setDefaultCursor();
