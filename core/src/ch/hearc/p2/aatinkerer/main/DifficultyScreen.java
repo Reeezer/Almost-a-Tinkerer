@@ -49,19 +49,19 @@ public class DifficultyScreen extends MenuScreen
 		Label title = new Label("Choose a difficulty", AATinkererGame.titleLabelStyle);
 
 		// Difficulties
-		Texture regularTexture = new Texture("Ui/Buttons/regular.png");
-		Texture abundantTexture = new Texture("Ui/Buttons/abundant.png");
-		Texture rareTexture = new Texture("Ui/Buttons/rare.png");
-		Texture bigSparseTexture = new Texture("Ui/Buttons/bigsparse.png");
-		Texture everywhereTexture = new Texture("Ui/Buttons/everywhere.png");
-		Texture goodLuckTexture = new Texture("Ui/Buttons/goodluck.png");
+		Texture regularTexture = new Texture("ui/buttons/regular.png");
+		Texture abundantTexture = new Texture("ui/buttons/abundant.png");
+		Texture rareTexture = new Texture("ui/buttons/rare.png");
+		Texture bigSparseTexture = new Texture("ui/buttons/bigsparse.png");
+		Texture everywhereTexture = new Texture("ui/buttons/everywhere.png");
+		Texture goodLuckTexture = new Texture("ui/buttons/goodluck.png");
 
-		Texture regularHoverTexture = new Texture("Ui/Buttons/regularhover.png");
-		Texture abundantHoverTexture = new Texture("Ui/Buttons/abundanthover.png");
-		Texture rareHoverTexture = new Texture("Ui/Buttons/rarehover.png");
-		Texture bigSparseHoverTexture = new Texture("Ui/Buttons/bigsparsehover.png");
-		Texture everywhereHoverTexture = new Texture("Ui/Buttons/everywherehover.png");
-		Texture goodLuckHoverTexture = new Texture("Ui/Buttons/goodluckhover.png");
+		Texture regularHoverTexture = new Texture("ui/buttons/regularhover.png");
+		Texture abundantHoverTexture = new Texture("ui/buttons/abundanthover.png");
+		Texture rareHoverTexture = new Texture("ui/buttons/rarehover.png");
+		Texture bigSparseHoverTexture = new Texture("ui/buttons/bigsparsehover.png");
+		Texture everywhereHoverTexture = new Texture("ui/buttons/everywherehover.png");
+		Texture goodLuckHoverTexture = new Texture("ui/buttons/goodluckhover.png");
 
 		createButton(regularTexture, regularHoverTexture, "Regular", Difficulty.REGULAR);
 		createButton(abundantTexture, abundantHoverTexture, "Abundant", Difficulty.ABUNDANT);

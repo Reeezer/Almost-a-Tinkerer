@@ -2,19 +2,17 @@ package ch.hearc.p2.aatinkerer.ui.widgets;
 
 import java.util.Map;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
 
 import ch.hearc.p2.aatinkerer.data.Contract;
 import ch.hearc.p2.aatinkerer.data.ItemType;
+import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 import ch.hearc.p2.aatinkerer.ui.UIElement;
 
 public class StoryContractDisplay implements UIElement
@@ -36,7 +34,7 @@ public class StoryContractDisplay implements UIElement
 
 	public StoryContractDisplay()
 	{
-		this.spritesheet = new Texture("Ui/contracts_ui.png");
+		this.spritesheet = new Texture("ui/contracts_ui.png");
 
 		this.titlebarArea = new TextureRegion(this.spritesheet, 0, 0, 256, 104);
 		this.contractRowArea = new TextureRegion(this.spritesheet, 0, 108, 256, 30);
@@ -47,12 +45,12 @@ public class StoryContractDisplay implements UIElement
 		FreeTypeFontParameter descriptionFontParameter = new FreeTypeFontParameter();
 		descriptionFontParameter.size = 16;
 		descriptionFontParameter.color = Color.BLACK;
-		descriptionFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
+		descriptionFont = AATinkererGame.font.generateFont(descriptionFontParameter);
 
 		FreeTypeFontParameter itemNameFontParameter = new FreeTypeFontParameter();
 		itemNameFontParameter.size = 16;
 		itemNameFontParameter.color = Color.WHITE;
-		itemNameFont = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(itemNameFontParameter);
+		itemNameFont = AATinkererGame.font.generateFont(itemNameFontParameter);
 
 		this.bounds = new Rectangle();
 		this.bounds.width = this.titlebarArea.getRegionWidth();

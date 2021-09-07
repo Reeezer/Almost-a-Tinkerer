@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import ch.hearc.p2.aatinkerer.data.FactoryType;
 import ch.hearc.p2.aatinkerer.main.GameManager;
 import ch.hearc.p2.aatinkerer.world.Chunk;
 import ch.hearc.p2.aatinkerer.world.TileMap;
@@ -21,15 +20,17 @@ public class Hub extends Building
 
 		textures = new Texture[tilecount];
 		for (int i = 0; i < tilecount; i++)
-			textures[i] = new Texture(String.format("Tile/Hub/%02d/00.png", i));
+			textures[i] = new Texture(String.format("tile/hub/%02d/00.png", i));
 	}
 
 	@Override
 	public void render(SpriteBatch batch, int dx, int dy)
 	{
 		int z = 0;
-		for (int i = -1; i <= 1; i++) {
-			for (int j = -1; j <= 1; j++) {
+		for (int i = -1; i <= 1; i++)
+		{
+			for (int j = -1; j <= 1; j++)
+			{
 				int tx = x + i;
 				int ty = y + j;
 

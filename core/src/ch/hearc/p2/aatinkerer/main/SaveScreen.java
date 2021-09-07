@@ -192,7 +192,7 @@ public class SaveScreen extends MenuScreen
 
 			Label nameLabel = new Label(json.getString("name"), AATinkererGame.normalLabelStyle);
 			Label dateLabel = new Label(json.getString("date"), AATinkererGame.normalLabelStyle);
-			Image difficultyImage = new Image(new Texture("Ui/Buttons/" + difficultyString + "hover.png"));
+			Image difficultyImage = new Image(new Texture("ui/buttons/" + difficultyString + "hover.png"));
 
 			// Create a table for each row
 			table.row().padBottom(10).padTop(10);

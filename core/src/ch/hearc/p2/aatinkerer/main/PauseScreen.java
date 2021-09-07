@@ -52,8 +52,8 @@ public class PauseScreen extends MenuScreen
 
 		// Resume
 		ImageButtonStyle resumeButtonStyle = new ImageButtonStyle();
-		resumeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/play.png"))));
-		resumeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/playhover.png"))));
+		resumeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/play.png"))));
+		resumeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/playhover.png"))));
 
 		ImageButton resumeButton = new ImageButton(resumeButtonStyle);
 		resumeButton.addListener(new ClickListener() {
@@ -68,10 +68,10 @@ public class PauseScreen extends MenuScreen
 
 		// Sound
 		ImageButtonStyle muteButtonStyle = new ImageButtonStyle();
-		muteButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundon.png"))));
-		muteButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundonhover.png"))));
-		muteButtonStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundoff.png"))));
-		muteButtonStyle.imageCheckedOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/soundoffhover.png"))));
+		muteButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/soundon.png"))));
+		muteButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/soundonhover.png"))));
+		muteButtonStyle.imageChecked = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/soundoff.png"))));
+		muteButtonStyle.imageCheckedOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/soundoffhover.png"))));
 
 		ImageButton muteButton = new ImageButton(muteButtonStyle);
 		muteButton.addListener(new ClickListener() {
@@ -91,8 +91,8 @@ public class PauseScreen extends MenuScreen
 
 		// Save
 		ImageButtonStyle saveButtonStyle = new ImageButtonStyle();
-		saveButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/save.png"))));
-		saveButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/savehover.png"))));
+		saveButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/save.png"))));
+		saveButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/savehover.png"))));
 
 		ImageButton saveButton = new ImageButton(saveButtonStyle);
 		saveButton.addListener(new ClickListener() {
@@ -107,8 +107,8 @@ public class PauseScreen extends MenuScreen
 
 		// Back home
 		ImageButtonStyle homeButtonStyle = new ImageButtonStyle();
-		homeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/home.png"))));
-		homeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("Ui/Buttons/homehover.png"))));
+		homeButtonStyle.imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/home.png"))));
+		homeButtonStyle.imageOver = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("ui/buttons/homehover.png"))));
 
 		ImageButton homeButton = new ImageButton(homeButtonStyle);
 		homeButton.addListener(new ClickListener() {

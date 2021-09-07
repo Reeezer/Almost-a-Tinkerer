@@ -3,11 +3,8 @@ package ch.hearc.p2.aatinkerer.ui.widgets;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 
 import ch.hearc.p2.aatinkerer.data.FactoryType;
@@ -34,8 +31,8 @@ public class Toolbar implements UIElement
 		for (ToolbarItem item : items)
 			this.items.add(item);
 
-		backgroundTexture = new Texture(Gdx.files.internal("Ui/Icons/IconBackground.png"));
-		activeBackgroundTexture = new Texture(Gdx.files.internal("Ui/Icons/IconBackgroundSelected.png"));
+		backgroundTexture = new Texture(Gdx.files.internal("ui/icons/iconbackground.png"));
+		activeBackgroundTexture = new Texture(Gdx.files.internal("ui/icons/iconbackgroundselected.png"));
 
 		this.bounds = new Rectangle();
 	}
@@ -124,5 +121,13 @@ public class Toolbar implements UIElement
 	public boolean visible()
 	{
 		return true;
+	}
+
+	public void reset()
+	{
+		for (ToolbarItem item : items)
+		{
+			item.setEnabled(false);
+		}
 	}
 }

@@ -28,7 +28,8 @@ public class Extractor extends Building
 	public void extract()
 	{
 		// extract item if not already full
-		if (contentSize < maxSize && ressource.getExtractedItem() != ItemType.NONE) {
+		if (contentSize < maxSize && ressource.getExtractedItem() != ItemType.NONE)
+		{
 			Item item = new Item();
 			item.type = ressource.getExtractedItem();
 			items.add(item);
@@ -42,7 +43,8 @@ public class Extractor extends Building
 		super.update();
 
 		// extract items if it is the right time
-		if (extractTicks++ > extractTimeout) {
+		if (extractTicks++ > extractTimeout)
+		{
 			extract();
 			extractTicks = 0;
 		}

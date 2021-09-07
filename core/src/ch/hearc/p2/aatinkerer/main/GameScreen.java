@@ -101,6 +101,9 @@ public class GameScreen implements Screen
 	private int initialx;
 	private int initialy;
 
+	private boolean fixedx;
+	private boolean fixedy;
+
 	private Texture arrowTexture;
 	private TextureRegion arrowTextureRegion;
 
@@ -129,10 +132,12 @@ public class GameScreen implements Screen
 		isInputTunnel = false;
 
 		justClicked = true;
-		initialx = -1;
-		initialy = -1;
+		initialx = 0;
+		initialy = 0;
+		fixedx = false;
+		fixedy = false;
 
-		arrowTexture = new Texture("Ui/Arrow.png");
+		arrowTexture = new Texture("ui/arrow.png");
 		arrowTextureRegion = new TextureRegion(arrowTexture);
 
 		lastTime = TimeUtils.millis();
@@ -194,6 +199,7 @@ public class GameScreen implements Screen
 			}
 		};
 
+		factoryToolbar.reset();
 		GameManager.getInstance().reset();
 
 		GameManager.getInstance().addMilestoneListener(milestoneListener);
@@ -240,6 +246,9 @@ public class GameScreen implements Screen
 				this.saveDirName = this.name;
 			else
 				this.saveDirName = "_"; // if the player never chooses a name, all saves directories will simply be underscores which kind of looks like an empty string
+
+			// no special chars in save names please
+			this.saveDirName = this.saveDirName.replaceAll("[^a-zA-Z0-9\\s]", "_");
 
 			// hopefully that won't last forever
 			while (Gdx.files.absolute(game.saveDirBasePath() + "/" + this.saveDirName).exists())
@@ -502,15 +511,15 @@ public class GameScreen implements Screen
 				else if (factoryType == FactoryType.CONVEYOR) // make it so conveyors can be place more easily in a
 																// line
 				{
-					if ((direction == 0 || direction == 2) && initialy == -1)
+					if ((direction == 0 || direction == 2) && !fixedy)
 					{
 						initialy = tileY;
-						initialx = -1;
+						fixedy = true;
 					}
-					if ((direction == 1 || direction == 3) && initialx == -1)
+					if ((direction == 1 || direction == 3) && !fixedx)
 					{
 						initialx = tileX;
-						initialy = -1;
+						fixedx = true;
 					}
 
 					if (direction == 0 || direction == 2)
@@ -545,8 +554,10 @@ public class GameScreen implements Screen
 		else
 		{
 			justClicked = true;
-			initialx = -1;
-			initialy = -1;
+			initialx = 0;
+			initialy = 0;
+			fixedx = false;
+			fixedy = false;
 		}
 
 		// delete building
@@ -576,11 +587,9 @@ public class GameScreen implements Screen
 			{
 				ItemType item = ((Ressource) map.tileAt(TileType.RESSOURCE, x, y)).getExtractedItem();
 
-				// FIXME check for null too
 				Building building = (Building) map.tileAt(TileType.FACTORY, x, y);
 				Building conveyor = (Building) map.tileAt(TileType.CONVEYOR, x, y);
 
-				// FIXME maybe still display the ressources if the hovered building is an extractor?
 				// only display on ressources tiles that don't have a building on top
 				if ((building == null || (building != null && building.getType() == FactoryType.EXTRACTOR)) && conveyor == null && item != null && item != ItemType.NONE)
 				{
@@ -596,6 +605,10 @@ public class GameScreen implements Screen
 		/* update */
 
 		// cap on fixed TPS
+
+		// catch up on max 1 second (and also makes sure there's at least about 1FPS)
+		if (unprocessedTime > 1000)
+			unprocessedTime = 1000;
 
 		while (unprocessedTime >= processingTimeCap)
 		{

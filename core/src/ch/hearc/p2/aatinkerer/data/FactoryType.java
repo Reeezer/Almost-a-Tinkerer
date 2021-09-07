@@ -8,17 +8,17 @@ import ch.hearc.p2.aatinkerer.ui.ToolbarItem;
 
 public enum FactoryType implements ToolbarItem, HoverableItem
 {
-	CONVEYOR(new String[] { "Tile/Conveyor/", "Tile/ConveyorLeft/", "Tile/ConveyorRight/" }, 1, "Ui/Icons/ConveyorIcon.png", new String[] { "Ui/Hover/Conveyor.png" }, 8, 3), //
-	EXTRACTOR(new String[] { "Tile/Extractor/" }, 1, "Ui/Icons/ExtractorIcon.png", new String[] { "Ui/Hover/Extractor.png" }, 8), //
-	FURNACE(new String[] { "Tile/Furnace/", "Tile/FurnaceMirror/" }, 1, "Ui/Icons/FurnaceIcon.png", new String[] { "Ui/Hover/Furnace.png", "Ui/Hover/FurnaceMirror.png" }, 8), //
-	PRESS(new String[] { "Tile/Press/" }, 1, "Ui/Icons/PressIcon.png", new String[] { "Ui/Hover/Press.png" }, 6), //
-	CUTTER(new String[] { "Tile/Cutter/" }, 1, "Ui/Icons/CutterIcon.png", new String[] { "Ui/Hover/Cutter.png" }, 4), //
-	ASSEMBLER(new String[] { "Tile/Assembler/" }, 3, "Ui/Icons/AssemblerIcon.png", new String[] { "Ui/Hover/Assembler.png" }, 9), //
-	MERGER(new String[] { "Tile/Merger/", "Tile/MergerMirror/" }, 1, "Ui/Icons/MergerIcon.png", new String[] { "Ui/Hover/Merger.png", "Ui/Hover/MergerMirror.png" }, 1), //
-	SPLITTER(new String[] { "Tile/Splitter/", "Tile/SplitterMirror/" }, 1, "Ui/Icons/SplitterIcon.png", new String[] { "Ui/Hover/Splitter.png", "Ui/Hover/SplitterMirror.png" }, 1), //
-	TUNNEL(new String[] { "Tile/TunnelIn/", "Tile/TunnelOut/" }, 1, "Ui/Icons/TunnelInIcon.png", new String[] { "Ui/Hover/TunnelIn.png", "Ui/Hover/TunnelOut.png" }, 1), //
-	MIXER(new String[] { "Tile/Mixer/", "Tile/MixerMirror/" }, 2, "Ui/Icons/MixerIcon.png", new String[] { "Ui/Hover/Mixer.png", "Ui/Hover/MixerMirror.png" }, 6), //
-	TRASH(new String[] { "Tile/Trash/" }, 1, "Ui/Icons/TrashIcon.png", new String[] { "Ui/Hover/Trash.png" }, 7);
+	CONVEYOR(new String[] { "tile/conveyor/", "tile/conveyorleft/", "tile/conveyorright/" }, 1, "ui/icons/conveyoricon.png", new String[] { "ui/hover/conveyor.png" }, 8, 1), //
+	EXTRACTOR(new String[] { "tile/extractor/" }, 1, "ui/icons/extractoricon.png", new String[] { "ui/hover/extractor.png" }, 8), //
+	FURNACE(new String[] { "tile/furnace/", "tile/furnacemirror/" }, 1, "ui/icons/furnaceicon.png", new String[] { "ui/hover/furnace.png", "ui/hover/furnacemirror.png" }, 8), //
+	PRESS(new String[] { "tile/press/" }, 1, "ui/icons/pressicon.png", new String[] { "ui/hover/press.png" }, 6), //
+	CUTTER(new String[] { "tile/cutter/" }, 1, "ui/icons/cuttericon.png", new String[] { "ui/hover/cutter.png" }, 4), //
+	ASSEMBLER(new String[] { "tile/assembler/" }, 3, "ui/icons/assemblericon.png", new String[] { "ui/hover/assembler.png" }, 9), //
+	MERGER(new String[] { "tile/merger/", "tile/mergermirror/" }, 1, "ui/icons/mergericon.png", new String[] { "ui/hover/merger.png", "ui/hover/mergermirror.png" }, 1), //
+	SPLITTER(new String[] { "tile/splitter/", "tile/splittermirror/" }, 1, "ui/icons/splittericon.png", new String[] { "ui/hover/splitter.png", "ui/hover/splittermirror.png" }, 1), //
+	TUNNEL(new String[] { "tile/tunnelin/", "tile/tunnelout/" }, 1, "ui/icons/tunnelinicon.png", new String[] { "ui/hover/tunnelin.png", "ui/hover/tunnelout.png" }, 1), //
+	MIXER(new String[] { "tile/mixer/", "tile/mixermirror/" }, 2, "ui/icons/mixericon.png", new String[] { "ui/hover/mixer.png", "ui/hover/mixermirror.png" }, 6), //
+	TRASH(new String[] { "tile/trash/" }, 1, "ui/icons/trashicon.png", new String[] { "ui/hover/trash.png" }, 7);
 
 	private Texture itemTexture;
 	private Texture[] hoverTexture;
@@ -48,7 +48,7 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 
 		level = 1;
 
-		transferTimeout = 70;
+		this.transferTimeout = 60;
 		transferTicks = 0;
 
 		currentFrame = 0;
@@ -67,6 +67,11 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	private FactoryType(String[] texturesPaths, int tileCount, String itemTexturePath, String[] hoverTexturePath, int maxFrame)
 	{
 		this(texturesPaths, tileCount, itemTexturePath, hoverTexturePath, maxFrame, 8);
+	}
+
+	public int transferTimeout()
+	{
+		return this.transferTimeout;
 	}
 
 	@Override
@@ -165,11 +170,13 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	{
 		int i = 0;
 
-		if (factoryType == FURNACE || factoryType == MERGER || factoryType == MIXER || factoryType == SPLITTER) {
+		if (factoryType == FURNACE || factoryType == MERGER || factoryType == MIXER || factoryType == SPLITTER)
+		{
 			if (mirrored)
 				i = 1;
 		}
-		else {
+		else
+		{
 			if (animationType == AnimationType.OUT || animationType == AnimationType.LEFT)
 				i = 1;
 			else if (animationType == AnimationType.RIGHT)

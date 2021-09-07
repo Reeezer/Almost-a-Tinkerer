@@ -9,12 +9,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
 import com.badlogic.gdx.math.Rectangle;
 
 import ch.hearc.p2.aatinkerer.data.ItemType;
 import ch.hearc.p2.aatinkerer.listeners.ItemDropdownListener;
+import ch.hearc.p2.aatinkerer.main.AATinkererGame;
 import ch.hearc.p2.aatinkerer.ui.UIElement;
 
 public class ItemDropdownMenu implements UIElement
@@ -35,7 +35,7 @@ public class ItemDropdownMenu implements UIElement
 
 	public ItemDropdownMenu()
 	{
-		this.spritesheet = new Texture(Gdx.files.internal("Ui/item_dropdown.png"));
+		this.spritesheet = new Texture(Gdx.files.internal("ui/item_dropdown.png"));
 
 		this.topBorderRegion = new TextureRegion(this.spritesheet, 0, 0, 256, 5);
 		this.itemRegion = new TextureRegion(this.spritesheet, 0, 7, 256, 30);
@@ -44,7 +44,7 @@ public class ItemDropdownMenu implements UIElement
 		FreeTypeFontParameter descriptionFontParameter = new FreeTypeFontParameter();
 		descriptionFontParameter.size = 16;
 		descriptionFontParameter.color = Color.WHITE;
-		font = new FreeTypeFontGenerator(Gdx.files.internal("Font/at01.ttf")).generateFont(descriptionFontParameter);
+		font = AATinkererGame.font.generateFont(descriptionFontParameter);
 
 		this.bounds = new Rectangle();
 		this.listeners = new LinkedList<ItemDropdownListener>();

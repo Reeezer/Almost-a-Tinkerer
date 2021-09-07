@@ -24,7 +24,7 @@ public class Tunnel extends Building
 	{
 		output = tunnel;
 	}
-	
+
 	public void reloadConnection()
 	{
 		if (!isInput)
