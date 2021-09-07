@@ -12,11 +12,14 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.TimeUtils;
 
 public class SplashScreen implements Screen
 {
 	private OrthographicCamera camera;
+
+	private Stage stage;
 
 	private AATinkererGame game;
 	private Texture background;
@@ -71,7 +74,7 @@ public class SplashScreen implements Screen
 	@Override
 	public void show()
 	{
-
+		Gdx.input.setInputProcessor(game.input);
 	}
 
 	@Override
