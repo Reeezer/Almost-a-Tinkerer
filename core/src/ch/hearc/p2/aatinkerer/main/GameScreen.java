@@ -242,6 +242,9 @@ public class GameScreen implements Screen
 			else
 				this.saveDirName = "_"; // if the player never chooses a name, all saves directories will simply be underscores which kind of looks like an empty string
 
+			// no special chars in save names please
+			this.saveDirName = this.saveDirName.replaceAll("[^a-zA-Z0-9\\s]", "_");
+			
 			// hopefully that won't last forever
 			while (Gdx.files.absolute(game.saveDirBasePath() + "/" + this.saveDirName).exists())
 				this.saveDirName = this.saveDirName + "_";
