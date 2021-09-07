@@ -599,6 +599,10 @@ public class GameScreen implements Screen
 
 		// cap on fixed TPS
 
+		// catch up on max 1 second (and also makes sure there's at least about 1FPS)
+		if (unprocessedTime > 1000)
+			unprocessedTime = 1000;
+		
 		while (unprocessedTime >= processingTimeCap)
 		{
 			unprocessedTime -= processingTimeCap;

@@ -8,17 +8,17 @@ import ch.hearc.p2.aatinkerer.ui.ToolbarItem;
 
 public enum FactoryType implements ToolbarItem, HoverableItem
 {
-	CONVEYOR(new String[] { "Tile/Conveyor/", "Tile/ConveyorLeft/", "Tile/ConveyorRight/" }, 1, "Ui/Icons/ConveyorIcon.png", new String[] { "Ui/Hover/Conveyor.png" }, 8, 3, 70), //
-	EXTRACTOR(new String[] { "Tile/Extractor/" }, 1, "Ui/Icons/ExtractorIcon.png", new String[] { "Ui/Hover/Extractor.png" }, 8, 70), //
-	FURNACE(new String[] { "Tile/Furnace/", "Tile/FurnaceMirror/" }, 1, "Ui/Icons/FurnaceIcon.png", new String[] { "Ui/Hover/Furnace.png", "Ui/Hover/FurnaceMirror.png" }, 8, 70), //
-	PRESS(new String[] { "Tile/Press/" }, 1, "Ui/Icons/PressIcon.png", new String[] { "Ui/Hover/Press.png" }, 6, 70), //
-	CUTTER(new String[] { "Tile/Cutter/" }, 1, "Ui/Icons/CutterIcon.png", new String[] { "Ui/Hover/Cutter.png" }, 4, 70), //
-	ASSEMBLER(new String[] { "Tile/Assembler/" }, 3, "Ui/Icons/AssemblerIcon.png", new String[] { "Ui/Hover/Assembler.png" }, 9, 70), //
-	MERGER(new String[] { "Tile/Merger/", "Tile/MergerMirror/" }, 1, "Ui/Icons/MergerIcon.png", new String[] { "Ui/Hover/Merger.png", "Ui/Hover/MergerMirror.png" }, 1, 70), //
-	SPLITTER(new String[] { "Tile/Splitter/", "Tile/SplitterMirror/" }, 1, "Ui/Icons/SplitterIcon.png", new String[] { "Ui/Hover/Splitter.png", "Ui/Hover/SplitterMirror.png" }, 1, 70), //
-	TUNNEL(new String[] { "Tile/TunnelIn/", "Tile/TunnelOut/" }, 1, "Ui/Icons/TunnelInIcon.png", new String[] { "Ui/Hover/TunnelIn.png", "Ui/Hover/TunnelOut.png" }, 1, 70), //
-	MIXER(new String[] { "Tile/Mixer/", "Tile/MixerMirror/" }, 2, "Ui/Icons/MixerIcon.png", new String[] { "Ui/Hover/Mixer.png", "Ui/Hover/MixerMirror.png" }, 6, 70), //
-	TRASH(new String[] { "Tile/Trash/" }, 1, "Ui/Icons/TrashIcon.png", new String[] { "Ui/Hover/Trash.png" }, 7, 70);
+	CONVEYOR(new String[] { "Tile/Conveyor/", "Tile/ConveyorLeft/", "Tile/ConveyorRight/" }, 1, "Ui/Icons/ConveyorIcon.png", new String[] { "Ui/Hover/Conveyor.png" }, 8, 1), //
+	EXTRACTOR(new String[] { "Tile/Extractor/" }, 1, "Ui/Icons/ExtractorIcon.png", new String[] { "Ui/Hover/Extractor.png" }, 8), //
+	FURNACE(new String[] { "Tile/Furnace/", "Tile/FurnaceMirror/" }, 1, "Ui/Icons/FurnaceIcon.png", new String[] { "Ui/Hover/Furnace.png", "Ui/Hover/FurnaceMirror.png" }, 8), //
+	PRESS(new String[] { "Tile/Press/" }, 1, "Ui/Icons/PressIcon.png", new String[] { "Ui/Hover/Press.png" }, 6), //
+	CUTTER(new String[] { "Tile/Cutter/" }, 1, "Ui/Icons/CutterIcon.png", new String[] { "Ui/Hover/Cutter.png" }, 4), //
+	ASSEMBLER(new String[] { "Tile/Assembler/" }, 3, "Ui/Icons/AssemblerIcon.png", new String[] { "Ui/Hover/Assembler.png" }, 9), //
+	MERGER(new String[] { "Tile/Merger/", "Tile/MergerMirror/" }, 1, "Ui/Icons/MergerIcon.png", new String[] { "Ui/Hover/Merger.png", "Ui/Hover/MergerMirror.png" }, 1), //
+	SPLITTER(new String[] { "Tile/Splitter/", "Tile/SplitterMirror/" }, 1, "Ui/Icons/SplitterIcon.png", new String[] { "Ui/Hover/Splitter.png", "Ui/Hover/SplitterMirror.png" }, 1), //
+	TUNNEL(new String[] { "Tile/TunnelIn/", "Tile/TunnelOut/" }, 1, "Ui/Icons/TunnelInIcon.png", new String[] { "Ui/Hover/TunnelIn.png", "Ui/Hover/TunnelOut.png" }, 1), //
+	MIXER(new String[] { "Tile/Mixer/", "Tile/MixerMirror/" }, 2, "Ui/Icons/MixerIcon.png", new String[] { "Ui/Hover/Mixer.png", "Ui/Hover/MixerMirror.png" }, 6), //
+	TRASH(new String[] { "Tile/Trash/" }, 1, "Ui/Icons/TrashIcon.png", new String[] { "Ui/Hover/Trash.png" }, 7);
 
 	private Texture itemTexture;
 	private Texture[] hoverTexture;
@@ -37,7 +37,7 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 	private int animationTimeout;
 	private Texture[][][] textures;
 
-	private FactoryType(String[] texturesPaths, int tileCount, String itemTexturePath, String[] hoverTexturePath, int maxFrame, int animationTimeout, int transferTimeout)
+	private FactoryType(String[] texturesPaths, int tileCount, String itemTexturePath, String[] hoverTexturePath, int maxFrame, int animationTimeout)
 	{
 		itemTexture = new Texture(Gdx.files.internal(itemTexturePath));
 
@@ -48,7 +48,7 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 
 		level = 1;
 
-		this.transferTimeout = transferTimeout;
+		this.transferTimeout = 60;
 		transferTicks = 0;
 
 		currentFrame = 0;
@@ -64,9 +64,9 @@ public enum FactoryType implements ToolbarItem, HoverableItem
 					textures[i][k][j] = new Texture(texturesPaths[i] + String.format("%02d/%02d.png", k, j));
 	}
 
-	private FactoryType(String[] texturesPaths, int tileCount, String itemTexturePath, String[] hoverTexturePath, int maxFrame, int transferTimeout)
+	private FactoryType(String[] texturesPaths, int tileCount, String itemTexturePath, String[] hoverTexturePath, int maxFrame)
 	{
-		this(texturesPaths, tileCount, itemTexturePath, hoverTexturePath, maxFrame, 8, transferTimeout);
+		this(texturesPaths, tileCount, itemTexturePath, hoverTexturePath, maxFrame, 8);
 	}
 	
 	public int transferTimeout()
