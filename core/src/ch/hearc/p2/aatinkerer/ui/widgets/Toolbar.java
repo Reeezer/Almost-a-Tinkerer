@@ -126,6 +126,8 @@ public class Toolbar implements UIElement
 	public void reset()
 	{
 		for (ToolbarItem item : items)
+		{
 			item.setEnabled(false);
+		}
 	}
 }

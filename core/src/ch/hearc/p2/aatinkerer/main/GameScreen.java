@@ -215,6 +215,9 @@ public class GameScreen implements Screen
 		String saveDirPath = game.saveDirBasePath() + "/" + this.saveDirName;
 		String datFilePath = saveDirPath + "/save.dat";
 
+		System.out.format("gamescreen: loading game from directory '%s'%n", saveDirPath);
+		System.out.format("gamescreen: loading save data from file '%s'%n", datFilePath);
+
 		File savefile = new File(datFilePath);
 		try
 		{
@@ -258,6 +261,8 @@ public class GameScreen implements Screen
 
 		String datFilePath = saveDirPath + "/save.dat";
 		String jsonFilePath = saveDirPath + "/gamedata.json";
+
+		System.out.format("saving game to '%s'%n", datFilePath);
 
 		File savefile = new File(datFilePath);
 		try
@@ -466,8 +471,12 @@ public class GameScreen implements Screen
 
 				Rectangle bounds = clickable.getBounds();
 
+				System.out.format("checking bounds for '%s' = %s, with mouse coords = (%d,%d)%n", clickable.getClass().getSimpleName(), clickable.getBounds(), mx, my);
+
 				if (bounds.contains(new Vector2(mx, my)))
 				{
+					System.out.format("click captured at (%d,%d) by %s%n", mx, my, clickable.getClass().getSimpleName());
+
 					mouseCaptured = true;
 
 					// inner positions
@@ -489,6 +498,8 @@ public class GameScreen implements Screen
 			{
 				int tileX = screenToTileX(Gdx.input.getX());
 				int tileY = screenToTileY(Gdx.input.getY());
+
+				System.out.format("Button left at (%d, %d), converted to (%d, %d)\n", Gdx.input.getX(), Gdx.input.getY(), tileX, tileY);
 
 				if (factoryType != null && factoryType != FactoryType.CONVEYOR)
 				{

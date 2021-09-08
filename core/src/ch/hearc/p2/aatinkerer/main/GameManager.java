@@ -143,7 +143,9 @@ public class GameManager
 		this.contractMilestoneIndex = contractMilestoneIndex;
 
 		for (int i = 0; i < contractMilestoneIndex; i++)
+		{
 			unlockMilestone(storyMilestones.get(i), false);
+		}
 
 		// update current's contract progress
 		if (contractMilestoneIndex < storyMilestones.size())
@@ -153,6 +155,8 @@ public class GameManager
 			{
 				ItemType type = producedItemsEntry.getKey();
 				int amount = producedItemsEntry.getValue();
+
+				System.out.format("Adding produced %d units of item %s to contract %s%n", amount, type, currentContract);
 
 				currentContract.addProducedItem(type, amount);
 			}
@@ -180,12 +184,14 @@ public class GameManager
 
 	public void unlockContract(Contract contract, boolean isStory, boolean notify)
 	{
+		System.out.println("Adding new contract: " + contract);
 		for (ContractListener listener : contractListeners)
 			listener.contractAdded(contract, isStory, notify);
 	}
 
 	public void unlockMilestone(Milestone milestone, boolean notify)
 	{
+		System.out.println("Unlocking new milestone: " + milestone);
 		for (MilestoneListener listener : milestoneListeners)
 			listener.unlockMilestone(milestone, notify);
 	}
@@ -194,6 +200,7 @@ public class GameManager
 	{
 		this.money += amount;
 
+		System.out.println("Received money: " + amount + ", total money: " + this.money);
 		for (MoneyListener listener : moneyListeners)
 			listener.moneyReceived(amount);
 	}

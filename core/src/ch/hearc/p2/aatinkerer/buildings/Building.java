@@ -242,6 +242,7 @@ public abstract class Building implements Tile, Serializable
 			}
 			else
 			{
+				System.out.println(output.type + " - " + output.currentIngredients.get(itemToTransfer.type));
 				if (!output.isFull(itemToTransfer) && !itemToTransfer.justTransfered)
 				{
 					Item item = items.poll();
