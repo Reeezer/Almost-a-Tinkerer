@@ -148,8 +148,6 @@ public class AATinkererGame extends Game
 		if (!Gdx.files.absolute(saveDirBasePath).exists())
 			Gdx.files.absolute(saveDirBasePath).mkdirs();
 
-		System.out.format("detected OS: %s, using save path '%s'%n", systemName, saveDirBasePath);
-
 		setScreen(splashScreen);
 	}
 

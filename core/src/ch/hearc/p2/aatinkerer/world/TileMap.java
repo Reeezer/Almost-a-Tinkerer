@@ -133,8 +133,6 @@ public class TileMap implements Serializable
 					{
 						Tunnel tunnel = (Tunnel) building;
 						isInput = tunnel.isInput();
-
-						System.out.format("loading tunnel, input : %s%n", isInput);
 					}
 
 					placeBuilding(building.getX(), building.getY(), building.getDirection(), building.getType(), building.getMirrored(), items, recipe, type, true, isInput);
@@ -254,8 +252,6 @@ public class TileMap implements Serializable
 		return neighbours;
 	}
 
-	/* --- TODO refactor what is below this line --- */
-
 	public void render(SpriteBatch batch, Vector3 position, int screenWidth, int screenHeight, float zoom)
 	{
 		// box representing what the screen covers on the map in real coordinates (= tile coordinates * TILESIZE)
@@ -309,7 +305,6 @@ public class TileMap implements Serializable
 	// generate chunks around the camera depending on the screen size
 	public void cameraMovedToPosition(Vector3 position, int screenWidth, int screenHeight)
 	{
-
 		int cameraX = (int) Math.floor(position.x / Chunk.TILESIZE);
 		int cameraY = (int) Math.floor(position.y / Chunk.TILESIZE);
 
@@ -409,7 +404,6 @@ public class TileMap implements Serializable
 				dy = -1;
 				break;
 			default:
-				System.out.println("Wrong direction : " + outputPosition[2]);
 				break;
 		}
 
@@ -476,7 +470,6 @@ public class TileMap implements Serializable
 				dx = (isLeft) ? 1 : -1;
 				break;
 			default:
-				System.out.println("Wrong direction : " + direction);
 				break;
 		}
 
@@ -525,7 +518,6 @@ public class TileMap implements Serializable
 				dy = -1;
 				break;
 			default:
-				System.out.println("Wrong direction : " + direction);
 				break;
 		}
 
@@ -567,8 +559,6 @@ public class TileMap implements Serializable
 	public int placeBuilding(int x, int y, int direction, FactoryType factoryType, boolean mirrored, List<Item> items, Recipe recipe, ItemType split, boolean fromSave, boolean isInput)
 	{
 		int ret = 0;
-
-		System.out.format("placing new building of type %s at (%d,%d)%n", factoryType, x, y);
 
 		if (isEmpty(x, y))
 		{
@@ -697,7 +687,6 @@ public class TileMap implements Serializable
 					break;
 
 				default:
-					System.out.println("Wrong factory type : " + factoryType);
 					break;
 			}
 

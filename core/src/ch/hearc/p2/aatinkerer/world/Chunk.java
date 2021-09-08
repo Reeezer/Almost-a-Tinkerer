@@ -99,8 +99,6 @@ public class Chunk implements Serializable
 			int neighbourX = TileMap.chunkKeyToX(neighbour.key);
 			int neighbourY = TileMap.chunkKeyToY(neighbour.key);
 
-			// System.out.format("chunk at (%d, %d) is reading cached ressources from its neighbour (%d, %d)%n", chunkX, chunkY, neighbourX, neighbourY);
-
 			int coordsOffsetX = (neighbourX - chunkX) * CHUNKSIZE;
 			int coordsOffsetY = (neighbourY - chunkY) * CHUNKSIZE;
 
@@ -120,9 +118,6 @@ public class Chunk implements Serializable
 
 				if (ressourceX >= 0 && ressourceX < CHUNKSIZE && ressourceY >= 0 && ressourceY < CHUNKSIZE)
 				{
-					// System.out.format(" - read new cached ressource %s neighbour's local coords (%d, %d) converted to chunk local (%d,%d)%n", ressource.toString(),
-					// neighbourRessourceX, neighbourRessourceY, ressourceX, ressourceY);
-
 					setLocalTile(TileType.RESSOURCE, ressourceX, ressourceY, ressource);
 					toDeleteRessourceKeys.add(ressourceKey);
 				}
@@ -261,10 +256,7 @@ public class Chunk implements Serializable
 				int targetChunkTileY = (y + CHUNKSIZE) % CHUNKSIZE;
 
 				if (targetChunk.getLocalTile(TileType.RESSOURCE, targetChunkTileX, targetChunkTileY) == Ressource.NONE)
-				{
-					System.out.format("adding outbound ressource %s at (%d, %d) from chunk (%d, %d) to already existing chunk at (%d, %d) at local coordinates (%d, %d)%n", ressource, x, y, chunkX, chunkY, targetChunkX, targetChunkY, targetChunkTileX, targetChunkTileY);
 					targetChunk.setLocalTile(TileType.RESSOURCE, targetChunkTileX, targetChunkTileY, ressource);
-				}
 			}
 
 			// if the tile is outside of the chunk and that location doesn't contain anything already cached

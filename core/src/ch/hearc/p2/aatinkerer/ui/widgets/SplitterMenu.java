@@ -109,8 +109,6 @@ public class SplitterMenu implements UIElement
 
 			if (bounds.contains(new Vector2(x, y)))
 			{
-				System.out.println("splitter item selected: " + entry.getKey().name());
-
 				if (this.splitter != null)
 					this.splitter.setSplitType(entry.getKey());
 			}

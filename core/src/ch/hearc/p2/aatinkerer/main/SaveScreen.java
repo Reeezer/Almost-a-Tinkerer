@@ -72,7 +72,6 @@ public class SaveScreen extends MenuScreen
 			public void clicked(InputEvent event, float x, float y)
 			{
 				Sounds.CLICK.play();
-				System.out.format("launching save file at: %s%n", selectedSaveDirName);
 
 				if (!selectedSaveDirName.isEmpty() && Gdx.files.absolute(game.saveDirBasePath() + "/" + selectedSaveDirName).exists())
 					game.toNewGameScreenFromSave(selectedWorldName, selectedSaveDirName);
@@ -173,7 +172,6 @@ public class SaveScreen extends MenuScreen
 
 			JsonValue json;
 
-			System.out.format("found new save directory at %s%n", currentSaveDirPath);
 			try
 			{
 				json = jsonReader.parse(Gdx.files.absolute(currentSaveDirPath + "/gamedata.json"));
@@ -183,8 +181,6 @@ public class SaveScreen extends MenuScreen
 				e.printStackTrace();
 				continue;
 			}
-
-			System.out.println(json);
 
 			final String name = json.getString("name");
 			final String difficultyString = json.getString("difficulty").toLowerCase();

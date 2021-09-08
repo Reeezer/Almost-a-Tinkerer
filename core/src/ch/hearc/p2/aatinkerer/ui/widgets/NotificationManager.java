@@ -60,7 +60,6 @@ public class NotificationManager implements UIElement
 	public void displayPopup(Notification popup)
 	{
 		queuedPopups.add(popup);
-		System.out.println("Queueing new popup for display: " + popup);
 	}
 
 	@Override

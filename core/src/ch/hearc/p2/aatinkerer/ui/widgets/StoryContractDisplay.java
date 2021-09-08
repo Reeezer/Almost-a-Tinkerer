@@ -108,9 +108,7 @@ public class StoryContractDisplay implements UIElement
 				itemType.render(batch, xcorner + 3, ycorner - 1);
 
 				if (currentContract.isItemFulfilled(itemType))
-				{
 					batch.draw(checkmarkArea, xcorner + 7, ycorner + 7);
-				}
 
 				i++;
 			}
